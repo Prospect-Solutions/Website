@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prospect Solutions — Developer Dashboard</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0b0e14;
+    --bg2:     #111520;
+    --bg3:     #161c2a;
+    --surface: #1a2234;
+    --surface2:#1e2840;
+    --border:  rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.14);
+    --text:    #e8eaf0;
+    --text2:   #8d95a8;
+    --text3:   #555e73;
+    --teal:    #2dd4bf;
+    --teal-bg: rgba(45,212,191,0.07);
+    --teal-b:  rgba(45,212,191,0.22);
+    --blue:    #60a5fa;
+    --blue-bg: rgba(96,165,250,0.07);
+    --blue-b:  rgba(96,165,250,0.22);
+    --amber:   #fbbf24;
+    --amber-bg:rgba(251,191,36,0.07);
+    --amber-b: rgba(251,191,36,0.22);
+    --coral:   #fb7185;
+    --coral-bg:rgba(251,113,133,0.07);
+    --coral-b: rgba(251,113,133,0.22);
+    --purple:  #a78bfa;
+    --green:   #4ade80;
+    --font-d:  'DM Serif Display', serif;
+    --font-b:  'Outfit', sans-serif;
+    --font-m:  'DM Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-b);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── GRID BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── GLOW ── */
+  .glow {
+    position: fixed;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 600px;
+    background: radial-gradient(ellipse, rgba(45,212,191,0.04) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 1040px; margin: 0 auto;
+    padding: 0 40px;
+    flex: 1; display: flex; flex-direction: column;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 0 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 64px;
+  }
+  .topbar-brand {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--teal-bg); border: 1px solid var(--teal-b);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-m); font-size: 13px; font-weight: 500; color: var(--teal);
+  }
+  .brand-name {
+    font-family: var(--font-m); font-size: 12px;
+    color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .brand-name strong { color: var(--text2); }
+  .topbar-meta {
+    font-family: var(--font-m); font-size: 11px; color: var(--text3);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+  .topbar-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* ── HERO ── */
+  .hero { margin-bottom: 72px; }
+  .hero-eyebrow {
+    font-family: var(--font-m); font-size: 11px; color: var(--teal);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 28px; height: 1px;
+    background: var(--teal); opacity: 0.5; display: block;
+  }
+  .hero h1 {
+    font-family: var(--font-d);
+    font-size: clamp(38px, 5vw, 62px);
+    line-height: 1.1; letter-spacing: -0.02em;
+    margin-bottom: 22px;
+  }
+  .hero h1 em { font-style: italic; color: var(--teal); }
+  .hero-sub {
+    font-size: 17px; color: var(--text2); line-height: 1.75;
+    max-width: 560px; margin-bottom: 40px;
+  }
+
+  /* ── PROGRESS STRIP ── */
+  .progress-strip {
+    display: flex; gap: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    margin-bottom: 72px;
+  }
+  .ps-item {
+    flex: 1; padding: 18px 22px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .ps-item:last-child { border-right: none; }
+  .ps-val {
+    font-family: var(--font-m); font-size: 22px; font-weight: 500; line-height: 1;
+  }
+  .ps-label { font-size: 11px; color: var(--text3); letter-spacing: 0.03em; }
+  .ps-bar {
+    height: 3px; background: var(--bg3); border-radius: 2px;
+    overflow: hidden; margin-top: 8px;
+  }
+  .ps-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+
+  /* ── MAIN CARDS ── */
+  .cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 48px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 0;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex; flex-direction: column;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+  .card:hover { transform: translateY(-3px); }
+  .card.arch:hover  { border-color: var(--teal-b); }
+  .card.road:hover  { border-color: var(--blue-b); }
+  .card.check:hover { border-color: var(--amber-b); }
+
+  .card-top {
+    padding: 28px 28px 20px;
+    flex: 1;
+    position: relative;
+  }
+  /* accent line */
+  .card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+  }
+  .card.arch::before  { background: var(--teal); }
+  .card.road::before  { background: var(--blue); }
+  .card.check::before { background: var(--amber); }
+
+  .card-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-m); font-size: 16px; font-weight: 500;
+    margin-bottom: 18px;
+    border: 1px solid;
+  }
+  .card.arch  .card-icon { background: var(--teal-bg);  color: var(--teal);  border-color: var(--teal-b); }
+  .card.road  .card-icon { background: var(--blue-bg);  color: var(--blue);  border-color: var(--blue-b); }
+  .card.check .card-icon { background: var(--amber-bg); color: var(--amber); border-color: var(--amber-b); }
+
+  .card-label {
+    font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .card.arch  .card-label { color: var(--teal); }
+  .card.road  .card-label { color: var(--blue); }
+  .card.check .card-label { color: var(--amber); }
+
+  .card h2 {
+    font-family: var(--font-d); font-size: 22px; line-height: 1.2;
+    letter-spacing: -0.01em; margin-bottom: 12px;
+  }
+  .card p { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+  /* card stats row */
+  .card-stats {
+    display: flex; gap: 0;
+    border-top: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  .cs-item {
+    flex: 1; padding: 12px 16px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .cs-item:last-child { border-right: none; }
+  .cs-val { font-family: var(--font-m); font-size: 16px; font-weight: 500; line-height: 1; }
+  .cs-label { font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+  /* card footer arrow */
+  .card-footer {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: var(--text3);
+    font-family: var(--font-m);
+    background: var(--bg2);
+    transition: background 0.15s;
+  }
+  .card:hover .card-footer { background: var(--surface2); }
+  .card-footer .arrow {
+    font-size: 14px; transition: transform 0.2s;
+  }
+  .card:hover .card-footer .arrow { transform: translateX(4px); }
+  .card.arch  .card-footer .arrow { color: var(--teal); }
+  .card.road  .card-footer .arrow { color: var(--blue); }
+  .card.check .card-footer .arrow { color: var(--amber); }
+
+  /* ── TM CHAIN ── */
+  .section-label {
+    font-family: var(--font-m); font-size: 10px; color: var(--text3);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;
+  }
+  .tm-chain {
+    display: flex; align-items: center; gap: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; margin-bottom: 64px;
+  }
+  .tm-item {
+    flex: 1; padding: 14px 18px; border-right: 1px solid var(--border);
+    position: relative; transition: background 0.15s;
+  }
+  .tm-item:last-child { border-right: none; }
+  .tm-item:hover { background: var(--surface2); }
+  .tm-num {
+    font-family: var(--font-m); font-size: 10px; color: var(--text3);
+    margin-bottom: 4px; letter-spacing: 0.06em;
+  }
+  .tm-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .tm-status {
+    font-family: var(--font-m); font-size: 10px;
+    padding: 1px 6px; border-radius: 4px; margin-top: 6px;
+    display: inline-block;
+  }
+  .tm-done { background: var(--teal-bg); color: var(--teal); border: 1px solid var(--teal-b); }
+  .tm-next { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-b); }
+  .tm-plan { background: var(--bg3); color: var(--text3); border: 1px solid var(--border); }
+
+  /* ── QUICK LINKS ── */
+  .quick-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-bottom: 64px;
+  }
+  .quick-link {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: inherit;
+    transition: border-color 0.15s, background 0.15s;
+    font-size: 13px;
+  }
+  .quick-link:hover { background: var(--surface2); border-color: var(--border2); }
+  .ql-icon {
+    font-family: var(--font-m); font-size: 12px; color: var(--text3);
+    width: 28px; text-align: center; flex-shrink: 0;
+  }
+  .ql-text { flex: 1; }
+  .ql-title { font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .ql-sub { font-size: 11px; color: var(--text3); }
+  .ql-arrow { color: var(--text3); font-size: 12px; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border); padding: 24px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-m); font-size: 11px; color: var(--text3);
+    position: relative; z-index: 1;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.5s ease both; }
+  .d1 { animation-delay: 0.05s; }
+  .d2 { animation-delay: 0.12s; }
+  .d3 { animation-delay: 0.19s; }
+  .d4 { animation-delay: 0.26s; }
+
+  @media (max-width: 800px) {
+    .wrap { padding: 0 20px; }
+    .cards { grid-template-columns: 1fr; }
+    .quick-grid { grid-template-columns: 1fr; }
+    .progress-strip { flex-direction: column; }
+    .ps-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .ps-item:last-child { border-bottom: none; }
+    .tm-chain { flex-direction: column; }
+    .tm-item { border-right: none; border-bottom: 1px solid var(--border); }
+    footer { flex-direction: column; gap: 8px; padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar fade-up">
+    <div class="topbar-brand">
+      <svg width="180" height="40" viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8"  y="8"  width="56" height="56" stroke="#c8a96e" stroke-width="1.5" fill="none" opacity="1"/>
+        <rect x="16" y="16" width="40" height="40" stroke="#c8a96e" stroke-width="1.2" fill="none" opacity="0.6"/>
+        <rect x="24" y="24" width="24" height="24" stroke="#c8a96e" stroke-width="1"   fill="none" opacity="0.35"/>
+        <rect x="31" y="31" width="10" height="10" stroke="#c8a96e" stroke-width="0.8" fill="none" opacity="0.18"/>
+        <line x1="31" y1="8"  x2="41" y2="8"  stroke="#0a0a0c" stroke-width="3"/>
+        <line x1="31" y1="16" x2="41" y2="16" stroke="#0a0a0c" stroke-width="3"/>
+        <line x1="32" y1="24" x2="40" y2="24" stroke="#0a0a0c" stroke-width="3"/>
+        <text x="84" y="46" font-family="Cormorant Garamond, Georgia, serif" font-size="28" font-weight="300" letter-spacing="7" fill="#e8e8ec">PROSPECT</text>
+      </svg>
+    </div>
+    <div class="topbar-meta">
+      <span><span class="status-dot"></span>Active development</span>
+      <span id="current-date"></span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero fade-up d1">
+    <p class="hero-eyebrow">Internal system · AI build programme</p>
+    <h1>PROSPECT Solutions<br><em>Developer dashboard</em></h1>
+    <p class="hero-sub">Architecture specification, development roadmap, and build checklist for the AI-powered business operations system. Not linked from the main site.</p>
+  </div>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip fade-up d2">
+    <div class="ps-item">
+      <div class="ps-val" id="ps-total" style="color:var(--text)">0/150</div>
+      <div class="ps-label">Total tasks</div>
+      <div class="ps-bar"><div class="ps-bar-fill" id="ps-total-bar" style="width:0%;background:var(--teal)"></div></div>
+    </div>
+    <div class="ps-item">
+      <div class="ps-val" id="ps-build" style="color:var(--blue)">0/92</div>
+      <div class="ps-label">Built</div>
+      <div class="ps-bar"><div class="ps-bar-fill" id="ps-build-bar" style="width:0%;background:var(--blue)"></div></div>
+    </div>
+    <div class="ps-item">
+      <div class="ps-val" id="ps-test" style="color:var(--amber)">0/28</div>
+      <div class="ps-label">Tested</div>
+      <div class="ps-bar"><div class="ps-bar-fill" id="ps-test-bar" style="width:0%;background:var(--amber)"></div></div>
+    </div>
+    <div class="ps-item">
+      <div class="ps-val" id="ps-gate" style="color:var(--coral)">0/25</div>
+      <div class="ps-label">Gates passed</div>
+      <div class="ps-bar"><div class="ps-bar-fill" id="ps-gate-bar" style="width:0%;background:var(--coral)"></div></div>
+    </div>
+    <div class="ps-item">
+      <div class="ps-val" id="ps-metric" style="color:var(--purple)">0/8</div>
+      <div class="ps-label">Metrics met</div>
+      <div class="ps-bar"><div class="ps-bar-fill" id="ps-metric-bar" style="width:0%;background:var(--purple)"></div></div>
+    </div>
+  </div>
+
+  <!-- MAIN CARDS -->
+  <div class="cards fade-up d3">
+
+    <!-- Architecture -->
+    <a href="architecture.html" class="card arch">
+      <div class="card-top">
+        <div class="card-icon">Ax</div>
+        <div class="card-label">System specification</div>
+        <h2>Architecture</h2>
+        <p>Five-layer system design. All six agents fully specified. Orchestration engine, data layer, agent contract, and tech stack.</p>
+      </div>
+      <div class="card-stats">
+        <div class="cs-item"><div class="cs-val" style="color:var(--teal)">5</div><div class="cs-label">Layers</div></div>
+        <div class="cs-item"><div class="cs-val" style="color:var(--teal)">6</div><div class="cs-label">Agents</div></div>
+        <div class="cs-item"><div class="cs-val" style="color:var(--teal)">8</div><div class="cs-label">Sections</div></div>
+      </div>
+      <div class="card-footer">architecture.html <span class="arrow">→</span></div>
+    </a>
+
+    <!-- Roadmap -->
+    <a href="roadmap.html" class="card road">
+      <div class="card-top">
+        <div class="card-icon">Rm</div>
+        <div class="card-label">Build strategy</div>
+        <h2>Roadmap</h2>
+        <p>Five milestones from MVP to production. Success criteria, system state snapshots, and gate conditions for each.</p>
+      </div>
+      <div class="card-stats">
+        <div class="cs-item"><div class="cs-val" style="color:var(--blue)">5</div><div class="cs-label">Milestones</div></div>
+        <div class="cs-item"><div class="cs-val" style="color:var(--blue)">~20</div><div class="cs-label">Weeks</div></div>
+        <div class="cs-item"><div class="cs-val" style="color:var(--blue)">30</div><div class="cs-label">Gates</div></div>
+      </div>
+      <div class="card-footer">roadmap.html <span class="arrow">→</span></div>
+    </a>
+
+    <!-- Checklist -->
+    <a href="checklist.html" class="card check">
+      <div class="card-top">
+        <div class="card-icon">Ck</div>
+        <div class="card-label">Interactive tasks</div>
+        <h2>Checklist</h2>
+        <p>150 tasks across all milestones. Tick items as completed. Progress persists automatically in your browser.</p>
+      </div>
+      <div class="card-stats">
+        <div class="cs-item"><div class="cs-val" id="card-total" style="color:var(--amber)">150</div><div class="cs-label">Tasks</div></div>
+        <div class="cs-item"><div class="cs-val" id="card-done" style="color:var(--green)">0</div><div class="cs-label">Done</div></div>
+        <div class="cs-item"><div class="cs-val" id="card-pct" style="color:var(--amber)">0%</div><div class="cs-label">Complete</div></div>
+      </div>
+      <div class="card-footer">checklist.html <span class="arrow">→</span></div>
+    </a>
+
+  </div><!-- cards -->
+
+  <!-- TM CHAIN -->
+  <div class="fade-up d4">
+    <div class="section-label">Transition moment chain</div>
+    <div class="tm-chain">
+      <div class="tm-item">
+        <div class="tm-num">TM01</div>
+        <div class="tm-title">Top-level architecture</div>
+        <div class="tm-status tm-done">complete</div>
+      </div>
+      <div class="tm-item">
+        <div class="tm-num">TM02</div>
+        <div class="tm-title">Storage architecture</div>
+        <div class="tm-status tm-done">complete</div>
+      </div>
+      <div class="tm-item">
+        <div class="tm-num">TM03</div>
+        <div class="tm-title">Database Curator agent</div>
+        <div class="tm-status tm-done">complete</div>
+      </div>
+      <div class="tm-item">
+        <div class="tm-num">TM04</div>
+        <div class="tm-title">Client Intake agent</div>
+        <div class="tm-status tm-next">next</div>
+      </div>
+      <div class="tm-item">
+        <div class="tm-num">TM05</div>
+        <div class="tm-title">Solution Analyst agent</div>
+        <div class="tm-status tm-plan">planned</div>
+      </div>
+      <div class="tm-item">
+        <div class="tm-num">TM06</div>
+        <div class="tm-title">Full-stack system spec</div>
+        <div class="tm-status tm-plan">planned</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="section-label">Quick access</div>
+  <div class="quick-grid fade-up d4">
+    <a href="architecture.html#layers" class="quick-link">
+      <span class="ql-icon">L</span>
+      <div class="ql-text"><div class="ql-title">Layer specifications</div><div class="ql-sub">Detailed component spec for all 5 layers</div></div>
+      <span class="ql-arrow">→</span>
+    </a>
+    <a href="architecture.html#agents" class="quick-link">
+      <span class="ql-icon">Ag</span>
+      <div class="ql-text"><div class="ql-title">Agent specifications</div><div class="ql-sub">All 6 agents — logic, inputs, outputs, edge cases</div></div>
+      <span class="ql-arrow">→</span>
+    </a>
+    <a href="roadmap.html#m1" class="quick-link">
+      <span class="ql-icon">M1</span>
+      <div class="ql-text"><div class="ql-title">Milestone 1 — MVP</div><div class="ql-sub">Database pipeline, end to end — weeks 1–4</div></div>
+      <span class="ql-arrow">→</span>
+    </a>
+    <a href="checklist.html#m1" class="quick-link">
+      <span class="ql-icon">✓</span>
+      <div class="ql-text"><div class="ql-title">M1 build tasks</div><div class="ql-sub">50 tasks — infrastructure, agents, tests, gate</div></div>
+      <span class="ql-arrow">→</span>
+    </a>
+    <a href="architecture.html#contract" class="quick-link">
+      <span class="ql-icon">Ct</span>
+      <div class="ql-text"><div class="ql-title">Agent contract</div><div class="ql-sub">Standard input/output payload — the plug-in interface</div></div>
+      <span class="ql-arrow">→</span>
+    </a>
+    <a href="architecture.html#stack" class="quick-link">
+      <span class="ql-icon">St</span>
+      <div class="ql-text"><div class="ql-title">Technology stack</div><div class="ql-sub">Full stack recommendations + cost estimate</div></div>
+      <span class="ql-arrow">→</span>
+    </a>
+  </div>
+
+</div><!-- wrap -->
+
+<footer>
+  <span>prospect.solutions/developer &nbsp;·&nbsp; Internal use only &nbsp;·&nbsp; Not indexed</span>
+  <span id="footer-date"></span>
+</footer>
+
+<script>
+  // ── Date
+  const now = new Date();
+  const fmt = now.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('current-date').textContent = fmt;
+  document.getElementById('footer-date').textContent = fmt;
+
+  // ── Read checklist progress from localStorage (same key as checklist.html)
+  const STORE = 'ai-sys-checklist-v1';
+  const TOTALS = { total:150, build:92, test:28, gate:25, metric:8 };
+
+  function readProgress() {
+    try {
+      const state = JSON.parse(localStorage.getItem(STORE)) || {};
+      const keys = Object.keys(state).filter(k => state[k]);
+      // categorise by prefix to count by type — we don't have badge info here
+      // so we just count total done and show percentages
+      // For type breakdown we'd need to replicate the badge mapping
+      // Instead: fetch the checklist page badge data via a hidden iframe trick
+      // OR just show totals from the key count
+      return { done: keys.length, total: TOTALS.total };
+    } catch(e) { return { done:0, total:TOTALS.total }; }
+  }
+
+  function updateProgress() {
+    const { done, total } = readProgress();
+    const pct = total ? Math.round(done/total*100) : 0;
+
+    // We can only reliably show total from hub since we don't have badge mapping
+    // Show total progress prominently
+    document.getElementById('ps-total').textContent = done + '/' + total;
+    document.getElementById('ps-total-bar').style.width = pct + '%';
+
+    // Card stats
+    document.getElementById('card-done').textContent = done;
+    document.getElementById('card-pct').textContent = pct + '%';
+
+    // For typed counts: load state and map IDs
+    // We embed the badge map from checklist data
+    try {
+      const state = JSON.parse(localStorage.getItem(STORE)) || {};
+      const buildIds = ["m1-1-1","m1-1-2","m1-1-3","m1-1-4","m1-1-5","m1-1-6","m1-1-7","m1-1-8","m1-1-9","m1-2-1","m1-2-2","m1-2-3","m1-2-4","m1-2-5","m1-2-6","m1-2-7","m1-2-8","m1-2-9","m1-3-1","m1-3-2","m1-3-3","m1-3-4","m1-3-5","m1-3-6","m1-3-7","m1-3-8","m1-3-9","m1-3-10","m1-3-11","m1-3-12","m1-3-13","m1-3-14","m1-4-1","m1-4-2","m1-4-3","m1-4-4","m2-1-1","m2-1-2","m2-1-3","m2-1-4","m2-2-1","m2-2-2","m2-2-3","m2-2-4","m2-2-5","m2-2-6","m2-2-7","m2-2-8","m2-2-9","m2-2-10","m2-2-11","m2-2-12","m2-3-1","m2-3-2","m2-3-3","m2-3-4","m2-3-5","m2-3-6","m3-1-1","m3-1-2","m3-1-3","m3-1-4","m3-1-5","m3-1-6","m3-2-1","m3-2-2","m3-2-3","m3-2-4","m3-2-5","m3-2-6","m4-1-1","m4-1-2","m4-1-3","m4-1-4","m4-1-5","m4-2-1","m4-2-2","m4-2-3","m4-2-4","m5-1-1","m5-1-2","m5-1-3","m5-1-4","m5-1-5","m5-1-6","m5-1-7","m5-2-1","m5-2-2","m5-2-3","m5-2-4","m5-2-5"];
+      const testIds = ["m1-5-1","m1-5-2","m1-5-3","m1-5-4","m1-5-5","m1-5-6","m1-5-7","m1-5-8","m2-4-1","m2-4-2","m2-4-3","m2-4-4","m2-4-5","m2-4-6","m3-3-1","m3-3-2","m3-3-3","m3-3-4","m3-3-5","m3-3-6","m3-3-7","m4-3-1","m4-3-2","m4-3-3","m4-3-4","m4-3-5","m5-3-7"];
+      const gateIds = ["m1-6-1","m1-6-2","m1-6-3","m1-6-4","m1-6-5","m1-6-6","m2-5-1","m2-5-2","m2-5-3","m2-5-4","m2-5-5","m2-5-6","m3-4-1","m3-4-2","m3-4-3","m3-4-4","m3-4-5","m4-4-1","m4-4-2","m4-4-3","m4-4-4","m4-4-5","m5-3-6","m5-3-8"];
+      const metricIds = ["m2-5-7","m4-3-6","m5-3-1","m5-3-2","m5-3-3","m5-3-4","m5-3-5"];
+
+      const dB = buildIds.filter(id=>!!state[id]).length;
+      const dT = testIds.filter(id=>!!state[id]).length;
+      const dG = gateIds.filter(id=>!!state[id]).length;
+      const dM = metricIds.filter(id=>!!state[id]).length;
+
+      document.getElementById('ps-build').textContent   = dB+'/'+buildIds.length;
+      document.getElementById('ps-test').textContent    = dT+'/'+testIds.length;
+      document.getElementById('ps-gate').textContent    = dG+'/'+gateIds.length;
+      document.getElementById('ps-metric').textContent  = dM+'/'+metricIds.length;
+      document.getElementById('ps-build-bar').style.width  = Math.round(dB/buildIds.length*100)+'%';
+      document.getElementById('ps-test-bar').style.width   = Math.round(dT/testIds.length*100)+'%';
+      document.getElementById('ps-gate-bar').style.width   = Math.round(dG/gateIds.length*100)+'%';
+      document.getElementById('ps-metric-bar').style.width = Math.round(dM/metricIds.length*100)+'%';
+    } catch(e) {}
+  }
+
+  updateProgress();
+
+  // Refresh if user returns from checklist tab
+  window.addEventListener('focus', updateProgress);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') updateProgress();
+  });
+</script>
+</body>
+</html>

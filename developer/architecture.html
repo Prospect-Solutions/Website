@@ -1,0 +1,3123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Business System — Architecture</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0e14;
+    --bg2: #111520;
+    --bg3: #161c2a;
+    --surface: #1a2234;
+    --surface2: #1e2840;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+
+    --text: #e8eaf0;
+    --text2: #8d95a8;
+    --text3: #555e73;
+
+    --teal:   #2dd4bf;
+    --teal2:  #0d9488;
+    --teal-bg: rgba(45,212,191,0.08);
+    --teal-border: rgba(45,212,191,0.2);
+
+    --purple:   #a78bfa;
+    --purple2:  #7c3aed;
+    --purple-bg: rgba(167,139,250,0.08);
+    --purple-border: rgba(167,139,250,0.2);
+
+    --blue:   #60a5fa;
+    --blue2:  #2563eb;
+    --blue-bg: rgba(96,165,250,0.08);
+    --blue-border: rgba(96,165,250,0.2);
+
+    --amber:   #fbbf24;
+    --amber2:  #d97706;
+    --amber-bg: rgba(251,191,36,0.08);
+    --amber-border: rgba(251,191,36,0.2);
+
+    --coral:   #fb7185;
+    --coral2:  #e11d48;
+    --coral-bg: rgba(251,113,133,0.08);
+    --coral-border: rgba(251,113,133,0.2);
+
+    --gray-bg: rgba(255,255,255,0.04);
+    --gray-border: rgba(255,255,255,0.1);
+
+    --font-display: 'DM Serif Display', serif;
+    --font-body: 'Outfit', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(11,14,20,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Must be visible so dropdown menus can overflow below */
+    overflow: visible;
+  }
+  .nav-brand {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    /* Full nav height so dropdown li padding-bottom reaches the bottom edge */
+    height: 100%;
+    align-items: center;
+  }
+  /* All nav items share the full nav height for consistent hover zones */
+  .nav-links > li {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .nav-links a {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text3);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    letter-spacing: 0.04em;
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--surface); }
+  .nav-links a.active { color: var(--teal); }
+
+  /* ── LAYOUT ── */
+  .page { padding-top: 56px; }
+
+  section {
+    padding: 100px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  section:last-child { border-bottom: none; }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .container-wide {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    padding: 120px 0 100px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 600px;
+    background: radial-gradient(ellipse at center, rgba(45,212,191,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--teal);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px; height: 1px;
+    background: var(--teal);
+    opacity: 0.6;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 5vw, 64px);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--teal);
+  }
+  .hero-lead {
+    font-size: 18px;
+    line-height: 1.75;
+    color: var(--text2);
+    max-width: 640px;
+    margin-bottom: 48px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-number {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: var(--text3);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-number {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 40px);
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+  .section-lead {
+    font-size: 17px;
+    color: var(--text2);
+    line-height: 1.75;
+    max-width: 680px;
+    margin-bottom: 56px;
+  }
+  h3 {
+    font-family: var(--font-body);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── PRINCIPLE BOX ── */
+  .principle-box {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+  .principle-box:hover { border-color: var(--teal2); }
+  .principle-box p { font-size: 15px; color: var(--text2); margin-top: 6px; line-height: 1.65; }
+
+  /* ── LAYER STACK DIAGRAM ── */
+  .layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 48px 0;
+  }
+  .layer {
+    border-radius: var(--radius);
+    padding: 20px 28px;
+    border: 1px solid transparent;
+    cursor: default;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+  }
+  .layer:hover { transform: translateX(3px); }
+  .layer-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    opacity: 0.6;
+  }
+  .layer-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .layer-desc { font-size: 13px; opacity: 0.65; }
+  .layer-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+  }
+
+  .layer-l1 { background: var(--purple-bg); border-color: var(--purple-border); }
+  .layer-l1::before { background: var(--purple); }
+  .layer-l1 .layer-label, .layer-l1 .layer-title { color: var(--purple); }
+  .layer-l1 .chip { background: rgba(167,139,250,0.12); color: var(--purple); }
+
+  .layer-l2 { background: var(--teal-bg); border-color: var(--teal-border); }
+  .layer-l2::before { background: var(--teal); }
+  .layer-l2 .layer-label, .layer-l2 .layer-title { color: var(--teal); }
+  .layer-l2 .chip { background: rgba(45,212,191,0.12); color: var(--teal); }
+
+  .layer-l3 { background: var(--blue-bg); border-color: var(--blue-border); }
+  .layer-l3::before { background: var(--blue); }
+  .layer-l3 .layer-label, .layer-l3 .layer-title { color: var(--blue); }
+  .layer-l3 .chip { background: rgba(96,165,250,0.12); color: var(--blue); }
+
+  .layer-l4 { background: var(--amber-bg); border-color: var(--amber-border); }
+  .layer-l4::before { background: var(--amber); }
+  .layer-l4 .layer-label, .layer-l4 .layer-title { color: var(--amber); }
+  .layer-l4 .chip { background: rgba(251,191,36,0.12); color: var(--amber); }
+
+  .layer-l5 { background: var(--gray-bg); border-color: var(--gray-border); }
+  .layer-l5::before { background: var(--text3); }
+  .layer-l5 .layer-label, .layer-l5 .layer-title { color: var(--text2); }
+  .layer-l5 .chip { background: rgba(255,255,255,0.06); color: var(--text2); }
+
+  /* ── AGENT GRID ── */
+  .agent-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 48px 0 16px;
+  }
+  .agent-col-header {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .agent-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .agent-card .badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+  }
+  .badge-worker { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+  .badge-validator { background: var(--coral-bg); color: var(--coral); border: 1px solid var(--coral-border); }
+  .agent-card h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .agent-card p { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 14px; }
+  .agent-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
+  .agent-meta span { display: block; margin-bottom: 3px; }
+
+  /* ── RUN LIFECYCLE ── */
+  .lifecycle {
+    margin: 48px 0;
+    position: relative;
+  }
+  .lifecycle-line {
+    position: absolute;
+    left: 24px; top: 24px; bottom: 24px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--teal2), rgba(45,212,191,0.1));
+  }
+  .lifecycle-step {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 6px;
+    padding: 20px 24px 20px 64px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .lifecycle-step:hover { border-color: var(--teal-border); }
+  .lifecycle-dot {
+    position: absolute;
+    left: 16px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 2px solid var(--teal2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--teal);
+    z-index: 1;
+  }
+  .lifecycle-step.hitl .lifecycle-dot { border-color: var(--amber2); color: var(--amber); }
+  .lifecycle-step.hitl { border-color: var(--amber-border); }
+  .lifecycle-content { flex: 1; }
+  .lifecycle-state {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .lifecycle-content h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .lifecycle-content p { font-size: 13px; color: var(--text2); line-height: 1.55; }
+
+  /* ── CONTRACT DIAGRAM ── */
+  .contract-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    margin: 48px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .contract-diagram::before {
+    content: 'AGENT CONTRACT';
+    position: absolute;
+    top: 16px; right: 20px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+  }
+  .contract-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .contract-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .contract-box h5 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+  .contract-field {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text2);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .contract-field:last-child { border-bottom: none; }
+  .field-type { font-size: 10px; color: var(--text3); }
+  .contract-arrow {
+    text-align: center;
+    color: var(--teal);
+    font-size: 20px;
+  }
+  .black-box {
+    background: #050709;
+    border: 1px dashed rgba(96,165,250,0.3);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+    margin-top: 4px;
+  }
+  .black-box p {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  .black-box small { font-size: 11px; color: var(--text3); }
+  .swap-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .swap-pill {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text2);
+    transition: border-color 0.2s;
+  }
+  .swap-pill:hover { border-color: var(--teal-border); color: var(--teal); }
+  .swap-pill.active { border-color: var(--teal-border); color: var(--teal); background: var(--teal-bg); }
+  .swap-caption {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── DATA LAYER ── */
+  .data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 48px 0;
+  }
+  .data-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    transition: border-color 0.2s;
+  }
+  .data-card:hover { border-color: var(--amber-border); }
+  .data-card .data-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-border);
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--amber);
+  }
+  .data-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .data-card p { font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 14px; }
+  .data-card .stores { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
+  .data-card .stores span { display: block; padding: 2px 0; }
+
+  /* ── HITL SECTION ── */
+  .hitl-flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin: 40px 0;
+  }
+  .hitl-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+  }
+  .hitl-box .step-n {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+  .hitl-box h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .hitl-box p { font-size: 12px; color: var(--text2); line-height: 1.55; }
+  .hitl-box.approve { border-color: rgba(45,212,191,0.25); }
+  .hitl-box.reject  { border-color: rgba(251,113,133,0.25); }
+  .hitl-box.wait    { border-color: var(--amber-border); }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin: 32px 0;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .callout-icon {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .callout-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .callout-content p { font-size: 14px; color: var(--text2); line-height: 1.65; }
+  .callout.key { background: var(--teal-bg); border-color: var(--teal-border); }
+  .callout.key .callout-icon { color: var(--teal); }
+  .callout.key h4 { color: var(--teal); }
+  .callout.warn { background: var(--amber-bg); border-color: var(--amber-border); }
+  .callout.warn .callout-icon { color: var(--amber); }
+  .callout.warn h4 { color: var(--amber); }
+
+  /* ── TECH STACK TABLE ── */
+  .stack-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 40px 0;
+    font-size: 14px;
+  }
+  .stack-table th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .stack-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text2);
+  }
+  .stack-table tr:last-child td { border-bottom: none; }
+  .stack-table tr:hover td { background: var(--surface); }
+  .stack-table td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
+  .stack-table td:nth-child(2) { font-family: var(--font-mono); font-size: 13px; color: var(--teal); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 60px 40px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  footer p { font-size: 13px; color: var(--text3); font-family: var(--font-mono); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.6s ease both; }
+  .fade-up-d1 { animation-delay: 0.1s; }
+  .fade-up-d2 { animation-delay: 0.2s; }
+  .fade-up-d3 { animation-delay: 0.3s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .container, .container-wide { padding: 0 20px; }
+    section { padding: 64px 0; }
+    .agent-grid { grid-template-columns: 1fr; }
+    .data-grid { grid-template-columns: 1fr; }
+    .hitl-flow { grid-template-columns: 1fr; }
+    .contract-row { grid-template-columns: 1fr; }
+    .contract-arrow { transform: rotate(90deg); }
+    .swap-bar { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 28px; }
+  }
+
+  /* ── LAYER SECTIONS (detailed) ── */
+  .layer-section {
+    padding: 64px 0;
+    border-top: 1px solid var(--border);
+  }
+  .layer-section-header {
+    margin-bottom: 40px;
+    /* display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px; */
+  }
+  .layer-section-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+  .layer-section-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .layer-section-sub {
+    font-size: 15px;
+    color: var(--text2);
+  }
+
+  .layer-section-purple { background: rgba(124,58,237,0.03); }
+  .layer-section-purple .layer-section-tag { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+  .layer-section-purple .layer-section-title { color: var(--purple); }
+  .layer-section-purple .spec-block-title { color: var(--purple); border-bottom-color: var(--purple-border); }
+
+  .layer-section-teal { background: rgba(13,148,136,0.03); }
+  .layer-section-teal .layer-section-tag { background: var(--teal-bg); color: var(--teal); border: 1px solid var(--teal-border); }
+  .layer-section-teal .layer-section-title { color: var(--teal); }
+  .layer-section-teal .spec-block-title { color: var(--teal); border-bottom-color: var(--teal-border); }
+
+  .layer-section-blue { background: rgba(37,99,235,0.03); }
+  .layer-section-blue .layer-section-tag { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+  .layer-section-blue .layer-section-title { color: var(--blue); }
+  .layer-section-blue .spec-block-title { color: var(--blue); border-bottom-color: var(--blue-border); }
+
+  .layer-section-amber { background: rgba(217,119,6,0.03); }
+  .layer-section-amber .layer-section-tag { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+  .layer-section-amber .layer-section-title { color: var(--amber); }
+  .layer-section-amber .spec-block-title { color: var(--amber); border-bottom-color: var(--amber-border); }
+
+  .layer-section-gray { background: rgba(255,255,255,0.01); }
+  .layer-section-gray .layer-section-tag { background: var(--gray-bg); color: var(--text2); border: 1px solid var(--gray-border); }
+  .layer-section-gray .layer-section-title { color: var(--text); }
+  .layer-section-gray .spec-block-title { color: var(--text2); border-bottom-color: var(--gray-border); }
+
+  /* ── SPEC BLOCKS ── */
+  .spec-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    margin-bottom: 16px;
+  }
+  .spec-block-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .spec-desc {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .spec-sub-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+    margin-top: 4px;
+  }
+
+  /* ── SPEC TABLE ── */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .spec-table th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  .spec-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .spec-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .spec-table td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
+  .spec-table code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--bg3);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--teal);
+  }
+
+  /* ── FIELD LIST ── */
+  .field-list { display: flex; flex-direction: column; gap: 2px; }
+  .field-row {
+    display: grid;
+    grid-template-columns: 220px 150px 1fr;
+    gap: 12px;
+    align-items: baseline;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: background 0.15s;
+  }
+  .field-row:hover { background: var(--bg3); }
+  .field-name { font-family: var(--font-mono); font-size: 12px; color: var(--teal); }
+  .field-type { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
+  .field-desc { color: var(--text2); line-height: 1.5; }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: #070b12;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .code-keyword { color: #c792ea; }
+  .code-string  { color: #c3e88d; }
+  .code-comment { color: #546e7a; font-style: italic; }
+  .code-number  { color: #f78c6c; }
+
+  /* ── ROLE GRID ── */
+  .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .role-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+  }
+  .role-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 8px;
+  }
+  .role-card p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  /* ── STATE DIAGRAM ── */
+  .state-diagram {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 16px 0;
+  }
+  .state-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .state-row-bottom { margin-bottom: 0; }
+  .state-box {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    border: 1px solid;
+  }
+  .state-arrow { color: var(--text3); font-size: 14px; }
+  .state-arrow-up { transform: rotate(90deg); display: inline-block; }
+  .state-queued    { background: rgba(251,191,36,0.1);  color: var(--amber);  border-color: var(--amber-border); }
+  .state-running   { background: rgba(45,212,191,0.1);  color: var(--teal);   border-color: var(--teal-border); }
+  .state-validating{ background: rgba(96,165,250,0.1);  color: var(--blue);   border-color: var(--blue-border); }
+  .state-pending   { background: rgba(167,139,250,0.1); color: var(--purple); border-color: var(--purple-border); }
+  .state-committing{ background: rgba(45,212,191,0.1);  color: var(--teal);   border-color: var(--teal-border); }
+  .state-completed { background: rgba(45,212,191,0.15); color: var(--teal);   border-color: var(--teal-border); font-weight:600; }
+  .state-failed    { background: rgba(251,113,133,0.1); color: var(--coral);  border-color: var(--coral-border); }
+  .state-expired   { background: rgba(251,113,133,0.1); color: var(--coral);  border-color: var(--coral-border); }
+  .state-cancelled { background: var(--gray-bg);        color: var(--text3);  border-color: var(--gray-border); }
+
+  @media (max-width: 768px) {
+    .field-row { grid-template-columns: 1fr; gap: 2px; padding: 10px 8px; }
+    .role-grid { grid-template-columns: 1fr; }
+    .state-row { gap: 4px; }
+    .state-box { font-size: 10px; padding: 4px 7px; }
+    .spec-block { padding: 20px; }
+  }
+
+
+  /* ── PIPELINE MAP ── */
+  .pipeline-map {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 0 0 56px;
+  }
+  .pipeline-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .pipeline-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .pipeline-worker {
+    background: var(--blue-bg);
+    border: 1px solid var(--blue-border);
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    width: 100%;
+    text-align: center;
+  }
+  .pipeline-validator {
+    background: var(--coral-bg);
+    border: 1px solid var(--coral-border);
+    color: var(--coral);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    width: 100%;
+    text-align: center;
+  }
+  .pipeline-gate {
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-border);
+    color: var(--amber);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    width: 100%;
+    text-align: center;
+  }
+  .pipeline-arrow { color: var(--text3); font-size: 16px; }
+
+  /* ── AGENT SECTIONS ── */
+  .agent-section {
+    padding: 56px 0;
+    border-top: 1px solid var(--border);
+  }
+  .agent-section.agent-worker  { background: rgba(37,99,235,0.02); }
+  .agent-section.agent-validator { background: rgba(225,29,72,0.02); }
+
+  .agent-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .agent-section-header .section-chevron {
+    position: static;
+    align-self: flex-start;
+    margin-top: 6px;
+  }
+  .agent-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  .worker-badge    { background: var(--blue-bg);  color: var(--blue);  border: 1px solid var(--blue-border); }
+  .validator-badge { background: var(--coral-bg); color: var(--coral); border: 1px solid var(--coral-border); }
+
+  .agent-title {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .agent-subtitle { font-size: 15px; color: var(--text2); max-width: 520px; }
+
+  .agent-meta-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    min-width: 230px;
+    flex-shrink: 0;
+  }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .meta-row:last-child { border-bottom: none; }
+  .meta-row span:first-child { color: var(--text3); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; }
+  .meta-row span:last-child  { color: var(--text); font-weight: 500; }
+
+  .agent-spec-grid { display: flex; flex-direction: column; gap: 14px; }
+
+  /* ── PREREQ LIST ── */
+  .prereq-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .prereq-item {
+    font-size: 13px;
+    padding: 9px 14px 9px 36px;
+    border-radius: 6px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .prereq-item::before {
+    content: '';
+    position: absolute;
+    left: 14px; top: 50%; transform: translateY(-50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .prereq-hard { background: var(--coral-bg); border: 1px solid var(--coral-border); color: var(--text2); }
+  .prereq-hard::before { background: var(--coral); }
+  .prereq-soft { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--text2); }
+  .prereq-soft::before { background: var(--amber); }
+  .prereq-legend {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .prereq-hard-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--coral); }
+  .prereq-soft-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--amber); margin-left: 12px; }
+
+  /* ── LOGIC STEPS ── */
+  .logic-steps { display: flex; flex-direction: column; gap: 6px; }
+  .logic-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px;
+    background: var(--bg3);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    transition: background 0.15s;
+  }
+  .logic-step:hover { background: var(--surface); }
+  .logic-step strong { color: var(--text); }
+  .logic-step .step-n {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--teal);
+    background: var(--teal-bg);
+    border: 1px solid var(--teal-border);
+    border-radius: 4px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── AI CALL BOX ── */
+  .ai-call-box {
+    background: #060a12;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .ai-call-section { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .ai-call-section:last-child { border-bottom: none; }
+  .ai-call-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .ai-call-content {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text2);
+  }
+  .ai-system .ai-call-label  { color: var(--purple); }
+  .ai-system .ai-call-content { color: #b8c2d0; }
+  .ai-user .ai-call-label    { color: var(--teal); }
+  .ai-user .ai-call-content  { color: #9eb8c2; }
+  .ai-output .ai-call-label  { color: var(--amber); }
+  .ai-output .ai-call-content { color: #c2b08a; }
+
+  @media (max-width: 768px) {
+    .pipeline-map { grid-template-columns: 1fr; }
+    .agent-section-header { flex-direction: column; }
+    .agent-meta-box { min-width: 0; width: 100%; }
+    .logic-step { flex-direction: column; gap: 8px; }
+  }
+
+
+  /* ── NAV DROPDOWNS ── */
+  .nav-dropdown {
+    position: relative;
+    /* Extend hover area downward to bridge the gap to the menu */
+    padding-bottom: 8px;
+    margin-bottom: -8px;
+  }
+  .nav-dropdown-trigger { cursor: default; }
+  .nav-dropdown-menu {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    /* flush against the nav bottom — no gap */
+    top: 100%;
+    left: 0;
+    /* 8px top padding creates a hover-safe bridge inside the element */
+    padding: 8px 6px 6px;
+    background: rgba(11,14,20,0.98);
+    border: 1px solid var(--border2);
+    border-radius: 0 0 10px 10px;
+    min-width: 200px;
+    z-index: 200;
+    backdrop-filter: blur(12px);
+    transition: opacity 0.15s, visibility 0.15s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  /* Open when hovering the parent li OR the menu itself */
+  .nav-dropdown:hover .nav-dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav-dropdown-menu a {
+    display: block;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text2);
+    text-decoration: none;
+    border-radius: 5px;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    transition: background 0.1s, color 0.1s;
+  }
+  .nav-dropdown-menu a:hover { background: var(--surface2); color: var(--text); }
+  .nav-dropdown-menu a.active { color: var(--teal); }
+  /* Divider between subsections */
+  .nav-dropdown-menu .menu-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 8px;
+  }
+
+  /* ── COLLAPSIBLE SECTIONS ── */
+  /* Layer and agent section headers — always visible, clicking collapses the body */
+  .layer-section-header,
+  .agent-section-header {
+    cursor: pointer;
+    user-select: none;
+  }
+  .layer-section-header:hover,
+  .agent-section-header:hover { opacity: 0.85; }
+
+  .section-chevron {
+    font-size: 13px;
+    color: var(--text3);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+  .section-chevron.collapsed { transform: rotate(-90deg); }
+
+  .section-body {
+    overflow: hidden;
+    transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease;
+    opacity: 1;
+  }
+  .section-body.collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+  }
+
+  /* spec-block collapsibles */
+  .spec-block-title {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .spec-block-title::after {
+    content: '▾';
+    font-size: 11px;
+    color: var(--text3);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    margin-left: 10px;
+  }
+  .spec-block.collapsed .spec-block-title::after { transform: rotate(-90deg); }
+  .spec-block-body {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.2s ease;
+    opacity: 1;
+  }
+  .spec-block.collapsed .spec-block-body {
+    max-height: 0 !important;
+    opacity: 0;
+  }
+
+  /* ── FIELD CRITICAL ── */
+  .field-row.field-critical {
+    background: rgba(251,113,133,0.05);
+    border-left: 2px solid var(--coral);
+    border-radius: 0 6px 6px 0;
+    padding-left: 14px;
+  }
+  .field-row.field-critical .field-type { color: var(--coral); }
+
+  /* ── OUTPUT TRIO ── */
+  .output-trio {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin: 16px 0 28px;
+  }
+  .output-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .output-card:hover { transform: translateY(-2px); }
+  .output-card-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .output-card-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .output-card p { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 14px; }
+  .output-path {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text3);
+    background: var(--bg3);
+    padding: 6px 10px;
+    border-radius: 5px;
+    word-break: break-all;
+  }
+  .output-memo    { background: rgba(45,212,191,0.04);  border-color: var(--teal-border); }
+  .output-memo    .output-card-label { color: var(--teal); }
+  .output-memo    .output-card-title { color: var(--teal); }
+  .output-proposal{ background: rgba(96,165,250,0.04);  border-color: var(--blue-border); }
+  .output-proposal .output-card-label { color: var(--blue); }
+  .output-proposal .output-card-title { color: var(--blue); }
+  .output-deck    { background: rgba(167,139,250,0.04); border-color: var(--purple-border); }
+  .output-deck    .output-card-label { color: var(--purple); }
+  .output-deck    .output-card-title { color: var(--purple); }
+
+  @media (max-width: 768px) {
+    .output-trio { grid-template-columns: 1fr; }
+    .nav-dropdown-menu { position: static; display: none; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: none; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand">PROSPECT System Architecture</span>
+  <ul class="nav-links">
+    <li><a href="#overview" data-section="overview">Overview</a></li>
+    <li class="nav-dropdown">
+      <a href="#layers" data-section="layers">Layers&nbsp;▾</a>
+      <div class="nav-dropdown-menu">
+        <a href="#layer-1">L1 — Presentation</a>
+        <a href="#layer-2">L2 — Orchestration</a>
+        <a href="#layer-3">L3 — Agents (wrapper)</a>
+        <a href="#layer-4">L4 — Data</a>
+        <a href="#layer-5">L5 — External services</a>
+      </div>
+    </li>
+    <li class="nav-dropdown">
+      <a href="#agents" data-section="agents">Agents&nbsp;▾</a>
+      <div class="nav-dropdown-menu">
+        <a href="#agent-curator">DB Curator</a>
+        <a href="#agent-consultant">Consultant</a>
+        <a href="#agent-analyst">Analyst</a>
+        <div class="menu-divider"></div>
+        <a href="#agent-db-validator">DB Validator</a>
+        <a href="#agent-intake-validator">Intake Validator</a>
+        <a href="#agent-match-validator">Match Validator</a>
+      </div>
+    </li>
+    <li><a href="#orchestration" data-section="orchestration">Orchestration</a></li>
+    <li><a href="#contract" data-section="contract">Contract</a></li>
+    <li><a href="#data" data-section="data">Data</a></li>
+    <li><a href="#hitl" data-section="hitl">Human loop</a></li>
+    <li><a href="#stack" data-section="stack">Stack</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════════════ HERO -->
+<section id="hero">
+  <div class="container fade-up">
+    <p class="hero-eyebrow">Architecture specification · Tier 3</p>
+    <h1>A system that runs <em>itself</em>,<br>with humans in the loop</h1>
+    <p class="hero-lead">
+      A fully automated, cloud-hosted business intelligence platform. Six AI agents — three workers, three validators — orchestrated by a model-agnostic engine. Agents are plug-in components: swap the model, change nothing else.
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-number">6</span>
+        <span class="stat-label">AI agents</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">5</span>
+        <span class="stat-label">System layers</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">1</span>
+        <span class="stat-label">Agent contract</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">0</span>
+        <span class="stat-label">Manual triggers</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ OVERVIEW -->
+<section id="overview">
+  <div class="container">
+    <p class="section-number">01 — Overview</p>
+    <h2>Three design principles</h2>
+    <p class="section-lead">Before any code. These three decisions shape every other choice in the system.</p>
+
+    <div class="principle-box fade-up">
+      <h3>The system is independent of its agents</h3>
+      <p>The scheduler, state machine, data layer, and approval gates exist without any specific AI model. Agents are workers hired to do a job — the factory floor does not change when you hire different workers. Swap Claude for GPT-4o or a fine-tuned model by changing one row in a database table. Nothing else changes.</p>
+    </div>
+
+    <div class="principle-box fade-up fade-up-d1">
+      <h3>Agents communicate through a contract, not a chat</h3>
+      <p>Every agent — worker or validator — receives a standardised JSON input payload and must return a standardised JSON output payload. The orchestrator sends the job and waits for the result. It never knows or cares what happened inside the agent. This is what makes them plug-in components rather than hardwired pieces.</p>
+    </div>
+
+    <div class="principle-box fade-up fade-up-d2">
+      <h3>Human approval is a first-class system component</h3>
+      <p>The human-in-the-loop gate is not an afterthought or a manual step you do separately. It is a named state in the run lifecycle with its own timeout, escalation path, and notification logic. If no approval arrives within the configured window, the system escalates and alerts — it does not block silently.</p>
+    </div>
+
+    <div class="callout key fade-up fade-up-d3">
+      <span class="callout-icon">→</span>
+      <div class="callout-content">
+        <h4>The key shift from Tier 1</h4>
+        <p>On Tier 1, you were the orchestrator — you opened chats, triggered agents in sequence, and moved data manually. On Tier 3, the orchestration engine does all of that automatically. You only appear at the human-in-the-loop gate, where your judgment is genuinely needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ LAYERS -->
+<section id="layers">
+  <div class="container">
+    <p class="section-number">02 — System layers</p>
+    <h2>Five layers, one system</h2>
+    <p class="section-lead">Each layer has exactly one job. Data flows downward — never upward. Agents never write directly to the presentation layer. This section specifies every component inside each layer in enough detail for a developer to build it.</p>
+
+    <div class="callout warn">
+      <span class="callout-icon">!</span>
+      <div class="callout-content">
+        <h4>How to read this section</h4>
+        <p>Each layer is broken into its individual components. For each component you will find: what it does, its internal logic or data structure, its interface with adjacent components, and implementation notes. This is the developer reference — not a summary.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────── L1 PRESENTATION ──────────────────────────── -->
+  <div id="layer-1" class="layer-section layer-section-purple">
+    <div class="container">
+      <div class="layer-section-header">
+        <span class="layer-section-tag">Layer 1</span>
+        <h3 class="layer-section-title">Presentation layer</h3>
+        <p class="layer-section-sub">What humans see and interact with — four surfaces, two roles</p>
+      </div>
+
+      <!-- Roles -->
+      <div class="spec-block">
+        <div class="spec-block-title">User roles</div>
+        <div class="role-grid">
+          <div class="role-card">
+            <div class="role-name">Admin</div>
+            <p>You and your team. Full access to all views. Can review and approve runs, edit agent config, view audit log, manage agent registry. Only role that can approve HITL gates.</p>
+          </div>
+          <div class="role-card">
+            <div class="role-name">Client</div>
+            <p>Your clients. Access only to the intake interface and their own solution presentations. Cannot see system state, other clients' data, or the admin views.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- View 1: Admin Dashboard -->
+      <div class="spec-block">
+        <div class="spec-block-title">View 1 — Admin dashboard</div>
+        <p class="spec-desc">The primary interface for the admin role. All run management happens here.</p>
+        <table class="spec-table">
+          <thead><tr><th>Panel</th><th>Contents</th><th>Actions available</th></tr></thead>
+          <tbody>
+            <tr><td>Run queue</td><td>All active and queued jobs with current state, agent type, time elapsed, next scheduled run</td><td>Cancel queued run, trigger manual run</td></tr>
+            <tr><td>Pending review</td><td>All jobs in <code>pending_review</code> state. Shows time remaining before escalation. Items sorted by validator_flag (flagged first)</td><td>Open review panel, bulk approve, bulk reject</td></tr>
+            <tr><td>Review panel</td><td>Full output for a single job: worker results, validator scores, quality notes, source URLs, suggested corrections, confidence scores</td><td>Approve item, reject item, edit then approve, accept suggested correction</td></tr>
+            <tr><td>Run history</td><td>All completed jobs. Filterable by agent type, date range, status. Shows item counts, approval rates, duration</td><td>View full run record, re-run (creates new job)</td></tr>
+            <tr><td>Agent registry</td><td>All registered agents: name, type, endpoint URL, model, active status, last run timestamp</td><td>Edit endpoint URL, swap model, enable/disable agent</td></tr>
+            <tr><td>Config editor</td><td>All agent_config parameters in a form view. Mirrors the Google Sheet agent_config tab</td><td>Edit any parameter, save (writes to both Postgres and Google Sheet)</td></tr>
+            <tr><td>Audit log</td><td>Immutable record of every state change, approval decision, and config edit. Includes actor, timestamp, before/after values</td><td>Filter, export as CSV</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- View 2: Client interface -->
+      <div class="spec-block">
+        <div class="spec-block-title">View 2 — Client intake interface</div>
+        <p class="spec-desc">The only surface clients interact with. A clean conversational interface backed by the Consultant agent.</p>
+        <table class="spec-table">
+          <thead><tr><th>Step</th><th>What the client sees</th><th>System action</th></tr></thead>
+          <tbody>
+            <tr><td>Entry</td><td>A short intro screen explaining the process. Name and company field. Start button.</td><td>Creates a client session record in Postgres</td></tr>
+            <tr><td>Intake conversation</td><td>A chat-style interface. The Consultant agent asks structured questions. Client types responses. Progress indicator shows completeness.</td><td>Each message is stored. Consultant agent runs in the background. Session state is persisted so client can pause and resume.</td></tr>
+            <tr><td>Memo confirmation</td><td>When the Consultant agent determines the problem is fully defined, it presents a summary memo for the client to confirm or correct.</td><td>Triggers <code>memo_created</code> event which starts the Intake Validator and eventually the Analyst</td></tr>
+            <tr><td>Waiting state</td><td>A status page: "Your analysis is being prepared." Shows estimated completion time.</td><td>Analyst and Match Validator run. HITL gate opens for admin approval.</td></tr>
+            <tr><td>Results</td><td>The approved solution presentation: ranked tool recommendations with explanations, match rationale, and confidence scores. Formatted for readability, not raw data.</td><td>Presentation is read from the solution_presentations table after admin approval</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- View 3: Notifications -->
+      <div class="spec-block">
+        <div class="spec-block-title">View 3 — Notification system</div>
+        <p class="spec-desc">Outbound alerts at defined system events. All notifications go to the configured admin email by default. Clients receive only their own result notification.</p>
+        <table class="spec-table">
+          <thead><tr><th>Event</th><th>Recipient</th><th>Channel</th><th>Content</th></tr></thead>
+          <tbody>
+            <tr><td>Run completed — pending review</td><td>Admin</td><td>Email</td><td>Agent type, item count, flagged count, link to review dashboard</td></tr>
+            <tr><td>Review deadline approaching (48h)</td><td>Admin</td><td>Email</td><td>Job ID, items still pending, deadline time, link</td></tr>
+            <tr><td>Review expired (72h)</td><td>Admin</td><td>Email</td><td>Job marked expired, items not committed, action required</td></tr>
+            <tr><td>Database validation alert</td><td>Admin</td><td>Email</td><td>List of specific issues found by the Apps Script post-commit check</td></tr>
+            <tr><td>Agent error or timeout</td><td>Admin</td><td>Email</td><td>Agent name, job ID, error message, retry count</td></tr>
+            <tr><td>Client solution ready</td><td>Client</td><td>Email</td><td>Link to their results page (authenticated, time-limited URL)</td></tr>
+            <tr><td>Weekly run summary</td><td>Admin</td><td>Email</td><td>All agents: runs completed, items added, items approved, avg quality score</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- View 4: Audit log -->
+      <div class="spec-block">
+        <div class="spec-block-title">View 4 — Audit log</div>
+        <p class="spec-desc">Every consequential action in the system is logged immutably. Rows are insert-only — never updated or deleted.</p>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name">id</span><span class="field-type">uuid</span><span class="field-desc">Primary key</span></div>
+          <div class="field-row"><span class="field-name">timestamp</span><span class="field-type">timestamptz</span><span class="field-desc">UTC, millisecond precision</span></div>
+          <div class="field-row"><span class="field-name">actor_id</span><span class="field-type">uuid</span><span class="field-desc">User or agent that took the action</span></div>
+          <div class="field-row"><span class="field-name">actor_type</span><span class="field-type">enum</span><span class="field-desc">human | agent | system</span></div>
+          <div class="field-row"><span class="field-name">event_type</span><span class="field-type">enum</span><span class="field-desc">job_created | state_changed | item_approved | item_rejected | config_edited | agent_swapped | run_expired</span></div>
+          <div class="field-row"><span class="field-name">job_id</span><span class="field-type">uuid nullable</span><span class="field-desc">Associated job if relevant</span></div>
+          <div class="field-row"><span class="field-name">payload</span><span class="field-type">jsonb</span><span class="field-desc">Full context of the event — before/after values for edits, item counts for approvals, error details for failures</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────── L2 ORCHESTRATION ──────────────────────────── -->
+  <div id="layer-2" class="layer-section layer-section-teal">
+    <div class="container">
+      <div class="layer-section-header">
+        <span class="layer-section-tag">Layer 2</span>
+        <h3 class="layer-section-title">Orchestration layer</h3>
+        <p class="layer-section-sub">The backbone — four components, all agent-agnostic</p>
+      </div>
+
+      <!-- Component 1: Job Scheduler -->
+      <div class="spec-block">
+        <div class="spec-block-title">Component 1 — Job scheduler</div>
+        <p class="spec-desc">Fires run triggers on a configured schedule. Reads cron expressions from the agent_config table. Creates job records. Pushes onto the Redis queue. Does not know what the agent does.</p>
+
+        <div class="spec-sub-title">Scheduled jobs at launch</div>
+        <table class="spec-table">
+          <thead><tr><th>Agent</th><th>Default cron</th><th>Timezone</th><th>Config key</th></tr></thead>
+          <tbody>
+            <tr><td>Database Curator</td><td><code>0 8 * * 1</code></td><td>From agent_config</td><td>curator_cron</td></tr>
+            <tr><td>DB Validator</td><td>Event-driven — fires after curator completes</td><td>—</td><td>—</td></tr>
+            <tr><td>Consultant</td><td>Event-driven — fires on client session start</td><td>—</td><td>—</td></tr>
+            <tr><td>Intake Validator</td><td>Event-driven — fires after memo_created</td><td>—</td><td>—</td></tr>
+            <tr><td>Analyst</td><td>Event-driven — fires after intake validation passes</td><td>—</td><td>—</td></tr>
+            <tr><td>Match Validator</td><td>Event-driven — fires after solution_created</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+
+        <div class="spec-sub-title" style="margin-top:20px">Scheduler start-up logic</div>
+        <div class="code-block">
+<span class="code-comment">// On server start — register all active cron jobs from agent_config</span>
+<span class="code-keyword">const</span> configs = <span class="code-keyword">await</span> db.query(<span class="code-string">'SELECT * FROM agent_config WHERE is_active = true AND trigger_type = \'cron\''</span>);
+configs.forEach(cfg =&gt; {
+  cron.schedule(cfg.cron_expression, <span class="code-keyword">async</span> () =&gt; {
+    <span class="code-keyword">const</span> existing = <span class="code-keyword">await</span> jobs.findActiveByType(cfg.agent_type);
+    <span class="code-keyword">if</span> (existing) { log.warn(<span class="code-string">`Skipping ${cfg.agent_type} — job already active`</span>); <span class="code-keyword">return</span>; }
+    <span class="code-keyword">await</span> jobs.create({ agent_type: cfg.agent_type, triggered_by: <span class="code-string">'scheduler'</span> });
+  }, { timezone: cfg.timezone });
+});</div>
+      </div>
+
+      <!-- Component 2: State Machine -->
+      <div class="spec-block">
+        <div class="spec-block-title">Component 2 — State machine</div>
+        <p class="spec-desc">Every job has a status field that moves through a defined set of states. The state machine enforces which transitions are valid. Invalid transitions are rejected and logged.</p>
+
+        <div class="state-diagram">
+          <div class="state-row">
+            <div class="state-box state-queued">queued</div>
+            <div class="state-arrow">→</div>
+            <div class="state-box state-running">running</div>
+            <div class="state-arrow">→</div>
+            <div class="state-box state-validating">validating</div>
+            <div class="state-arrow">→</div>
+            <div class="state-box state-pending">pending_review</div>
+          </div>
+          <div class="state-row state-row-bottom">
+            <div class="state-box state-cancelled">cancelled</div>
+            <div class="state-arrow state-arrow-up">↑</div>
+            <div class="state-box state-failed">failed</div>
+            <div class="state-arrow" style="opacity:0">→</div>
+            <div class="state-box state-expired">expired</div>
+            <div class="state-arrow">←</div>
+            <div class="state-box state-committing">committing</div>
+            <div class="state-arrow">←</div>
+            <div class="state-box state-completed" style="margin-left:auto">completed</div>
+          </div>
+        </div>
+
+        <table class="spec-table" style="margin-top:16px">
+          <thead><tr><th>From</th><th>To</th><th>Trigger</th><th>Side effect</th></tr></thead>
+          <tbody>
+            <tr><td>queued</td><td>running</td><td>Agent router picks up job</td><td>Start timeout clock. Log start timestamp.</td></tr>
+            <tr><td>running</td><td>validating</td><td>Worker posts result to callback URL</td><td>Dispatch validator agent. Store worker result.</td></tr>
+            <tr><td>validating</td><td>pending_review</td><td>Validator posts result to callback URL</td><td>Assemble review payload. Send admin notification. Start review deadline clock.</td></tr>
+            <tr><td>pending_review</td><td>committing</td><td>Admin submits approval decisions</td><td>Write approved items to data layer. Record decisions in audit log.</td></tr>
+            <tr><td>committing</td><td>completed</td><td>All commits confirmed</td><td>Export artifacts. Send completion notification. Seal audit record.</td></tr>
+            <tr><td>pending_review</td><td>expired</td><td>Review deadline passes with no action</td><td>Send escalation alert. Preserve draft. Unblock next scheduled run.</td></tr>
+            <tr><td>running</td><td>failed</td><td>Agent timeout or error response</td><td>Retry up to max_retries. If exhausted: alert admin, mark failed.</td></tr>
+            <tr><td>queued</td><td>cancelled</td><td>Admin manual cancel</td><td>Remove from queue. Log cancellation reason.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Component 3: HITL Gate -->
+      <div class="spec-block">
+        <div class="spec-block-title">Component 3 — HITL gate</div>
+        <p class="spec-desc">The human-in-the-loop gate is a first-class orchestration component. It manages the <code>pending_review</code> lifecycle: notification, timeout tracking, escalation, and recording of approval decisions with full actor attribution.</p>
+
+        <div class="spec-sub-title">HITL gate logic</div>
+        <div class="code-block">
+<span class="code-comment">// Called when job enters pending_review state</span>
+<span class="code-keyword">async function</span> openHitlGate(jobId) {
+  <span class="code-keyword">const</span> cfg = <span class="code-keyword">await</span> config.get();
+  <span class="code-keyword">const</span> deadline = Date.now() + cfg.review_deadline_hours * <span class="code-number">3600000</span>;
+
+  <span class="code-keyword">await</span> db.jobs.update(jobId, { review_deadline: deadline });
+  <span class="code-keyword">await</span> notify.admin(<span class="code-string">'review_ready'</span>, { jobId });
+
+  <span class="code-comment">// Schedule escalation at 48h and deadline at configured hours</span>
+  queue.schedule(<span class="code-string">'hitl_reminder'</span>,   { jobId }, <span class="code-number">48</span> * <span class="code-number">3600000</span>);
+  queue.schedule(<span class="code-string">'hitl_deadline'</span>,   { jobId }, cfg.review_deadline_hours * <span class="code-number">3600000</span>);
+}
+
+<span class="code-keyword">async function</span> submitApprovalDecisions(jobId, decisions, adminId) {
+  <span class="code-comment">// decisions = [{item_id, action: 'approve'|'reject'|'edit', edited_data?}]</span>
+  <span class="code-keyword">for</span> (<span class="code-keyword">const</span> d <span class="code-keyword">of</span> decisions) {
+    <span class="code-keyword">await</span> audit.log({ actor_id: adminId, event_type: <span class="code-string">`item_${d.action}d`</span>, payload: d });
+  }
+  <span class="code-keyword">await</span> jobs.transition(jobId, <span class="code-string">'committing'</span>);
+  <span class="code-keyword">await</span> committer.run(jobId, decisions);
+}</div>
+
+        <div class="spec-sub-title" style="margin-top:20px">Timeout and escalation rules</div>
+        <table class="spec-table">
+          <thead><tr><th>Time elapsed</th><th>Action</th><th>Configurable?</th></tr></thead>
+          <tbody>
+            <tr><td>48 hours</td><td>Send first escalation email to admin. Include item count, deadline time, direct link.</td><td>No — hardcoded as half of deadline</td></tr>
+            <tr><td>review_deadline_hours (default 72h)</td><td>Mark job as <code>expired</code>. Send final alert. Preserve all draft data. Unblock next scheduled run for same agent.</td><td>Yes — agent_config</td></tr>
+            <tr><td>Any time</td><td>Admin can manually expire or extend a job from the dashboard.</td><td>Manual action</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Component 4: Agent Router -->
+      <div class="spec-block">
+        <div class="spec-block-title">Component 4 — Agent router</div>
+        <p class="spec-desc">Looks up the registered endpoint for an agent type, assembles the input payload, POSTs it, and handles the async callback. The router is what makes agents swappable — it reads from the agents registry table at dispatch time, so a model swap takes effect immediately on the next run without a code deploy.</p>
+
+        <div class="spec-sub-title">Dispatch logic</div>
+        <div class="code-block">
+<span class="code-keyword">async function</span> dispatch(job) {
+  <span class="code-comment">// 1. Look up the registered agent for this job type</span>
+  <span class="code-keyword">const</span> agent = <span class="code-keyword">await</span> db.agents.findActive(job.agent_type);
+  <span class="code-keyword">if</span> (!agent) <span class="code-keyword">throw new</span> Error(<span class="code-string">`No active agent registered for type: ${job.agent_type}`</span>);
+
+  <span class="code-comment">// 2. Assemble standardised input payload</span>
+  <span class="code-keyword">const</span> payload = {
+    job_id:          job.id,
+    agent_type:      job.agent_type,
+    config:          <span class="code-keyword">await</span> config.getForAgent(job.agent_type),
+    context:         <span class="code-keyword">await</span> context.buildFor(job),
+    callback_url:    <span class="code-string">`${process.env.BASE_URL}/api/callbacks/${job.id}`</span>,
+    timeout_seconds: agent.timeout_seconds
+  };
+
+  <span class="code-comment">// 3. POST to agent endpoint with auth header</span>
+  <span class="code-keyword">const</span> res = <span class="code-keyword">await</span> fetch(agent.endpoint_url, {
+    method: <span class="code-string">'POST'</span>,
+    headers: { <span class="code-string">'Content-Type'</span>: <span class="code-string">'application/json'</span>, <span class="code-string">'X-Agent-Secret'</span>: agent.secret_hash },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(agent.timeout_seconds * <span class="code-number">1000</span>)
+  });
+
+  <span class="code-keyword">if</span> (!res.ok) <span class="code-keyword">await</span> jobs.handleDispatchError(job.id, res.status);
+}
+
+<span class="code-comment">// Callback handler — agent POSTs result here when done</span>
+<span class="code-keyword">async function</span> handleCallback(jobId, result) {
+  <span class="code-comment">// Validate result schema before accepting</span>
+  <span class="code-keyword">const</span> valid = schema.validate(result, agentOutputSchema);
+  <span class="code-keyword">if</span> (!valid) <span class="code-keyword">return</span> jobs.handleInvalidResult(jobId, result);
+
+  <span class="code-keyword">await</span> db.jobs.storeResult(jobId, result);
+  <span class="code-keyword">await</span> jobs.transition(jobId, <span class="code-string">'validating'</span>);
+}</div>
+
+        <div class="spec-sub-title" style="margin-top:20px">Retry policy</div>
+        <table class="spec-table">
+          <thead><tr><th>Failure type</th><th>Behaviour</th><th>Max retries</th></tr></thead>
+          <tbody>
+            <tr><td>Network error / timeout</td><td>Exponential backoff: 30s, 2m, 10m</td><td>3 (configurable)</td></tr>
+            <tr><td>Agent returns 5xx</td><td>Same backoff schedule</td><td>3</td></tr>
+            <tr><td>Agent returns 4xx (bad payload)</td><td>No retry — alert admin immediately (payload bug)</td><td>0</td></tr>
+            <tr><td>Invalid result schema</td><td>No retry — alert admin (contract violation)</td><td>0</td></tr>
+            <tr><td>All retries exhausted</td><td>Job → <code>failed</code>. Admin alert with full error log.</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────── L3 AGENTS ──────────────────────────── -->
+  <div id="layer-3" class="layer-section layer-section-blue">
+    <div class="container">
+      <div class="layer-section-header">
+        <span class="layer-section-tag">Layer 3</span>
+        <h3 class="layer-section-title">Agent layer</h3>
+        <p class="layer-section-sub">The microservice wrapper every agent must implement — independent of which AI model is inside</p>
+      </div>
+
+      <div class="callout key" style="margin-bottom:32px">
+        <span class="callout-icon">→</span>
+        <div class="callout-content">
+          <h4>This section specifies the wrapper, not the prompts</h4>
+          <p>Every agent is a small Node.js (or Python) microservice that wraps an AI model call. This section specifies that wrapper — the HTTP server, config loading, the AI call structure, error handling, and how the result is packaged. The AI prompts for each specific agent are specified in Section 03.</p>
+        </div>
+      </div>
+
+      <!-- Agent microservice structure -->
+      <div class="spec-block">
+        <div class="spec-block-title">Agent microservice structure</div>
+        <p class="spec-desc">Every agent — all six — is a separate deployable service with this exact structure. The only parts that differ between agents are the system prompt, the context builder, and the result formatter.</p>
+
+        <div class="code-block">
+<span class="code-comment">// Minimal agent server — same structure for all 6 agents</span>
+<span class="code-keyword">const</span> express = require(<span class="code-string">'express'</span>);
+<span class="code-keyword">const</span> app = express();
+app.use(express.json({ limit: <span class="code-string">'2mb'</span> }));
+
+<span class="code-comment">// Single endpoint — receives job from orchestrator</span>
+app.post(<span class="code-string">'/run'</span>, validateSecret, <span class="code-keyword">async</span> (req, res) =&gt; {
+  <span class="code-keyword">const</span> { job_id, config, context, callback_url, timeout_seconds } = req.body;
+
+  <span class="code-comment">// Acknowledge immediately — agent runs async</span>
+  res.json({ status: <span class="code-string">'accepted'</span>, job_id });
+
+  <span class="code-keyword">try</span> {
+    <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> runWithTimeout(
+      () =&gt; agentLogic(config, context),
+      timeout_seconds * <span class="code-number">1000</span>
+    );
+    <span class="code-keyword">await</span> postCallback(callback_url, { job_id, status: <span class="code-string">'success'</span>, ...result });
+  } <span class="code-keyword">catch</span> (err) {
+    <span class="code-keyword">await</span> postCallback(callback_url, {
+      job_id, status: <span class="code-string">'failed'</span>,
+      errors: [{ code: err.code || <span class="code-string">'AGENT_ERROR'</span>, message: err.message }],
+      run_log: err.partialLog || <span class="code-string">''</span>
+    });
+  }
+});
+
+<span class="code-comment">// Health check — orchestrator polls this to verify agent is alive</span>
+app.get(<span class="code-string">'/health'</span>, (req, res) =&gt; res.json({
+  status: <span class="code-string">'ok'</span>, agent_type: process.env.AGENT_TYPE, version: process.env.VERSION
+}));
+
+app.listen(<span class="code-number">3000</span>);</div>
+      </div>
+
+      <!-- Config loading -->
+      <div class="spec-block">
+        <div class="spec-block-title">Config loading — every agent's first action</div>
+        <p class="spec-desc">The <code>config</code> object in the input payload is pre-assembled by the orchestrator from the agent_config table. The agent uses it directly — it never reads config itself. This means config changes take effect on the next run without redeploying the agent.</p>
+
+        <div class="field-list">
+          <div class="field-row"><span class="field-name">config.categories</span><span class="field-type">string[]</span><span class="field-desc">Array of category strings to search (Curator only)</span></div>
+          <div class="field-row"><span class="field-name">config.max_items</span><span class="field-type">integer</span><span class="field-desc">Maximum items to produce in this run</span></div>
+          <div class="field-row"><span class="field-name">config.quality_threshold</span><span class="field-type">float</span><span class="field-desc">Minimum quality score to pass validation</span></div>
+          <div class="field-row"><span class="field-name">config.stale_days</span><span class="field-type">integer</span><span class="field-desc">Days before a record is considered stale</span></div>
+          <div class="field-row"><span class="field-name">config.model</span><span class="field-type">string</span><span class="field-desc">The AI model identifier to use (e.g. <code>claude-sonnet-4-6</code>)</span></div>
+          <div class="field-row"><span class="field-name">config.max_tokens</span><span class="field-type">integer</span><span class="field-desc">Max tokens for the AI call</span></div>
+          <div class="field-row"><span class="field-name">config.web_search_provider</span><span class="field-type">string</span><span class="field-desc">Which search API to use</span></div>
+        </div>
+      </div>
+
+      <!-- Error codes -->
+      <div class="spec-block">
+        <div class="spec-block-title">Standard error codes — all agents must use these</div>
+        <table class="spec-table">
+          <thead><tr><th>Code</th><th>Meaning</th><th>Orchestrator action</th></tr></thead>
+          <tbody>
+            <tr><td><code>TIMEOUT</code></td><td>Agent exceeded timeout_seconds</td><td>Retry with backoff</td></tr>
+            <tr><td><code>AI_PROVIDER_ERROR</code></td><td>AI API returned an error (rate limit, server error)</td><td>Retry with backoff</td></tr>
+            <tr><td><code>SEARCH_UNAVAILABLE</code></td><td>Web search API is unreachable</td><td>Retry once, then partial result</td></tr>
+            <tr><td><code>DATA_READ_ERROR</code></td><td>Could not read from Sheets/Drive</td><td>Retry once, then fail</td></tr>
+            <tr><td><code>DATA_WRITE_ERROR</code></td><td>Could not write result to staging</td><td>Retry once, then fail</td></tr>
+            <tr><td><code>INVALID_CONFIG</code></td><td>Config payload missing required field</td><td>No retry — alert admin</td></tr>
+            <tr><td><code>DUPLICATE_RUN_GUARD</code></td><td>Staging table not empty from previous run</td><td>No retry — alert admin</td></tr>
+            <tr><td><code>PARTIAL_COMPLETE</code></td><td>Run hit max_items or time limit mid-run</td><td>Accept partial result — treat as success</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Agents registry table -->
+      <div class="spec-block">
+        <div class="spec-block-title">Agents registry table — what makes swap possible</div>
+        <p class="spec-desc">The agent router reads this table at dispatch time. To swap an agent to a new model or endpoint: update this table. The change takes effect on the next run.</p>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name">id</span><span class="field-type">uuid</span><span class="field-desc">Primary key</span></div>
+          <div class="field-row"><span class="field-name">agent_type</span><span class="field-type">enum</span><span class="field-desc">db_curator | consultant | analyst | db_validator | intake_validator | match_validator</span></div>
+          <div class="field-row"><span class="field-name">endpoint_url</span><span class="field-type">url</span><span class="field-desc">The /run endpoint of this agent's microservice</span></div>
+          <div class="field-row"><span class="field-name">model_id</span><span class="field-type">string</span><span class="field-desc">e.g. claude-sonnet-4-6 — passed in config payload</span></div>
+          <div class="field-row"><span class="field-name">provider</span><span class="field-type">enum</span><span class="field-desc">anthropic | openai | google — determines which AI client to use inside the agent</span></div>
+          <div class="field-row"><span class="field-name">secret_hash</span><span class="field-type">string</span><span class="field-desc">Shared secret for X-Agent-Secret header — prevents unauthorised calls to agent endpoints</span></div>
+          <div class="field-row"><span class="field-name">timeout_seconds</span><span class="field-type">integer</span><span class="field-desc">How long the orchestrator waits for this agent before timeout</span></div>
+          <div class="field-row"><span class="field-name">max_retries</span><span class="field-type">integer</span><span class="field-desc">Retry limit on network/server errors</span></div>
+          <div class="field-row"><span class="field-name">is_active</span><span class="field-type">boolean</span><span class="field-desc">Inactive agents are skipped by the scheduler. Use to pause without unregistering.</span></div>
+          <div class="field-row"><span class="field-name">last_run_at</span><span class="field-type">timestamptz</span><span class="field-desc">Updated by orchestrator after every run</span></div>
+          <div class="field-row"><span class="field-name">health_url</span><span class="field-type">url</span><span class="field-desc">The /health endpoint — polled every 5 minutes by a background monitor</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────── L4 DATA ──────────────────────────── -->
+  <div id="layer-4" class="layer-section layer-section-amber">
+    <div class="container">
+      <div class="layer-section-header">
+        <span class="layer-section-tag">Layer 4</span>
+        <h3 class="layer-section-title">Data layer</h3>
+        <p class="layer-section-sub">Four stores, each with a specific role — nothing overlaps</p>
+      </div>
+
+      <!-- Postgres -->
+      <div class="spec-block">
+        <div class="spec-block-title">Postgres — system tables</div>
+        <p class="spec-desc">The authoritative store for everything the orchestration system owns. All writes go here first. Google Sheets is a secondary store for business data that humans also read and edit.</p>
+
+        <div class="spec-sub-title">jobs table</div>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name">id</span><span class="field-type">uuid PK</span><span class="field-desc">Primary key</span></div>
+          <div class="field-row"><span class="field-name">agent_type</span><span class="field-type">enum</span><span class="field-desc">Which agent type this job is for</span></div>
+          <div class="field-row"><span class="field-name">status</span><span class="field-type">enum</span><span class="field-desc">queued | running | validating | pending_review | committing | completed | failed | expired | cancelled</span></div>
+          <div class="field-row"><span class="field-name">triggered_by</span><span class="field-type">enum</span><span class="field-desc">scheduler | event | manual</span></div>
+          <div class="field-row"><span class="field-name">config_snapshot</span><span class="field-type">jsonb</span><span class="field-desc">Copy of agent_config at time of dispatch — so config changes don't affect in-flight jobs</span></div>
+          <div class="field-row"><span class="field-name">worker_result</span><span class="field-type">jsonb nullable</span><span class="field-desc">Full output payload from the worker agent</span></div>
+          <div class="field-row"><span class="field-name">validator_result</span><span class="field-type">jsonb nullable</span><span class="field-desc">Full output payload from the validator agent</span></div>
+          <div class="field-row"><span class="field-name">review_deadline</span><span class="field-type">timestamptz nullable</span><span class="field-desc">When the HITL gate expires</span></div>
+          <div class="field-row"><span class="field-name">approved_by</span><span class="field-type">uuid nullable</span><span class="field-desc">Admin user ID who submitted approval decisions</span></div>
+          <div class="field-row"><span class="field-name">created_at / updated_at</span><span class="field-type">timestamptz</span><span class="field-desc">Auto-managed</span></div>
+          <div class="field-row"><span class="field-name">completed_at</span><span class="field-type">timestamptz nullable</span><span class="field-desc">Set when status → completed</span></div>
+          <div class="field-row"><span class="field-name">duration_seconds</span><span class="field-type">integer nullable</span><span class="field-desc">Computed on completion: completed_at − created_at</span></div>
+        </div>
+
+        <div class="spec-sub-title" style="margin-top:20px">Key indexes</div>
+        <div class="code-block">
+CREATE INDEX idx_jobs_status ON jobs(status);
+CREATE INDEX idx_jobs_agent_status ON jobs(agent_type, status);
+CREATE INDEX idx_jobs_review_deadline ON jobs(review_deadline) WHERE status = 'pending_review';</div>
+      </div>
+
+      <!-- Redis -->
+      <div class="spec-block">
+        <div class="spec-block-title">Redis + BullMQ — queue structure</div>
+        <p class="spec-desc">One queue per agent type. This allows independent monitoring, priority, and rate limiting per agent without queues blocking each other.</p>
+        <table class="spec-table">
+          <thead><tr><th>Queue name</th><th>Priority</th><th>Concurrency</th><th>Deduplication key</th></tr></thead>
+          <tbody>
+            <tr><td><code>agent:consultant</code></td><td>High (client-facing)</td><td>5 (many concurrent sessions)</td><td>client_session_id</td></tr>
+            <tr><td><code>agent:intake_validator</code></td><td>High</td><td>5</td><td>memo_id</td></tr>
+            <tr><td><code>agent:analyst</code></td><td>High</td><td>3</td><td>memo_id</td></tr>
+            <tr><td><code>agent:match_validator</code></td><td>High</td><td>3</td><td>presentation_id</td></tr>
+            <tr><td><code>agent:db_curator</code></td><td>Normal</td><td>1 (must be serial)</td><td>agent_type + week_number</td></tr>
+            <tr><td><code>agent:db_validator</code></td><td>Normal</td><td>1</td><td>curator_job_id</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Google Sheets / Drive -->
+      <div class="spec-block">
+        <div class="spec-block-title">Google Sheets + Drive — business data access pattern</div>
+        <p class="spec-desc">The system accesses Google Sheets and Drive via the service account credentials from the setup guide. All reads and writes go through a thin wrapper that handles auth, rate limiting, and retries.</p>
+        <div class="code-block">
+<span class="code-comment">// sheets.js — centralised access wrapper</span>
+<span class="code-keyword">const</span> { google } = require(<span class="code-string">'googleapis'</span>);
+<span class="code-keyword">const</span> auth = <span class="code-keyword">new</span> google.auth.GoogleAuth({
+  keyFile: process.env.GOOGLE_SERVICE_ACCOUNT_PATH,
+  scopes: [<span class="code-string">'https://www.googleapis.com/auth/spreadsheets'</span>,
+           <span class="code-string">'https://www.googleapis.com/auth/drive'</span>]
+});
+<span class="code-keyword">const</span> sheets = google.sheets({ version: <span class="code-string">'v4'</span>, auth });
+
+<span class="code-comment">// Rate limit: 300 req/min. Wrap all calls with exponential backoff.</span>
+<span class="code-keyword">async function</span> readSheet(spreadsheetId, range) {
+  <span class="code-keyword">return</span> retry(() =&gt; sheets.spreadsheets.values.get({ spreadsheetId, range }),
+    { retries: <span class="code-number">3</span>, minTimeout: <span class="code-number">1000</span>, factor: <span class="code-number">2</span> });
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────── L5 EXTERNAL ──────────────────────────── -->
+  <div id="layer-5" class="layer-section layer-section-gray">
+    <div class="container">
+      <div class="layer-section-header">
+        <span class="layer-section-tag">Layer 5</span>
+        <h3 class="layer-section-title">External services</h3>
+        <p class="layer-section-sub">Third-party APIs — each with a defined auth method, retry policy, and fallback</p>
+      </div>
+
+      <div class="spec-block">
+        <div class="spec-block-title">Service catalogue</div>
+        <table class="spec-table">
+          <thead><tr><th>Service</th><th>Used by</th><th>Auth method</th><th>Rate limit</th><th>Fallback on failure</th></tr></thead>
+          <tbody>
+            <tr><td>Anthropic API</td><td>All 6 agents</td><td>API key in header</td><td>Tier-based (see Anthropic docs)</td><td>Retry 3× with backoff. If exhausted: job → failed, alert admin.</td></tr>
+            <tr><td>OpenAI API</td><td>Any agent (if swapped)</td><td>API key in header</td><td>Tier-based</td><td>Same as above</td></tr>
+            <tr><td>Brave Search API</td><td>DB Curator, DB Validator</td><td>API key in header</td><td>2,000 req/month free tier</td><td>Retry once. If unavailable: agent logs <code>SEARCH_UNAVAILABLE</code> and completes with reduced confidence scores.</td></tr>
+            <tr><td>Google Sheets API</td><td>Orchestrator, all agents</td><td>Service account JSON</td><td>300 req/min per project</td><td>Retry 3× with backoff. Cached reads serve stale data for up to 5 minutes.</td></tr>
+            <tr><td>Google Drive API</td><td>Orchestrator, filing system</td><td>Service account JSON</td><td>1,000 req/100s per user</td><td>Retry 3× with backoff.</td></tr>
+            <tr><td>Resend (email)</td><td>Notification service</td><td>API key</td><td>100 emails/day free tier</td><td>Queue and retry. If down for 30 min: log to audit only, no retry.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Environment variables -->
+      <div class="spec-block">
+        <div class="spec-block-title">Required environment variables</div>
+        <p class="spec-desc">All secrets are stored as environment variables — never hardcoded. On Railway/Fly.io these are set via the dashboard. In local development, use a <code>.env</code> file that is never committed.</p>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name">ANTHROPIC_API_KEY</span><span class="field-type">secret</span><span class="field-desc">Anthropic API key — all agents</span></div>
+          <div class="field-row"><span class="field-name">OPENAI_API_KEY</span><span class="field-type">secret</span><span class="field-desc">OpenAI API key — only if any agent is swapped to OpenAI</span></div>
+          <div class="field-row"><span class="field-name">BRAVE_SEARCH_API_KEY</span><span class="field-type">secret</span><span class="field-desc">Brave Search — DB Curator and DB Validator</span></div>
+          <div class="field-row"><span class="field-name">GOOGLE_SERVICE_ACCOUNT_PATH</span><span class="field-type">path</span><span class="field-desc">Path to the service account JSON key file</span></div>
+          <div class="field-row"><span class="field-name">GOOGLE_SPREADSHEET_ID</span><span class="field-type">string</span><span class="field-desc">The business_database spreadsheet ID</span></div>
+          <div class="field-row"><span class="field-name">GOOGLE_DRIVE_ROOT_FOLDER_ID</span><span class="field-type">string</span><span class="field-desc">The business-system Drive folder ID</span></div>
+          <div class="field-row"><span class="field-name">RESEND_API_KEY</span><span class="field-type">secret</span><span class="field-desc">Email notification service</span></div>
+          <div class="field-row"><span class="field-name">DATABASE_URL</span><span class="field-type">connection string</span><span class="field-desc">Postgres connection (Supabase or self-hosted)</span></div>
+          <div class="field-row"><span class="field-name">REDIS_URL</span><span class="field-type">connection string</span><span class="field-desc">Redis connection (Railway Redis or Upstash)</span></div>
+          <div class="field-row"><span class="field-name">BASE_URL</span><span class="field-type">url</span><span class="field-desc">The public URL of the orchestrator — used to build callback URLs</span></div>
+          <div class="field-row"><span class="field-name">AGENT_SECRET_SALT</span><span class="field-type">secret</span><span class="field-desc">Used to generate X-Agent-Secret headers — prevents unauthorised calls to agent endpoints</span></div>
+        </div>
+      </div>
+
+      <div class="callout key">
+        <span class="callout-icon">→</span>
+        <div class="callout-content">
+          <h4>Adding a new external service</h4>
+          <p>Any new third-party API is added at Layer 5 only. The agent that needs it gets the new env variable in its service config. No other layer changes. This isolation is what prevents a service swap (e.g. moving from Brave Search to Serper) from requiring system-wide changes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ AGENTS -->
+<section id="agents">
+  <div class="container">
+    <p class="section-number">03 — Agent specifications</p>
+    <h2>Six agents, fully specified</h2>
+    <p class="section-lead">Each agent is specified here in full: what triggers it, what context it receives, what logic it runs, what it produces, and how errors and edge cases are handled. The AI prompts are skeleton structures — the developer fills in the exact wording during build.</p>
+
+    <!-- Pipeline map -->
+    <div class="pipeline-map">
+      <div class="pipeline-col">
+        <div class="pipeline-label">Pipeline 1 — Database</div>
+        <div class="pipeline-worker">DB Curator</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-validator">DB Validator</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-gate">HITL gate</div>
+      </div>
+      <div class="pipeline-col">
+        <div class="pipeline-label">Pipeline 2 — Client intake</div>
+        <div class="pipeline-worker">Consultant</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-validator">Intake Validator</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-gate">→ Analyst</div>
+      </div>
+      <div class="pipeline-col">
+        <div class="pipeline-label">Pipeline 3 — Solution matching</div>
+        <div class="pipeline-worker">Analyst</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-validator">Match Validator</div>
+        <div class="pipeline-arrow">↓</div>
+        <div class="pipeline-gate">HITL gate</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="agent-curator"></div>
+  <!-- ──────────────────────── AGENT 1: DB CURATOR ──────────────────────── -->
+  <div class="agent-section agent-worker">
+    <div class="container">
+      <div class="agent-section-header">
+        <div>
+          <span class="agent-badge worker-badge">Worker · Pipeline 1</span>
+          <h3 class="agent-title">Database Curator</h3>
+          <p class="agent-subtitle">Discovers, enriches, and maintains the tools_and_services database</p>
+        </div>
+        <div class="agent-meta-box">
+          <div class="meta-row"><span>Trigger</span><span>Weekly cron + manual</span></div>
+          <div class="meta-row"><span>Runtime</span><span>20–45 min</span></div>
+          <div class="meta-row"><span>Concurrency</span><span>1 (serial)</span></div>
+          <div class="meta-row"><span>Model</span><span>Claude Sonnet (configurable)</span></div>
+        </div>
+      </div>
+
+      <div class="agent-spec-grid">
+
+        <div class="spec-block">
+          <div class="spec-block-title">Manual trigger — on-demand tool search</div>
+          <p class="spec-desc">In addition to the weekly cron, the Database Curator can be triggered manually from the admin dashboard to search for specific named tools independently of the schedule. This does not replace the weekly run — it creates a separate, smaller job.</p>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">Dashboard location</span><span class="field-type">panel</span><span class="field-desc">Admin dashboard → Database panel → "Search for specific tools" input</span></div>
+            <div class="field-row"><span class="field-name">Input format</span><span class="field-type">plain text</span><span class="field-desc">One tool name per line, or comma-separated. Example: "Notion, Linear, Loom". No URLs needed — the Curator searches by name.</span></div>
+            <div class="field-row"><span class="field-name">Job type</span><span class="field-type">enum</span><span class="field-desc">manual_search — distinct from the weekly cron job type. Appears separately in run history.</span></div>
+            <div class="field-row"><span class="field-name">Behaviour</span><span class="field-type">spec</span><span class="field-desc">The Curator runs Mode 1 search targeting only the named tools. Skips Mode 2 and Mode 3. Uses the same quality gate, confidence scoring, and draft process as a normal run. Results go to tools_draft and trigger the DB Validator as normal.</span></div>
+            <div class="field-row"><span class="field-name">Prerequisite</span><span class="field-type">guard</span><span class="field-desc">tools_draft must be empty before a manual run is accepted. If a weekly run is in progress or awaiting review, the manual trigger is rejected with a message explaining the blockage.</span></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Prerequisites — checked before any work begins</div>
+          <div class="prereq-list">
+            <div class="prereq-item prereq-hard">tools_draft sheet is empty — halt if not (duplicate-run guard)</div>
+            <div class="prereq-item prereq-hard">agent_config sheet is readable — halt if not</div>
+            <div class="prereq-item prereq-soft">All monitored source URLs are reachable — log unreachable ones, continue with available sources</div>
+            <div class="prereq-item prereq-soft">Brave Search API is responsive — log if not, confidence scores will be reduced</div>
+          </div>
+          <div class="prereq-legend">
+            <span class="prereq-hard-dot"></span>Hard stop &nbsp;&nbsp;
+            <span class="prereq-soft-dot"></span>Log and continue
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Input context object</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">context.existing_ids</span><span class="field-type">string[]</span><span class="field-desc">All current id values from tools_and_services — used for deduplication without reading the full sheet</span></div>
+            <div class="field-row"><span class="field-name">context.existing_domains</span><span class="field-type">string[]</span><span class="field-desc">All URL domains from tools_and_services — faster domain-match deduplication</span></div>
+            <div class="field-row"><span class="field-name">context.stale_records</span><span class="field-type">object[]</span><span class="field-desc">Full rows from tools_and_services where last_updated &lt; stale threshold. Includes all fields.</span></div>
+            <div class="field-row"><span class="field-name">context.excluded_ids</span><span class="field-type">string[]</span><span class="field-desc">IDs from agent_config.excluded_tool_ids — never add these</span></div>
+            <div class="field-row"><span class="field-name">context.run_date</span><span class="field-type">string</span><span class="field-desc">Today's ISO date — used in all last_updated fields</span></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Internal logic — 9 steps in order</div>
+          <div class="logic-steps">
+            <div class="logic-step"><span class="step-n">1</span><div><strong>Load config</strong> — read all parameters from the config object. Set operating limits for this run.</div></div>
+            <div class="logic-step"><span class="step-n">2</span><div><strong>Mode 3 — stale refresh</strong> — for each record in context.stale_records: re-fetch homepage and pricing page. Compare to stored values. If unchanged: update last_updated only (write directly to live sheet via Sheets API). If changed: create a draft row with change summary in curator_notes.</div></div>
+            <div class="logic-step"><span class="step-n">3</span><div><strong>Mode 1 — web search</strong> — for each category in config.categories: run 3–4 search queries. Evaluate each result against the quality checklist. Build draft rows for novel candidates. Stop when max_new_drafts_per_run is reached.</div></div>
+            <div class="logic-step"><span class="step-n">4</span><div><strong>Mode 2 — source monitoring</strong> — visit each URL in config.monitored_sources. Extract newly listed tools. Cross-check against existing_ids and existing_domains. Build draft rows for novel candidates.</div></div>
+            <div class="logic-step"><span class="step-n">5</span><div><strong>Deduplication pass</strong> — scan the current draft batch for internal duplicates (same id or same domain). Merge or remove. Every draft must be unique.</div></div>
+            <div class="logic-step"><span class="step-n">6</span><div><strong>Confidence scoring</strong> — for each draft: run the 8-signal confidence check. Calculate confidence_score and source_count. Auto-reject any draft below config.confidence_score_minimum.</div></div>
+            <div class="logic-step"><span class="step-n">7</span><div><strong>Structural validation</strong> — run all 12 pre-submission checks on every draft row. Remove failing rows and log reasons.</div></div>
+            <div class="logic-step"><span class="step-n">8</span><div><strong>Write to tools_draft</strong> — write all passing rows to the tools_draft Google Sheet via Sheets API. Each row includes all 17 base fields + source_urls + discovery_source + curator_notes.</div></div>
+            <div class="logic-step"><span class="step-n">9</span><div><strong>Write run report</strong> — produce the weekly report doc and write to Drive. Return structured result to orchestrator.</div></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">AI call structure</div>
+          <p class="spec-desc">The curator makes one AI call per candidate tool during enrichment — not one call for the whole run. Each call has the same structure.</p>
+          <div class="ai-call-box">
+            <div class="ai-call-section ai-system">
+              <div class="ai-call-label">System prompt (static — same every call)</div>
+              <div class="ai-call-content">You are the Database Curator. Your job is to evaluate a SaaS tool and produce a structured record for it. You will receive raw information about a tool gathered from web sources. You must produce a complete, accurate record following the field writing rules exactly. You never invent information — only use what you can verify from the sources provided.</div>
+            </div>
+            <div class="ai-call-section ai-user">
+              <div class="ai-call-label">User message (dynamic — assembled per tool)</div>
+              <div class="ai-call-content">Tool name: {name}<br>
+Sources found: {source_urls[]}<br>
+Raw data from sources: {scraped_content}<br>
+Config: categories={categories}, min_problem_tags={n}, min_embedding_chars={n}<br><br>
+Produce a complete record as JSON with all required fields. Follow the field writing rules for problem_tags and embedding_text exactly.</div>
+            </div>
+            <div class="ai-call-section ai-output">
+              <div class="ai-call-label">Expected output (structured JSON)</div>
+              <div class="ai-call-content">{ "id": "tool-slug", "name": "...", "vendor": "...", "problem_tags": "tag1, tag2, ...", "embedding_text": "2-4 sentences...", "confidence_score": 0.75, "source_count": 5, "source_urls": "[...]", ... all 17 fields }</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Output artifact</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">artifacts[0].type</span><span class="field-type">string</span><span class="field-desc"><code>sheets_range</code> — pointer to the tools_draft sheet rows written</span></div>
+            <div class="field-row"><span class="field-name">artifacts[0].ref</span><span class="field-type">string</span><span class="field-desc">Google Sheets range, e.g. <code>tools_draft!A2:Z45</code></span></div>
+            <div class="field-row"><span class="field-name">artifacts[1].type</span><span class="field-type">string</span><span class="field-desc"><code>drive_file</code> — pointer to the weekly report doc</span></div>
+            <div class="field-row"><span class="field-name">artifacts[1].ref</span><span class="field-type">string</span><span class="field-desc">Google Drive file ID of the report</span></div>
+            <div class="field-row"><span class="field-name">run_log</span><span class="field-type">string</span><span class="field-desc">Plain-English summary: records before run, new drafts, stale refreshed, auto-rejected, errors</span></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Edge cases</div>
+          <table class="spec-table">
+            <thead><tr><th>Situation</th><th>Handling</th></tr></thead>
+            <tbody>
+              <tr><td>tools_draft not empty at start</td><td>Halt immediately. Return <code>DUPLICATE_RUN_GUARD</code> error. Do not proceed.</td></tr>
+              <tr><td>All sources unreachable</td><td>Halt. Return <code>SEARCH_UNAVAILABLE</code>. Do not write empty draft.</td></tr>
+              <tr><td>One source unreachable</td><td>Log it. Continue with remaining sources. Note in report.</td></tr>
+              <tr><td>max_new_drafts_per_run hit before all modes complete</td><td>Stop adding new drafts. Complete stale refresh. Return <code>PARTIAL_COMPLETE</code> status with count.</td></tr>
+              <tr><td>AI call fails for a single tool</td><td>Log the error and the tool name. Skip this tool. Continue with next candidate.</td></tr>
+              <tr><td>Sheets API write fails</td><td>Retry 3×. If still failing: halt, return <code>DATA_WRITE_ERROR</code>. Draft is lost — will be rediscovered next run.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="agent-consultant"></div>
+  <!-- ──────────────────────── AGENT 2: CONSULTANT ──────────────────────── -->
+  <div class="agent-section agent-worker">
+    <div class="container">
+      <div class="agent-section-header">
+        <div>
+          <span class="agent-badge worker-badge">Worker · Pipeline 2</span>
+          <h3 class="agent-title">Consultant</h3>
+          <p class="agent-subtitle">Conducts structured client intake conversations and produces Problem Memos</p>
+        </div>
+        <div class="agent-meta-box">
+          <div class="meta-row"><span>Trigger</span><span>Client session start event</span></div>
+          <div class="meta-row"><span>Runtime</span><span>30–120 min (client-paced)</span></div>
+          <div class="meta-row"><span>Concurrency</span><span>Up to 5 parallel sessions</span></div>
+          <div class="meta-row"><span>Model</span><span>Claude Sonnet (configurable)</span></div>
+        </div>
+      </div>
+
+      <div class="agent-spec-grid">
+
+        <div class="spec-block">
+          <div class="spec-block-title">How this agent differs from the others</div>
+          <p class="spec-desc">The Consultant is the only agent that runs an interactive, multi-turn conversation rather than a single AI call. It does not complete in one shot — it exchanges messages with a human client over minutes or hours. The session state is persisted in Postgres between every message so the conversation survives browser refreshes, network drops, and the client walking away and coming back.</p>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Input context object</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">context.session_id</span><span class="field-type">uuid</span><span class="field-desc">The client session this conversation belongs to</span></div>
+            <div class="field-row"><span class="field-name">context.client_name</span><span class="field-type">string</span><span class="field-desc">Client's name — used to personalise the conversation</span></div>
+            <div class="field-row"><span class="field-name">context.client_company</span><span class="field-type">string</span><span class="field-desc">Client's company name</span></div>
+            <div class="field-row"><span class="field-name">context.conversation_history</span><span class="field-type">object[]</span><span class="field-desc">All previous messages in this session [{role, content}]. Sent on every turn so the agent has full context.</span></div>
+            <div class="field-row"><span class="field-name">context.required_fields</span><span class="field-type">string[]</span><span class="field-desc">The Problem Memo fields that must be populated before the memo can be finalised — from agent_config</span></div>
+            <div class="field-row"><span class="field-name">context.new_message</span><span class="field-type">string</span><span class="field-desc">The client's latest message — what the agent is responding to on this turn</span></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Internal logic — conversation state machine</div>
+          <div class="logic-steps">
+            <div class="logic-step"><span class="step-n">1</span><div><strong>Determine conversation phase</strong> — based on conversation_history, determine which required_fields are still unpopulated. This determines what to ask next.</div></div>
+            <div class="logic-step"><span class="step-n">2</span><div><strong>Generate response</strong> — make AI call with full conversation_history as context. The agent asks at most one question per turn. It uses the client's own language, not technical terms.</div></div>
+            <div class="logic-step"><span class="step-n">3</span><div><strong>Extract field values</strong> — after each client message, run a structured extraction pass to identify which required_fields are now answered. Update the running memo draft.</div></div>
+            <div class="logic-step"><span class="step-n">4</span><div><strong>Check completeness</strong> — if all required_fields are populated AND the problem is unambiguous: transition to confirmation phase.</div></div>
+            <div class="logic-step"><span class="step-n">5</span><div><strong>Confirmation phase</strong> — present a plain-English summary of the Problem Memo to the client. Ask them to confirm or correct. Do not proceed until they confirm.</div></div>
+            <div class="logic-step"><span class="step-n">6</span><div><strong>Finalise memo</strong> — write the completed Problem Memo to the problem_memos Postgres table. Emit <code>memo_created</code> event. Return result to orchestrator.</div></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Problem Memo — required fields</div>
+          <p class="spec-desc">Fields marked <strong style="color:var(--coral)">critical</strong> must be fully populated before the Intake Validator will pass the memo to the Analyst.</p>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">mission</span><span class="field-type">string</span><span class="field-desc">The client's organisation mission — why they exist, what they are trying to achieve at the highest level</span></div>
+            <div class="field-row"><span class="field-name">vision</span><span class="field-type">string</span><span class="field-desc">Where the client wants to be — their future state goal</span></div>
+            <div class="field-row field-critical"><span class="field-name">objectives</span><span class="field-type">string[] · critical</span><span class="field-desc">Specific, measurable outcomes the solution must achieve. These become the primary scoring axis for the Analyst — every solution is scored by what percentage of these objectives it meets. Minimum 2. The Consultant must press for specificity here.</span></div>
+            <div class="field-row"><span class="field-name">value_added</span><span class="field-type">string</span><span class="field-desc">How solving this problem adds value to the business — ROI framing, time saved, revenue unlocked, risk reduced</span></div>
+            <div class="field-row"><span class="field-name">bottlenecks</span><span class="field-type">string[]</span><span class="field-desc">Specific chokepoints in the current workflow — where things slow down, break, or require manual intervention</span></div>
+            <div class="field-row"><span class="field-name">budget</span><span class="field-type">string nullable</span><span class="field-desc">Maximum budget if the client volunteers it. If the client resists, do not push — mark as null and note "client declined to specify." Explain to the client that without a budget range, some solutions cannot be filtered and the results will be broader. Never make this a blocker.</span></div>
+            <div class="field-row field-critical"><span class="field-name">assumptions</span><span class="field-type">string[] · critical</span><span class="field-desc">Conditions the client is assuming to be true that have not been verified — about their market, their team, their data, their integrations. Critical for the Analyst to flag when a recommended solution challenges an assumption.</span></div>
+            <div class="field-row"><span class="field-name">tech_stack</span><span class="field-type">string[]</span><span class="field-desc">Current technology architecture — tools, platforms, databases, languages, infrastructure in use. Required to assess integration compatibility of any recommended solution.</span></div>
+            <div class="field-row"><span class="field-name">current_workflow</span><span class="field-type">string</span><span class="field-desc">The existing process being replaced or augmented — step by step if possible. Required to understand what the solution must integrate with or replace.</span></div>
+            <div class="field-row"><span class="field-name">decision_maker</span><span class="field-type">string</span><span class="field-desc">Who makes the final decision — the client, their manager, a committee</span></div>
+            <div class="field-row"><span class="field-name">urgency</span><span class="field-type">enum</span><span class="field-desc">exploring | active_search | urgent</span></div>
+            <div class="field-row"><span class="field-name">client_id</span><span class="field-type">uuid</span><span class="field-desc">Foreign key to the client session record</span></div>
+            <div class="field-row"><span class="field-name">created_at</span><span class="field-type">timestamptz</span><span class="field-desc">Auto-set on creation</span></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">AI call structure — per conversation turn</div>
+          <div class="ai-call-box">
+            <div class="ai-call-section ai-system">
+              <div class="ai-call-label">System prompt (static)</div>
+              <div class="ai-call-content">You are a business consultant conducting a structured intake interview. Your goal is to understand the client's problem well enough to produce a complete Problem Memo. Ask one question at a time. Use plain, friendly language — no jargon. Never ask for information the client has already given. When you have all required information, present a summary for confirmation. Required fields still needed: {unfilled_fields}.</div>
+            </div>
+            <div class="ai-call-section ai-user">
+              <div class="ai-call-label">Messages array (grows each turn)</div>
+              <div class="ai-call-content">[<br>
+&nbsp;&nbsp;{ role: "assistant", content: "Hi {name}, I'm here to help..." },<br>
+&nbsp;&nbsp;{ role: "user", content: "We're struggling with..." },<br>
+&nbsp;&nbsp;{ role: "assistant", content: "Can you tell me more about..." },<br>
+&nbsp;&nbsp;{ role: "user", content: context.new_message }<br>
+]</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Edge cases</div>
+          <table class="spec-table">
+            <thead><tr><th>Situation</th><th>Handling</th></tr></thead>
+            <tbody>
+              <tr><td>Client abandons session mid-conversation</td><td>Session state is persisted. Client can resume from any device within 7 days. After 7 days: session is marked abandoned, no memo created.</td></tr>
+              <tr><td>Client gives contradictory answers</td><td>Agent flags the contradiction and asks the client to clarify. Does not try to resolve it autonomously.</td></tr>
+              <tr><td>Client refuses to answer a required field</td><td>After 2 attempts: mark that field as "client declined to specify" and continue. Intake Validator will flag the memo as incomplete.</td></tr>
+              <tr><td>Conversation exceeds 40 turns with no memo</td><td>Agent surfaces a structured form for the client to complete manually. Form responses are used to construct the memo.</td></tr>
+              <tr><td>AI call fails mid-conversation</td><td>Return last successful message. Retry on next client message. Session state is preserved.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="agent-analyst"></div>
+  <!-- ──────────────────────── AGENT 3: ANALYST ──────────────────────── -->
+  <div class="agent-section agent-worker">
+    <div class="container">
+      <div class="agent-section-header">
+        <div>
+          <span class="agent-badge worker-badge">Worker · Pipeline 3</span>
+          <h3 class="agent-title">Analyst</h3>
+          <p class="agent-subtitle">Matches Problem Memos to the tools database and produces ranked Solution Presentations</p>
+        </div>
+        <div class="agent-meta-box">
+          <div class="meta-row"><span>Trigger</span><span>intake_validation_passed event</span></div>
+          <div class="meta-row"><span>Runtime</span><span>3–10 min</span></div>
+          <div class="meta-row"><span>Concurrency</span><span>Up to 3 parallel</span></div>
+          <div class="meta-row"><span>Model</span><span>Claude Sonnet (configurable)</span></div>
+        </div>
+      </div>
+
+      <div class="agent-spec-grid">
+
+        <div class="spec-block">
+          <div class="spec-block-title">Input context object</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">context.memo</span><span class="field-type">object</span><span class="field-desc">The full Problem Memo object — all fields from the problem_memos table</span></div>
+            <div class="field-row"><span class="field-name">context.tools_snapshot</span><span class="field-type">object[]</span><span class="field-desc">All active rows from tools_and_services — the full database the Analyst queries. Passed in as context rather than read directly, so the agent gets a consistent snapshot.</span></div>
+            <div class="field-row"><span class="field-name">context.max_results</span><span class="field-type">integer</span><span class="field-desc">Maximum number of tools to include in the presentation (from config, default 5)</span></div>
+            <div class="field-row"><span class="field-name">context.min_confidence</span><span class="field-type">float</span><span class="field-desc">Minimum tool confidence_score to consider for matching (from config, default 0.4)</span></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Internal logic — objective-based matching algorithm</div>
+          <p class="spec-desc">The Analyst scores solutions by the proportion of the memo's <strong>objectives</strong> they meet — not by generic tool quality. A solution can be a single tool or a combination of compatible tools. If no solution clears the 40% objectives threshold, a custom development proposal is generated instead.</p>
+          <div class="logic-steps">
+            <div class="logic-step"><span class="step-n">1</span><div><strong>Pre-filter</strong> — remove all tools where confidence_score &lt; context.min_confidence or status ≠ active. This reduces the candidate set before the expensive matching step.</div></div>
+            <div class="logic-step"><span class="step-n">2</span><div><strong>Objective mapping</strong> — for each tool in the candidate set, assess which objectives from memo.objectives it addresses. Record as a boolean map: {objective_id: true/false}. Objective coverage % = objectives met ÷ total objectives.</div></div>
+            <div class="logic-step"><span class="step-n">3</span><div><strong>Single-tool pass</strong> — rank tools by objective coverage %. Keep all tools clearing a minimum threshold (configurable, default 20%). Discard the rest.</div></div>
+            <div class="logic-step"><span class="step-n">4</span><div><strong>Combination pass</strong> — for tools that individually cover 20–60% of objectives: test pairings and triplets. Check integration compatibility before combining (verify both tools appear in each other's integrations field, or have a documented connector). Score the combination by the union of their covered objectives.</div></div>
+            <div class="logic-step"><span class="step-n">5</span><div><strong>Constraint filtering</strong> — remove solutions (single or combined) that violate hard constraints: budget, company size fit, tech_stack incompatibility, missing required integrations from memo.</div></div>
+            <div class="logic-step"><span class="step-n">6</span><div><strong>40% threshold check</strong> — does any remaining solution (single or combination) meet ≥ 40% of the memo's objectives? If yes: continue to step 7. If no: route to custom development proposal path (step 9).</div></div>
+            <div class="logic-step"><span class="step-n">7</span><div><strong>Final ranking</strong> — rank passing solutions by: (objective_coverage % × 0.70) + (confidence_score × 0.20) + (constraint_fit × 0.10). Take top context.max_results solutions.</div></div>
+            <div class="logic-step"><span class="step-n">8</span><div><strong>Generate rationale</strong> — for each top solution: produce a rationale that maps which specific objectives it meets, which assumptions it challenges, and why it fits the client's tech_stack. Assemble the Solution Presentation and Project Proposal. Emit solution_created event.</div></div>
+            <div class="logic-step"><span class="step-n">9</span><div><strong>Custom development proposal path</strong> — if no solution clears 40%: generate a Custom Development Proposal. This document states that a custom-built system is preferable, justifies why based on the search outcome and problem memo (citing which objectives no existing tool covers), and outlines a preliminary project scope. Proposal is assembled as a structured document and saved to Drive. Emit custom_proposal_created event.</div></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Three final outputs — produced for every client engagement</div>
+          <p class="spec-desc">At the conclusion of a client engagement, three documents are always produced and saved to Drive. Nothing is sent to the client. An email notification goes to the configured admin email when all three are ready and saved.</p>
+
+          <div class="output-trio">
+            <div class="output-card output-memo">
+              <div class="output-card-label">Output 1</div>
+              <div class="output-card-title">Problem Memo</div>
+              <p>The complete, finalised Problem Memo as confirmed by the client. Contains all required fields including mission, vision, objectives, assumptions, tech stack, and current workflow.</p>
+              <div class="output-path">~/clients/{name}_{id}/problem_memo_{date}.pdf</div>
+            </div>
+            <div class="output-card output-proposal">
+              <div class="output-card-label">Output 2</div>
+              <div class="output-card-title">Project Proposal</div>
+              <p>A structured, defensible proposal aligned field-by-field with the Problem Memo. Built to withstand scrutiny — every claim is traceable back to the memo.</p>
+              <div class="output-path">~/clients/{name}_{id}/project_proposal_{date}.pdf</div>
+            </div>
+            <div class="output-card output-deck">
+              <div class="output-card-label">Output 3</div>
+              <div class="output-card-title">Solution Pitch Deck</div>
+              <p>A presentation version of the Project Proposal — structured as slides, designed to be used in a client-facing conversation. Fully grounded in the proposal content.</p>
+              <div class="output-path">~/clients/{name}_{id}/pitch_deck_{date}.pdf</div>
+            </div>
+          </div>
+
+          <div class="spec-block-title" style="margin-top:24px">Project Proposal — required fields</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">executive_summary</span><span class="field-type">string</span><span class="field-desc">One-paragraph summary of the problem and the proposed solution</span></div>
+            <div class="field-row"><span class="field-name">problem_reference</span><span class="field-type">uuid FK</span><span class="field-desc">Link to the Problem Memo this proposal responds to — every field must be traceable</span></div>
+            <div class="field-row"><span class="field-name">solution_type</span><span class="field-type">enum</span><span class="field-desc">single_tool | multi_tool | custom_development</span></div>
+            <div class="field-row"><span class="field-name">solution_components</span><span class="field-type">object[]</span><span class="field-desc">For tool solutions: [{tool_id, tool_name, role_in_solution, integrates_with[]}]. For custom: [{component_name, description, technology_options[]}]</span></div>
+            <div class="field-row"><span class="field-name">objectives_met</span><span class="field-type">object[]</span><span class="field-desc">Each objective from the memo mapped to: {objective, met_by, coverage_notes}. The primary defensibility field.</span></div>
+            <div class="field-row"><span class="field-name">objectives_coverage_pct</span><span class="field-type">float</span><span class="field-desc">Percentage of memo objectives this solution meets. Must be ≥ 40% for a tool solution to be proposed.</span></div>
+            <div class="field-row"><span class="field-name">assumptions</span><span class="field-type">string[]</span><span class="field-desc">Proposal-level assumptions — inherits from memo assumptions, adds any new ones introduced by the solution</span></div>
+            <div class="field-row"><span class="field-name">features</span><span class="field-type">string[]</span><span class="field-desc">Key features/capabilities the solution provides, mapped to client objectives</span></div>
+            <div class="field-row"><span class="field-name">constraints</span><span class="field-type">string[]</span><span class="field-desc">Known limitations, dependencies, and constraints of the proposed solution</span></div>
+            <div class="field-row"><span class="field-name">risks</span><span class="field-type">object[]</span><span class="field-desc">[{risk, likelihood, impact, mitigation}] — must address any assumption in the memo that the solution challenges</span></div>
+            <div class="field-row"><span class="field-name">cost_estimate</span><span class="field-type">object</span><span class="field-desc">{setup_cost, monthly_cost, annual_cost, currency} — based on public pricing for tool solutions; estimated for custom development</span></div>
+            <div class="field-row"><span class="field-name">timeline</span><span class="field-type">object</span><span class="field-desc">{implementation_weeks, phases[{name, duration, deliverable}]} — for custom development this is a project plan; for tool solutions this is onboarding timeline</span></div>
+            <div class="field-row"><span class="field-name">resources_required</span><span class="field-type">string[]</span><span class="field-desc">What the client needs to implement this — people, time, technical access, vendor accounts</span></div>
+            <div class="field-row"><span class="field-name">integration_plan</span><span class="field-type">string</span><span class="field-desc">How the solution connects to the client's tech_stack — specific integration points named</span></div>
+            <div class="field-row"><span class="field-name">next_steps</span><span class="field-type">string[]</span><span class="field-desc">Concrete recommended actions for the client to proceed</span></div>
+          </div>
+
+          <div class="spec-block-title" style="margin-top:24px">Drive storage — client folder structure</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">Root</span><span class="field-type">folder</span><span class="field-desc">~/clients/{client_name}_{client_id}/</span></div>
+            <div class="field-row"><span class="field-name">Problem Memo</span><span class="field-type">PDF</span><span class="field-desc">problem_memo_{YYYY-MM-DD}.pdf</span></div>
+            <div class="field-row"><span class="field-name">Project Proposal</span><span class="field-type">PDF</span><span class="field-desc">project_proposal_{YYYY-MM-DD}.pdf</span></div>
+            <div class="field-row"><span class="field-name">Pitch Deck</span><span class="field-type">PDF</span><span class="field-desc">pitch_deck_{YYYY-MM-DD}.pdf</span></div>
+            <div class="field-row"><span class="field-name">Custom Proposal</span><span class="field-type">PDF (if applicable)</span><span class="field-desc">custom_development_proposal_{YYYY-MM-DD}.pdf</span></div>
+          </div>
+          <div class="callout warn" style="margin-top:16px">
+            <span class="callout-icon">!</span>
+            <div class="callout-content">
+              <h4>Outputs are never sent to the client</h4>
+              <p>All three documents are saved to Drive only. When a new client folder is created or a new output is saved, an email notification is sent to the admin email configured in agent_config. The admin decides if and how to share outputs with the client.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Edge cases</div>
+          <table class="spec-table">
+            <thead><tr><th>Situation</th><th>Handling</th></tr></thead>
+            <tbody>
+              <tr><td>Fewer than 3 tools pass all filters</td><td>Return what passes. Note in run_log: "Limited results — {n} tools met all constraints." Do not lower standards to fill the list.</td></tr>
+              <tr><td>Zero tools pass filtering</td><td>Return status: <code>no_match</code>. Presentation contains an empty recommendations array and a plain-English explanation of which constraints eliminated all candidates.</td></tr>
+              <tr><td>tools_snapshot is empty</td><td>Halt. Return <code>DATA_READ_ERROR</code>. The database has not been populated yet.</td></tr>
+              <tr><td>Semantic matching AI call fails</td><td>Fall back to tag-match-only ranking. Flag in presentation metadata: "semantic_scoring_unavailable".</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="agent-db-validator"></div>
+  <!-- ──────────────────────── AGENT 4: DB VALIDATOR ──────────────────────── -->
+  <div class="agent-section agent-validator">
+    <div class="container">
+      <div class="agent-section-header">
+        <div>
+          <span class="agent-badge validator-badge">Validator · Pipeline 1</span>
+          <h3 class="agent-title">DB Validator</h3>
+          <p class="agent-subtitle">Independently verifies each draft tool record before it reaches the admin review queue</p>
+        </div>
+        <div class="agent-meta-box">
+          <div class="meta-row"><span>Trigger</span><span>curator_complete event</span></div>
+          <div class="meta-row"><span>Runtime</span><span>15–30 min</span></div>
+          <div class="meta-row"><span>Concurrency</span><span>1 (serial — one per curator run)</span></div>
+          <div class="meta-row"><span>Model</span><span>Claude Sonnet + web search</span></div>
+        </div>
+      </div>
+
+      <div class="agent-spec-grid">
+
+        <div class="spec-block">
+          <div class="spec-block-title">What it validates and why</div>
+          <p class="spec-desc">The DB Validator is the quality gate between the Curator's output and the admin's review queue. It catches two failure modes the structural validation cannot catch: (1) problem_tags or embedding_text that are technically valid but semantically wrong — e.g. tags written in feature language rather than client language, or an embedding_text that misrepresents the tool. (2) Tools that the Curator found but could not be independently corroborated — possible hallucinations or defunct tools.</p>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Input context object</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">context.draft_records</span><span class="field-type">object[]</span><span class="field-desc">All rows currently in tools_draft with empty quality_score — the records to validate</span></div>
+            <div class="field-row"><span class="field-name">context.quality_threshold</span><span class="field-type">float</span><span class="field-desc">Score below which validator_flag is set to TRUE (from config, default 3.0)</span></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Scoring rubric — applied to every draft record</div>
+          <table class="spec-table">
+            <thead><tr><th>Dimension</th><th>What it measures</th><th>5 — Excellent</th><th>3 — Acceptable</th><th>1 — Fail</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>problem_tags accuracy</td>
+                <td>Do the tags describe real problems this tool solves, in client language?</td>
+                <td>All tags accurate, specific, written as a client would say them</td>
+                <td>Broadly correct but some tags are vague or slightly technical</td>
+                <td>Tags are wrong, copied from marketing, or feature descriptions</td>
+              </tr>
+              <tr>
+                <td>embedding_text accuracy</td>
+                <td>Does the description accurately represent what the tool does?</td>
+                <td>Fully accurate, clear, objective, complete — confirmed by independent sources</td>
+                <td>Broadly correct but missing a key differentiator or audience</td>
+                <td>Significantly wrong, misleading, or copied from the tool's own marketing</td>
+              </tr>
+              <tr>
+                <td>independent confidence</td>
+                <td>How well-established and verifiable is this tool from sources the Curator did not use?</td>
+                <td>Well-known, many independent reviews, clearly active, all details verifiable</td>
+                <td>Smaller tool, fewer reviews, but clearly real and findable</td>
+                <td>Almost no independent presence — cannot verify key claims</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="spec-desc" style="margin-top:14px;margin-bottom:0">quality_score = average of three dimensions, rounded to 1 decimal. Records below quality_threshold have validator_flag set to TRUE.</p>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Per-record logic</div>
+          <div class="logic-steps">
+            <div class="logic-step"><span class="step-n">1</span><div><strong>Web search</strong> — search for the tool by name using at least 2 independent sources (not the tool's own website). Store the URLs found.</div></div>
+            <div class="logic-step"><span class="step-n">2</span><div><strong>Score all three dimensions</strong> — make one AI call per record with the draft fields + independent source content. Ask for scores with reasoning.</div></div>
+            <div class="logic-step"><span class="step-n">3</span><div><strong>Generate correction suggestions</strong> — if any dimension scores below 3: produce a corrected version prefixed with "SUGGESTED CORRECTION:" in quality_notes. Never overwrite original fields.</div></div>
+            <div class="logic-step"><span class="step-n">4</span><div><strong>Write scores to tools_draft</strong> — update the record's quality score columns. Set validator_flag = (quality_score &lt; threshold).</div></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Output — columns written to tools_draft</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">quality_score</span><span class="field-type">float</span><span class="field-desc">Average of three dimension scores (1.0–5.0)</span></div>
+            <div class="field-row"><span class="field-name">quality_tags_score</span><span class="field-type">integer</span><span class="field-desc">problem_tags accuracy dimension (1–5)</span></div>
+            <div class="field-row"><span class="field-name">quality_embedding_score</span><span class="field-type">integer</span><span class="field-desc">embedding_text accuracy dimension (1–5)</span></div>
+            <div class="field-row"><span class="field-name">quality_confidence_score</span><span class="field-type">integer</span><span class="field-desc">Independent corroboration dimension (1–5)</span></div>
+            <div class="field-row"><span class="field-name">quality_notes</span><span class="field-type">string</span><span class="field-desc">Reasoning for scores + any suggested corrections</span></div>
+            <div class="field-row"><span class="field-name">quality_sources</span><span class="field-type">string</span><span class="field-desc">Comma-separated URLs the Validator used — separate from the Curator's source_urls</span></div>
+            <div class="field-row"><span class="field-name">validator_flag</span><span class="field-type">boolean</span><span class="field-desc">TRUE if quality_score &lt; quality_threshold — surfaced prominently in admin review UI</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="agent-intake-validator"></div>
+  <!-- ──────────────────────── AGENT 5: INTAKE VALIDATOR ──────────────────────── -->
+  <div class="agent-section agent-validator">
+    <div class="container">
+      <div class="agent-section-header">
+        <div>
+          <span class="agent-badge validator-badge">Validator · Pipeline 2</span>
+          <h3 class="agent-title">Intake Validator</h3>
+          <p class="agent-subtitle">Reviews Problem Memos for completeness, clarity, and actionability before passing to the Analyst</p>
+        </div>
+        <div class="agent-meta-box">
+          <div class="meta-row"><span>Trigger</span><span>memo_created event</span></div>
+          <div class="meta-row"><span>Runtime</span><span>1–3 min</span></div>
+          <div class="meta-row"><span>Concurrency</span><span>Up to 5 parallel</span></div>
+          <div class="meta-row"><span>Model</span><span>Claude Sonnet</span></div>
+        </div>
+      </div>
+
+      <div class="agent-spec-grid">
+
+        <div class="spec-block">
+          <div class="spec-block-title">Why this validator exists</div>
+          <p class="spec-desc">The Analyst's matching quality is entirely dependent on the quality of the Problem Memo it receives. A memo that is vague, contradictory, or missing key fields will produce a poor solution presentation — wasting time and creating a bad client experience. The Intake Validator catches these problems before they reach the Analyst, and before the client gets a result they cannot use.</p>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Validation checks — 3 categories</div>
+          <table class="spec-table">
+            <thead><tr><th>Category</th><th>Check</th><th>Fail action</th></tr></thead>
+            <tbody>
+              <tr><td rowspan="4" style="vertical-align:middle;font-weight:600">Completeness</td><td>All required fields are non-empty</td><td>Return <code>INCOMPLETE</code> — list missing fields</td></tr>
+              <tr><td>pain_points has at least 2 entries</td><td>Return <code>INCOMPLETE</code></td></tr>
+              <tr><td>constraints is not empty</td><td>Return <code>INCOMPLETE</code></td></tr>
+              <tr><td>urgency is a valid enum value</td><td>Return <code>INCOMPLETE</code></td></tr>
+              <tr><td rowspan="3" style="vertical-align:middle;font-weight:600">Clarity</td><td>problem_summary is specific enough to match against tools (not "we have some challenges")</td><td>Flag with score 2 — suggest clarification</td></tr>
+              <tr><td>pain_points are concrete, not abstract ("spreadsheets break" not "efficiency issues")</td><td>Flag with score 2</td></tr>
+              <tr><td>desired_outcome is measurable or describable, not just "things work better"</td><td>Flag with score 2</td></tr>
+              <tr><td rowspan="2" style="vertical-align:middle;font-weight:600">Consistency</td><td>No contradictions between fields (e.g. budget = 0 but urgency = urgent)</td><td>Flag contradiction — list specific conflict</td></tr>
+              <tr><td>Business context is coherent (industry, size, team all plausible together)</td><td>Flag if implausible</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Output — written to problem_memos table</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">validation_status</span><span class="field-type">enum</span><span class="field-desc">passed | incomplete | flagged — determines whether Analyst is triggered</span></div>
+            <div class="field-row"><span class="field-name">validation_score</span><span class="field-type">float 1–5</span><span class="field-desc">Overall memo quality score</span></div>
+            <div class="field-row"><span class="field-name">validation_notes</span><span class="field-type">string</span><span class="field-desc">Plain-English explanation of any issues found</span></div>
+            <div class="field-row"><span class="field-name">missing_fields</span><span class="field-type">string[]</span><span class="field-desc">List of required fields that are empty or insufficient</span></div>
+            <div class="field-row"><span class="field-name">flags</span><span class="field-type">string[]</span><span class="field-desc">List of clarity or consistency issues — each a short descriptive string</span></div>
+          </div>
+          <p class="spec-desc" style="margin-top:14px;margin-bottom:0">If validation_status = <code>passed</code>: orchestrator emits <code>intake_validation_passed</code> and triggers the Analyst. If <code>incomplete</code> or <code>flagged</code>: the Consultant is notified and asked to re-engage the client for clarification. The Analyst is not triggered.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="agent-match-validator"></div>
+  <!-- ──────────────────────── AGENT 6: MATCH VALIDATOR ──────────────────────── -->
+  <div class="agent-section agent-validator">
+    <div class="container">
+      <div class="agent-section-header">
+        <div>
+          <span class="agent-badge validator-badge">Validator · Pipeline 3</span>
+          <h3 class="agent-title">Match Validator</h3>
+          <p class="agent-subtitle">Reviews Solution Presentations for accuracy, relevance, and integrity before admin approval</p>
+        </div>
+        <div class="agent-meta-box">
+          <div class="meta-row"><span>Trigger</span><span>solution_created event</span></div>
+          <div class="meta-row"><span>Runtime</span><span>3–8 min</span></div>
+          <div class="meta-row"><span>Concurrency</span><span>Up to 3 parallel</span></div>
+          <div class="meta-row"><span>Model</span><span>Claude Sonnet</span></div>
+        </div>
+      </div>
+
+      <div class="agent-spec-grid">
+
+        <div class="spec-block">
+          <div class="spec-block-title">What it validates</div>
+          <p class="spec-desc">The Match Validator reads both the Problem Memo and the Solution Presentation together. It independently assesses whether each recommended tool genuinely addresses the client's specific stated problems — not just whether the tool is good in general. It also checks that the scoring is internally consistent, the rationale is accurate, and the presentation would make sense to the client.</p>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Input context object</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">context.memo</span><span class="field-type">object</span><span class="field-desc">The full Problem Memo — the "question" being answered</span></div>
+            <div class="field-row"><span class="field-name">context.presentation</span><span class="field-type">object</span><span class="field-desc">The full Solution Presentation — the "answer" being reviewed</span></div>
+            <div class="field-row"><span class="field-name">context.tool_details</span><span class="field-type">object[]</span><span class="field-desc">Full tools_and_services records for each recommended tool — so the Validator can read the original source data</span></div>
+          </div>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Validation checks per recommendation</div>
+          <table class="spec-table">
+            <thead><tr><th>Check</th><th>Pass condition</th><th>Fail action</th></tr></thead>
+            <tbody>
+              <tr><td>Problem relevance</td><td>The tool's problem_tags include at least 2 tags that match the memo's pain_points</td><td>Flag recommendation — note which pain points are unaddressed</td></tr>
+              <tr><td>Rationale accuracy</td><td>The AI-generated rationale references the client's actual pain points, not generic tool benefits</td><td>Flag and suggest corrected rationale in validation_notes</td></tr>
+              <tr><td>Constraint compliance</td><td>Tool satisfies all hard constraints in the memo (budget, size fit, required integrations)</td><td>Remove recommendation — log constraint violation</td></tr>
+              <tr><td>Score integrity</td><td>composite_score is consistent with the component scores and the tool's actual fit</td><td>Flag if score seems inflated or inconsistent</td></tr>
+              <tr><td>Ranking order</td><td>The top recommendation genuinely appears to be the best fit, not just the highest confidence_score</td><td>Flag if ranking seems to prioritise database score over actual fit</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="spec-block">
+          <div class="spec-block-title">Output — written to solution_presentations table</div>
+          <div class="field-list">
+            <div class="field-row"><span class="field-name">match_validation_status</span><span class="field-type">enum</span><span class="field-desc">passed | flagged | failed — passed means ready for admin review</span></div>
+            <div class="field-row"><span class="field-name">match_validation_score</span><span class="field-type">float 1–5</span><span class="field-desc">Overall quality of the match — how well the presentation answers the memo</span></div>
+            <div class="field-row"><span class="field-name">match_validation_notes</span><span class="field-type">string</span><span class="field-desc">Summary of issues found and suggested improvements</span></div>
+            <div class="field-row"><span class="field-name">per_recommendation_flags</span><span class="field-type">jsonb</span><span class="field-desc">Array of {tool_id, issues[]} — specific flags per recommendation for admin review</span></div>
+            <div class="field-row"><span class="field-name">removed_recommendations</span><span class="field-type">jsonb</span><span class="field-desc">Any recommendations the validator removed due to hard constraint violations, with reasons</span></div>
+          </div>
+          <p class="spec-desc" style="margin-top:14px;margin-bottom:0">If match_validation_status = <code>failed</code> (zero valid recommendations remain after constraint enforcement): the Analyst is re-triggered with an updated context noting which constraints eliminated all candidates.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════ ORCHESTRATION -->
+<section id="orchestration">
+  <div class="container">
+    <p class="section-number">04 — Orchestration</p>
+    <h2>Every run follows the same lifecycle</h2>
+    <p class="section-lead">Whether it's the Curator doing a weekly database scan or the Analyst matching a client memo — every job goes through the same seven states, managed by the orchestration engine.</p>
+
+    <div class="lifecycle">
+      <div class="lifecycle-line"></div>
+
+      <div class="lifecycle-step">
+        <div class="lifecycle-dot">1</div>
+        <div class="lifecycle-content">
+          <div class="lifecycle-state">state: queued</div>
+          <h4>Trigger fires — job record created</h4>
+          <p>A cron schedule, an incoming client event, or a manual trigger creates a job record in Postgres. Status is set to <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal)">queued</code>. Config is loaded from the agent_config table. The job is pushed onto the Redis queue.</p>
+        </div>
+      </div>
+
+      <div class="lifecycle-step">
+        <div class="lifecycle-dot">2</div>
+        <div class="lifecycle-content">
+          <div class="lifecycle-state">state: running</div>
+          <h4>Router dispatches the worker agent</h4>
+          <p>The agent router reads the job type, looks up the registered endpoint for that agent in the agents table, and POSTs the standardised input payload. Status → <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal)">running</code>. A timeout clock starts.</p>
+        </div>
+      </div>
+
+      <div class="lifecycle-step">
+        <div class="lifecycle-dot">3</div>
+        <div class="lifecycle-content">
+          <div class="lifecycle-state">state: running</div>
+          <h4>Validator agent dispatched in sequence</h4>
+          <p>When the worker posts its result back, the router immediately dispatches the corresponding validator agent with the worker's output as its input context. Both worker and validator results are stored in the job record.</p>
+        </div>
+      </div>
+
+      <div class="lifecycle-step">
+        <div class="lifecycle-dot">4</div>
+        <div class="lifecycle-content">
+          <div class="lifecycle-state">state: validating → pending_review</div>
+          <h4>Results packaged and surfaced for review</h4>
+          <p>The orchestrator assembles the full results — worker output, validator scores, flagged items — into a review payload. Status → <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal)">pending_review</code>. Notification sent to the configured admin email.</p>
+        </div>
+      </div>
+
+      <div class="lifecycle-step hitl">
+        <div class="lifecycle-dot">5</div>
+        <div class="lifecycle-content">
+          <div class="lifecycle-state">state: pending_review</div>
+          <h4>Human-in-the-loop gate — approval required</h4>
+          <p>The admin reviews results in the dashboard. Each item can be approved, edited, or rejected. A timeout clock runs: if no action is taken within the configured window (default 72 hours), an escalation alert fires. The system waits — it does not auto-approve or auto-reject.</p>
+        </div>
+      </div>
+
+      <div class="lifecycle-step">
+        <div class="lifecycle-dot">6</div>
+        <div class="lifecycle-content">
+          <div class="lifecycle-state">state: committing</div>
+          <h4>Approved results committed to the data layer</h4>
+          <p>For each approved item: the orchestrator writes it to the appropriate destination (tools_and_services, a client-facing document, etc.), exports any required artifacts, and records the approval decision with timestamp and approver identity.</p>
+        </div>
+      </div>
+
+      <div class="lifecycle-step">
+        <div class="lifecycle-dot">7</div>
+        <div class="lifecycle-content">
+          <div class="lifecycle-state">state: completed</div>
+          <h4>Job closed — audit record finalised</h4>
+          <p>Status → <code style="font-family:var(--font-mono);font-size:12px;color:var(--teal)">completed</code>. Duration, item counts, approval rates, and any errors are written to the audit log. The job record is sealed and immutable.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ CONTRACT -->
+<section id="contract">
+  <div class="container">
+    <p class="section-number">05 — The agent contract</p>
+    <h2>One interface, any model</h2>
+    <p class="section-lead">The agent contract is the most important architectural decision in the system. It is the specification every agent — worker or validator — must honour. The orchestrator only knows this interface. Everything inside an agent is invisible to the system.</p>
+
+    <div class="contract-diagram">
+      <div class="contract-row">
+        <div class="contract-box">
+          <h5>Input payload (system → agent)</h5>
+          <div class="contract-field">
+            <span>job_id</span>
+            <span class="field-type">uuid</span>
+          </div>
+          <div class="contract-field">
+            <span>agent_type</span>
+            <span class="field-type">enum</span>
+          </div>
+          <div class="contract-field">
+            <span>config</span>
+            <span class="field-type">object</span>
+          </div>
+          <div class="contract-field">
+            <span>context</span>
+            <span class="field-type">object</span>
+          </div>
+          <div class="contract-field">
+            <span>callback_url</span>
+            <span class="field-type">url</span>
+          </div>
+          <div class="contract-field">
+            <span>timeout_seconds</span>
+            <span class="field-type">integer</span>
+          </div>
+        </div>
+
+        <div class="contract-arrow">→</div>
+
+        <div class="contract-box">
+          <h5>Output payload (agent → system)</h5>
+          <div class="contract-field">
+            <span>job_id</span>
+            <span class="field-type">uuid (echo)</span>
+          </div>
+          <div class="contract-field">
+            <span>status</span>
+            <span class="field-type">success|fail|partial</span>
+          </div>
+          <div class="contract-field">
+            <span>artifacts</span>
+            <span class="field-type">array</span>
+          </div>
+          <div class="contract-field">
+            <span>errors</span>
+            <span class="field-type">array</span>
+          </div>
+          <div class="contract-field">
+            <span>run_log</span>
+            <span class="field-type">string</span>
+          </div>
+          <div class="contract-field">
+            <span>duration_seconds</span>
+            <span class="field-type">integer</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="black-box">
+        <p>Agent — black box</p>
+        <small>Any provider · Any model · Any implementation · The system never looks inside</small>
+      </div>
+
+      <div class="swap-bar">
+        <div class="swap-pill active">Claude Sonnet 4.6</div>
+        <div class="swap-pill">GPT-4o</div>
+        <div class="swap-pill">Gemini Pro</div>
+        <div class="swap-pill">Custom model</div>
+      </div>
+      <p class="swap-caption">Change the active model → update one row in the agents registry table → nothing else changes</p>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">→</span>
+      <div class="callout-content">
+        <h4>Why the contract matters</h4>
+        <p>Without this contract, every model change requires system changes. With it, the model is just a detail of the agent's internal implementation — the system is completely decoupled from it. This is also why agents can be developed, tested, and deployed independently, in parallel, by different developers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ DATA -->
+<section id="data">
+  <div class="container">
+    <p class="section-number">06 — Data layer</p>
+    <h2>State lives in the data layer, never in agents</h2>
+    <p class="section-lead">Agents are stateless. Between runs, they hold nothing. All state — system state, business data, files — lives in the data layer. This is what makes the system restartable, auditable, and recoverable from failure.</p>
+
+    <div class="data-grid">
+      <div class="data-card">
+        <div class="data-icon">PG</div>
+        <h4>Postgres — system of record</h4>
+        <p>The authoritative store for everything the system owns. Job records, run history, approval decisions, the agent registry, config. Every state change is a write to Postgres first.</p>
+        <div class="stores">
+          <span>→ jobs (run lifecycle)</span>
+          <span>→ agents (registry + endpoints)</span>
+          <span>→ approvals (decision + actor)</span>
+          <span>→ audit_log (immutable)</span>
+          <span>→ agent_config (parameters)</span>
+        </div>
+      </div>
+
+      <div class="data-card">
+        <div class="data-icon">GS</div>
+        <h4>Google Sheets — business data</h4>
+        <p>The human-readable, agent-queryable store for business records. tools_and_services is the database the Analyst queries. document_register is the metadata index over Drive files.</p>
+        <div class="stores">
+          <span>→ tools_and_services</span>
+          <span>→ tools_draft (staging)</span>
+          <span>→ document_register</span>
+          <span>→ agent_config (parameters)</span>
+        </div>
+      </div>
+
+      <div class="data-card">
+        <div class="data-icon">GD</div>
+        <h4>Google Drive — file storage</h4>
+        <p>The file system. Client memos, solution presentations, contracts, invoices, reports. Files are referenced by Drive ID in the document_register — never accessed by path.</p>
+        <div class="stores">
+          <span>→ /Operational/Problem Memos/</span>
+          <span>→ /Operational/Solution Presentations/</span>
+          <span>→ /Legal/</span>
+          <span>→ /Accounting/</span>
+          <span>→ /Organization/Architecture/</span>
+        </div>
+      </div>
+
+      <div class="data-card">
+        <div class="data-icon">RQ</div>
+        <h4>Redis + BullMQ — job queue</h4>
+        <p>The async job queue between the scheduler and the agent runner. Handles priority (urgent client intake over routine curator run), deduplication (no two identical jobs at once), and retry with exponential backoff on failure.</p>
+        <div class="stores">
+          <span>→ priority queues per agent type</span>
+          <span>→ retry with backoff (max 3)</span>
+          <span>→ dead letter queue for failures</span>
+          <span>→ job deduplication by type+date</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">!</span>
+      <div class="callout-content">
+        <h4>The upgrade path is already built in</h4>
+        <p>Google Sheets is the right starting point — it's already set up, free, and human-readable. But the schema field types are Postgres-compatible by design. When tools_and_services grows beyond ~5,000 rows or you need complex relational queries, migrating to Supabase (managed Postgres) requires a data export and schema creation — not a system redesign.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ HITL -->
+<section id="hitl">
+  <div class="container">
+    <p class="section-number">07 — Human in the loop</p>
+    <h2>Automation with oversight built in</h2>
+    <p class="section-lead">The human approval gate is not a manual workaround — it is a designed component with state, timeouts, and escalation. You appear exactly where your judgment is needed, and nowhere else.</p>
+
+    <div class="hitl-flow">
+      <div class="hitl-box wait">
+        <div class="step-n">Step 1</div>
+        <h4>System notifies you</h4>
+        <p>Email (or Slack) with a summary: how many items, validator flags, confidence scores. Link directly to the review dashboard.</p>
+      </div>
+      <div class="hitl-box approve">
+        <div class="step-n">Step 2</div>
+        <h4>You review in the dashboard</h4>
+        <p>Each item shows: worker output, validator score, quality notes, suggested corrections, source URLs. You decide: approve, edit, or reject.</p>
+      </div>
+      <div class="hitl-box wait">
+        <div class="step-n">Step 3</div>
+        <h4>System commits your decisions</h4>
+        <p>Approved items are written to the live data layer with your name and timestamp attached. Rejected items are logged with reason. Exports fire automatically.</p>
+      </div>
+    </div>
+
+    <h3 style="margin: 40px 0 16px">What happens if you don't review in time</h3>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 40px">
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px">
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--amber); margin-bottom: 8px">AT 48 HOURS</div>
+        <h4 style="font-size: 14px; margin-bottom: 6px">First escalation alert</h4>
+        <p style="font-size: 13px; color: var(--text2)">Second notification sent. The draft batch is still waiting. The next scheduled run will be blocked until this one is cleared.</p>
+      </div>
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px">
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--coral); margin-bottom: 8px">AT 72 HOURS (CONFIGURABLE)</div>
+        <h4 style="font-size: 14px; margin-bottom: 6px">Deadline alert</h4>
+        <p style="font-size: 13px; color: var(--text2)">Final alert. The job is marked <code style="font-family: var(--font-mono); font-size: 11px; color: var(--coral)">expired</code> in the audit log. The draft is preserved but the next run is unblocked.</p>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">→</span>
+      <div class="callout-content">
+        <h4>The system never auto-approves</h4>
+        <p>No agent output ever reaches the live database without a human approval decision. This is a hard architectural constraint, not a configurable setting. The only exception is stale record refreshes where the content did not change — those write a date update directly, since no judgment is required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ STACK -->
+<section id="stack">
+  <div class="container">
+    <p class="section-number">08 — Technology stack</p>
+    <h2>Recommended stack for the developer</h2>
+    <p class="section-lead">These are the recommended choices for each component. They are not mandatory — any component can be swapped for an equivalent. The architecture does not depend on specific vendors.</p>
+
+    <table class="stack-table">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Recommended</th>
+          <th>Why</th>
+          <th>Alternative</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Backend / API</td>
+          <td>Node.js + Express</td>
+          <td>Fast to build, excellent Google API clients, same language as the agent runners</td>
+          <td>Python + FastAPI</td>
+        </tr>
+        <tr>
+          <td>Job scheduler</td>
+          <td>BullMQ + Redis</td>
+          <td>Battle-tested, priority queues, delayed jobs, retry logic, good observability</td>
+          <td>Inngest, Temporal</td>
+        </tr>
+        <tr>
+          <td>Primary database</td>
+          <td>Postgres (Supabase)</td>
+          <td>Managed, free tier, built-in REST API, Row Level Security, compatible with existing schema design</td>
+          <td>PlanetScale, Neon</td>
+        </tr>
+        <tr>
+          <td>Business data</td>
+          <td>Google Sheets</td>
+          <td>Already set up, human-readable, Gemini-native, free in Workspace</td>
+          <td>Supabase tables (migration path)</td>
+        </tr>
+        <tr>
+          <td>File storage</td>
+          <td>Google Drive</td>
+          <td>Already set up, full API, versioning, permissions</td>
+          <td>S3 + CloudFront</td>
+        </tr>
+        <tr>
+          <td>AI provider</td>
+          <td>Anthropic Claude API</td>
+          <td>Best structured output reliability, native MCP support, strong tool use</td>
+          <td>OpenAI, Gemini — swappable via agent contract</td>
+        </tr>
+        <tr>
+          <td>Web search</td>
+          <td>Brave Search API</td>
+          <td>Generous free tier, clean JSON, no scraping required</td>
+          <td>Serper, SerpAPI</td>
+        </tr>
+        <tr>
+          <td>Admin frontend</td>
+          <td>Next.js</td>
+          <td>React-based, fast to build, easy deployment on Vercel</td>
+          <td>Remix, SvelteKit</td>
+        </tr>
+        <tr>
+          <td>Hosting</td>
+          <td>Railway or Fly.io</td>
+          <td>Simple deployment, auto-scaling, affordable at this stage (~£20–40/month)</td>
+          <td>AWS ECS, Google Cloud Run</td>
+        </tr>
+        <tr>
+          <td>Notifications</td>
+          <td>Resend (email)</td>
+          <td>Simple API, reliable delivery, good templates</td>
+          <td>SendGrid, direct Gmail API</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout key">
+      <span class="callout-icon">→</span>
+      <div class="callout-content">
+        <h4>Estimated monthly running cost at launch</h4>
+        <p>Railway/Fly.io hosting: £20–40. Supabase: free tier. Redis (via Railway): £5–10. Claude API (6 agents × weekly runs): £20–60 depending on run volume. Web search (Brave): free tier sufficient at launch. Google Workspace: already paid. Total: approximately <strong>£50–120/month</strong> fully automated, scaling with usage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>AI Business System · Architecture Specification · Tier 3 · Version 1.0 · March 2026</p>
+  <p style="margin-top: 8px; opacity: 0.5">This document is the base. Each section will be expanded with full component-level specifications.</p>
+</footer>
+
+<script>
+(function() {
+
+  // ── 1. NAV DROPDOWN: persistent on hover (with gap bridging) ─────────────
+  document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
+    var menu = dropdown.querySelector('.nav-dropdown-menu');
+    var timer;
+
+    function show() { clearTimeout(timer); dropdown.classList.add('open'); }
+    function hide() { timer = setTimeout(function() { dropdown.classList.remove('open'); }, 120); }
+
+    dropdown.addEventListener('mouseenter', show);
+    dropdown.addEventListener('mouseleave', hide);
+    if (menu) {
+      menu.addEventListener('mouseenter', show);
+      menu.addEventListener('mouseleave', hide);
+    }
+  });
+
+  // ── 2. ACTIVE NAV: scroll-driven, maps sub-anchors to parent nav items ───
+  var topLinks   = document.querySelectorAll('.nav-links > li > a[data-section]');
+  var subLinks   = document.querySelectorAll('.nav-dropdown-menu a[href^="#"]');
+
+  function clearActive() {
+    topLinks.forEach(function(l) { l.classList.remove('active'); });
+    subLinks.forEach(function(l) { l.classList.remove('active'); });
+  }
+
+  function activateSection(id) {
+    clearActive();
+    // Highlight the matching top-level link
+    topLinks.forEach(function(l) {
+      if (l.getAttribute('data-section') === id) l.classList.add('active');
+    });
+    // Highlight the matching sub-link
+    subLinks.forEach(function(l) {
+      if (l.getAttribute('href') === '#' + id) l.classList.add('active');
+    });
+  }
+
+  function activateSubAnchor(id) {
+    // Sub-anchor inside layers or agents — highlight parent + sub-item
+    clearActive();
+    var isLayer = id.startsWith('layer-');
+    var isAgent = id.startsWith('agent-');
+    topLinks.forEach(function(l) {
+      var sec = l.getAttribute('data-section');
+      if ((isLayer && sec === 'layers') || (isAgent && sec === 'agents')) {
+        l.classList.add('active');
+      }
+    });
+    subLinks.forEach(function(l) {
+      if (l.getAttribute('href') === '#' + id) l.classList.add('active');
+    });
+  }
+
+  // Observe top-level sections
+  var sectionObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) activateSection(e.target.id);
+    });
+  }, { rootMargin: '-25% 0px -65% 0px' });
+
+  document.querySelectorAll('section[id]').forEach(function(s) { sectionObs.observe(s); });
+
+  // Observe sub-anchors (layer-N, agent-xxx divs)
+  var subObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) activateSubAnchor(e.target.id);
+    });
+  }, { rootMargin: '-15% 0px -75% 0px' });
+
+  document.querySelectorAll('div[id^="layer-"], div[id^="agent-"]').forEach(function(s) {
+    subObs.observe(s);
+  });
+
+  // ── 3. COLLAPSIBLE LAYER / AGENT SECTIONS ────────────────────────────────
+  // The header stays visible always. Only the body collapses.
+  function initSectionCollapsible(section) {
+    var header = section.querySelector(':scope > .layer-section-header, :scope > .container > .layer-section-header, :scope > .container > .agent-section-header');
+    if (!header) {
+      // Try finding it one level deeper (agent sections have container wrapper)
+      header = section.querySelector('.layer-section-header, .agent-section-header');
+    }
+    if (!header) return;
+
+    // Collect everything after the header as the collapsible body
+    // Strategy: wrap all sibling elements that come after the header's container
+    var container = header.parentElement; // .container div
+    var sectionEl = section;
+
+    // Find all direct children of the section that are NOT the container holding the header
+    var headerContainer = container === section ? header : container;
+
+    // Wrap all children after headerContainer into a section-body div
+    var body = document.createElement('div');
+    body.className = 'section-body';
+
+    // Collect siblings after the header's container
+    var siblings = [];
+    var found = false;
+    Array.from(sectionEl.children).forEach(function(child) {
+      if (found) siblings.push(child);
+      if (child === headerContainer) found = true;
+    });
+
+    // If headerContainer IS the section (header is direct child), collect after header
+    if (!found) {
+      found = false;
+      Array.from(sectionEl.children).forEach(function(child) {
+        if (found) siblings.push(child);
+        if (child === header) found = true;
+      });
+    }
+
+    if (siblings.length === 0) return; // nothing to collapse
+
+    siblings.forEach(function(s) { body.appendChild(s); });
+    sectionEl.appendChild(body);
+
+    // Set initial max-height so transition works
+    body.style.maxHeight = body.scrollHeight + 'px';
+    setTimeout(function() { body.style.maxHeight = '99999px'; }, 400);
+
+    // Add chevron to header
+    var chev = document.createElement('span');
+    chev.className = 'section-chevron';
+    chev.textContent = '▾';
+    chev.setAttribute('aria-hidden', 'true');
+    header.appendChild(chev);
+
+    // Click handler
+    header.addEventListener('click', function() {
+      var isOpen = !body.classList.contains('collapsed');
+      if (isOpen) {
+        // Collapse: set explicit height first, then animate to 0
+        body.style.maxHeight = body.scrollHeight + 'px';
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            body.classList.add('collapsed');
+            body.style.maxHeight = '0';
+            chev.classList.add('collapsed');
+          });
+        });
+      } else {
+        // Expand
+        body.classList.remove('collapsed');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        chev.classList.remove('collapsed');
+        setTimeout(function() {
+          body.style.maxHeight = '99999px';
+        }, 400);
+      }
+    });
+  }
+
+  document.querySelectorAll('.layer-section, .agent-section').forEach(initSectionCollapsible);
+
+  // ── 4. COLLAPSIBLE SPEC BLOCKS ────────────────────────────────────────────
+  // Title always visible. Everything below it collapses.
+  document.querySelectorAll('.spec-block').forEach(function(block) {
+    var title = block.querySelector(':scope > .spec-block-title');
+    if (!title) return;
+
+    // Wrap children after title into spec-block-body
+    var body = document.createElement('div');
+    body.className = 'spec-block-body';
+    var siblings = [];
+    var found = false;
+    Array.from(block.children).forEach(function(child) {
+      if (found) siblings.push(child);
+      if (child === title) found = true;
+    });
+    if (siblings.length === 0) return;
+    siblings.forEach(function(s) { body.appendChild(s); });
+    block.appendChild(body);
+
+    body.style.maxHeight = body.scrollHeight + 'px';
+    setTimeout(function() { body.style.maxHeight = '99999px'; }, 400);
+
+    title.addEventListener('click', function() {
+      var isOpen = !block.classList.contains('collapsed');
+      if (isOpen) {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            block.classList.add('collapsed');
+            body.style.maxHeight = '0';
+          });
+        });
+      } else {
+        block.classList.remove('collapsed');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        setTimeout(function() { body.style.maxHeight = '99999px'; }, 320);
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

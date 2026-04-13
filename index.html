@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROSPECT — Digital Systems & AI Integration</title>
+  <meta name="description" content="Prospect is an AI-native technology consultancy. We diagnose, match, build, and deploy — so your business moves forward with clarity and confidence." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <svg width="180" height="40" viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8"  y="8"  width="56" height="56" stroke="#c8a96e" stroke-width="1.5" fill="none" opacity="1"/>
+          <rect x="16" y="16" width="40" height="40" stroke="#c8a96e" stroke-width="1.2" fill="none" opacity="0.6"/>
+          <rect x="24" y="24" width="24" height="24" stroke="#c8a96e" stroke-width="1"   fill="none" opacity="0.35"/>
+          <rect x="31" y="31" width="10" height="10" stroke="#c8a96e" stroke-width="0.8" fill="none" opacity="0.18"/>
+          <line x1="31" y1="8"  x2="41" y2="8"  stroke="#0a0a0c" stroke-width="3"/>
+          <line x1="31" y1="16" x2="41" y2="16" stroke="#0a0a0c" stroke-width="3"/>
+          <line x1="32" y1="24" x2="40" y2="24" stroke="#0a0a0c" stroke-width="3"/>
+          <text x="84" y="46" font-family="Cormorant Garamond, Georgia, serif" font-size="28" font-weight="300" letter-spacing="7" fill="#e8e8ec">PROSPECT</text>
+        </svg>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#what-we-do">What We Do</a></li>
+        <li><a href="#how-we-work">How We Work</a></li>
+        <li><a href="#platform">Platform</a></li>
+        <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#what-we-do" class="mob-link">What We Do</a></li>
+      <li><a href="#how-we-work" class="mob-link">How We Work</a></li>
+      <li><a href="#platform" class="mob-link">Platform</a></li>
+      <li><a href="#contact" class="mob-link">Get in Touch</a></li>
+    </ul>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg">
+      <div class="grid-overlay"></div>
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow reveal">AI-Native Technology Consultancy</div>
+      <h1 class="hero-title reveal delay-1">
+        <span class="line">Clarity from</span>
+        <span class="line italic">complexity.</span>
+      </h1>
+      <p class="hero-sub reveal delay-2">
+        We diagnose your operational challenges, identify the right solution — existing or custom-built — and deploy it. End to end. No agenda. No one-size-fits-all.
+      </p>
+      <div class="hero-actions reveal delay-3">
+        <a href="#what-we-do" class="btn-primary">See How We Work</a>
+        <a href="#contact" class="btn-ghost">Start a Conversation</a>
+      </div>
+    </div>
+    <div class="hero-scroll reveal delay-4">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Digital Transformation</span>
+      <span class="dot">·</span>
+      <span>AI Integration</span>
+      <span class="dot">·</span>
+      <span>Custom Systems</span>
+      <span class="dot">·</span>
+      <span>Operational Efficiency</span>
+      <span class="dot">·</span>
+      <span>Solution Architecture</span>
+      <span class="dot">·</span>
+      <span>Platform Strategy</span>
+      <span class="dot">·</span>
+      <span>Digital Transformation</span>
+      <span class="dot">·</span>
+      <span>AI Integration</span>
+      <span class="dot">·</span>
+      <span>Custom Systems</span>
+      <span class="dot">·</span>
+      <span>Operational Efficiency</span>
+      <span class="dot">·</span>
+      <span>Solution Architecture</span>
+      <span class="dot">·</span>
+      <span>Platform Strategy</span>
+      <span class="dot">·</span>
+    </div>
+  </div>
+
+  <!-- WHAT WE DO -->
+  <section id="what-we-do" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">What We Do</div>
+        <h2 class="section-title">One engagement.<br/><em>Every capability.</em></h2>
+      </div>
+      <div class="services-grid">
+        <div class="service-card scroll-reveal">
+          <div class="service-num">01</div>
+          <h3>Assess</h3>
+          <p>We build a complete picture of your organisation — objectives, constraints, infrastructure, and readiness. We help you define what you want technology to achieve, not just what you think you want to build.</p>
+        </div>
+        <div class="service-card scroll-reveal delay-1">
+          <div class="service-num">02</div>
+          <h3>Match</h3>
+          <p>Drawing on a continuously curated Solutions Database, we evaluate the full landscape of existing platforms. We are entirely vendor-neutral — we have no commercial incentive to push any particular product.</p>
+        </div>
+        <div class="service-card scroll-reveal delay-2">
+          <div class="service-num">03</div>
+          <h3>Build</h3>
+          <p>Where no existing solution fits, we design and build it. A versatile engineering team — augmented by specialist contractors — delivers custom systems from scoping through to deployment.</p>
+        </div>
+        <div class="service-card scroll-reveal delay-3">
+          <div class="service-num">04</div>
+          <h3>Embed</h3>
+          <p>We recruit, train, and embed the technical personnel your new systems require. We support them in-role, and when an engagement ends, we bring them home and take care of what comes next.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATEMENT -->
+  <section class="statement-section">
+    <div class="container">
+      <blockquote class="big-statement scroll-reveal">
+        "We don't sell products.<br/><em>We solve problems.</em>"
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- HOW WE WORK -->
+  <section id="how-we-work" class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label light">How We Work</div>
+        <h2 class="section-title light">A process built for<br/><em>your reality.</em></h2>
+      </div>
+      <div class="process-list">
+        <div class="process-item scroll-reveal">
+          <div class="process-marker">
+            <div class="process-dot"></div>
+            <div class="process-line"></div>
+          </div>
+          <div class="process-content">
+            <div class="process-step">Step 01</div>
+            <h3>Discovery</h3>
+            <p>We start with a no-cost conversation. You describe your challenges, goals, and budget. We ask the questions that reveal the full picture — what you need to achieve, not what you think you need to buy.</p>
+          </div>
+        </div>
+        <div class="process-item scroll-reveal delay-1">
+          <div class="process-marker">
+            <div class="process-dot"></div>
+            <div class="process-line"></div>
+          </div>
+          <div class="process-content">
+            <div class="process-step">Step 02</div>
+            <h3>Proposal</h3>
+            <p>We produce a formal project proposal — defining scope, approach, budget bounds, and timeline. You only pay for this work if you choose to proceed. No upfront cost, no obligation.</p>
+          </div>
+        </div>
+        <div class="process-item scroll-reveal delay-2">
+          <div class="process-marker">
+            <div class="process-dot"></div>
+            <div class="process-line"></div>
+          </div>
+          <div class="process-content">
+            <div class="process-step">Step 03</div>
+            <h3>Delivery</h3>
+            <p>Once approved, we execute. Whether that means onboarding you to the right platform or building something bespoke, we manage the entire process — quality, timelines, and integration — end to end.</p>
+          </div>
+        </div>
+        <div class="process-item scroll-reveal delay-3">
+          <div class="process-marker">
+            <div class="process-dot"></div>
+          </div>
+          <div class="process-content">
+            <div class="process-step">Step 04</div>
+            <h3>Sustain</h3>
+            <p>Deployment is not the end. We set up the infrastructure for long-term success — whether that's internal maintenance, embedded personnel, or an ongoing relationship with Prospect.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLATFORM -->
+  <section id="platform" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">The Platform</div>
+        <h2 class="section-title">Intelligence at<br/><em>every layer.</em></h2>
+        <p class="section-intro">We are building a proprietary AI platform that transforms how technology consultancy works — from intake to deployment.</p>
+      </div>
+      <div class="platform-grid">
+        <div class="platform-card scroll-reveal">
+          <div class="platform-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="16" cy="16" r="4" fill="currentColor" opacity="0.3"/>
+              <line x1="16" y1="4" x2="16" y2="28" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+              <line x1="4" y1="16" x2="28" y2="16" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+            </svg>
+          </div>
+          <h3>AI Consulting Agent</h3>
+          <p>An intelligent intake system that converses with your team, builds a semantic model of your challenges, and evaluates the entire solutions landscape — in minutes, not weeks.</p>
+          <div class="platform-tag">Human-in-the-Loop</div>
+        </div>
+        <div class="platform-card scroll-reveal delay-1">
+          <div class="platform-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <rect x="4" y="4" width="10" height="10" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="18" y="4" width="10" height="10" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="4" y="18" width="10" height="10" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="18" y="18" width="10" height="10" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+              <line x1="14" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1"/>
+              <line x1="9" y1="14" x2="9" y2="18" stroke="currentColor" stroke-width="1"/>
+            </svg>
+          </div>
+          <h3>Solutions Database</h3>
+          <p>A continuously curated knowledge base of every relevant technology provider in the market. Updated by a dedicated team. Evaluated against every engagement. Entirely independent.</p>
+          <div class="platform-tag">Vendor Neutral</div>
+        </div>
+        <div class="platform-card scroll-reveal delay-2">
+          <div class="platform-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M6 26 L16 6 L26 26" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              <line x1="9" y1="20" x2="23" y2="20" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <circle cx="16" cy="6" r="2" fill="currentColor" opacity="0.4"/>
+            </svg>
+          </div>
+          <h3>Custom Development</h3>
+          <p>When no existing solution fits, our engineering team builds it. From scoping through deployment, every custom system is designed to scale — and retained as Prospect IP for future clients.</p>
+          <div class="platform-tag">Full-Cycle Delivery</div>
+        </div>
+        <div class="platform-card scroll-reveal delay-3">
+          <div class="platform-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="10" r="5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M6 26 C6 20 26 20 26 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="22" y1="14" x2="28" y2="10" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <circle cx="28" cy="10" r="2" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            </svg>
+          </div>
+          <h3>Personnel Embedding</h3>
+          <p>We find, train, and embed the right people inside your organisation. We support their transition in, their time in role, and — when the engagement ends — their transition out. We take care of our people.</p>
+          <div class="platform-tag">End-to-End Support</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUMBERS -->
+  <section class="numbers-section scroll-reveal">
+    <div class="container">
+      <div class="numbers-grid">
+        <div class="number-item">
+          <div class="number">100<span>%</span></div>
+          <div class="number-label">Vendor neutral — always</div>
+        </div>
+        <div class="number-item">
+          <div class="number">End<span>-to-end</span></div>
+          <div class="number-label">From diagnosis to deployment</div>
+        </div>
+        <div class="number-item">
+          <div class="number">0</div>
+          <div class="number-label">Upfront cost to explore</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section section-dark">
+    <div class="container">
+      <div class="contact-wrap">
+        <div class="contact-left scroll-reveal">
+          <div class="section-label light">Get in Touch</div>
+          <h2 class="section-title light">Every engagement<br/><em>starts with a conversation.</em></h2>
+          <p class="contact-body">No pitch. No obligation. Tell us what you're facing and we'll tell you honestly whether and how we can help.</p>
+          <div class="contact-details">
+            <a href="mailto:hello@prospect.solutions" class="contact-link">hello@prospect.solutions</a>
+          </div>
+        </div>
+        <div class="contact-right scroll-reveal delay-2">
+          <form class="contact-form" id="contactForm">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" name="from_name" placeholder="Jane Smith" required />
+            </div>
+            <div class="form-group">
+              <label>Company</label>
+              <input type="text" name="company" placeholder="Acme Corp" />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" name="reply_to" placeholder="jane@acmecorp.com" required />
+            </div>
+            <div class="form-group">
+              <label>What are you trying to solve?</label>
+              <textarea rows="4" name="message" placeholder="Give us a sense of the challenge..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary full">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <svg width="160" height="36" viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8"  y="8"  width="56" height="56" stroke="#c8a96e" stroke-width="1.5" fill="none" opacity="1"/>
+            <rect x="16" y="16" width="40" height="40" stroke="#c8a96e" stroke-width="1.2" fill="none" opacity="0.6"/>
+            <rect x="24" y="24" width="24" height="24" stroke="#c8a96e" stroke-width="1"   fill="none" opacity="0.35"/>
+            <rect x="31" y="31" width="10" height="10" stroke="#c8a96e" stroke-width="0.8" fill="none" opacity="0.18"/>
+            <line x1="31" y1="8"  x2="41" y2="8"  stroke="#060608" stroke-width="3"/>
+            <line x1="31" y1="16" x2="41" y2="16" stroke="#060608" stroke-width="3"/>
+            <line x1="32" y1="24" x2="40" y2="24" stroke="#060608" stroke-width="3"/>
+            <text x="84" y="46" font-family="Cormorant Garamond, Georgia, serif" font-size="28" font-weight="300" letter-spacing="7" fill="#e8e8ec">PROSPECT</text>
+          </svg>
+        </div>
+        <div class="footer-tagline">Digital Systems & AI Integration</div>
+        <div class="footer-links">
+          <a href="#what-we-do">What We Do</a>
+          <a href="#how-we-work">How We Work</a>
+          <a href="#platform">Platform</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-copy">© 2026 Prospect. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

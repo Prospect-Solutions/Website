@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Development Roadmap</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0b0e14;
+    --bg2:     #111520;
+    --bg3:     #161c2a;
+    --surface: #1a2234;
+    --surface2:#1e2840;
+    --border:  rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text:    #e8eaf0;
+    --text2:   #8d95a8;
+    --text3:   #555e73;
+
+    --teal:        #2dd4bf;
+    --teal-bg:     rgba(45,212,191,0.08);
+    --teal-border: rgba(45,212,191,0.22);
+
+    --purple:        #a78bfa;
+    --purple-bg:     rgba(167,139,250,0.08);
+    --purple-border: rgba(167,139,250,0.22);
+
+    --blue:        #60a5fa;
+    --blue-bg:     rgba(96,165,250,0.08);
+    --blue-border: rgba(96,165,250,0.22);
+
+    --amber:        #fbbf24;
+    --amber-bg:     rgba(251,191,36,0.08);
+    --amber-border: rgba(251,191,36,0.22);
+
+    --coral:        #fb7185;
+    --coral-bg:     rgba(251,113,133,0.08);
+    --coral-border: rgba(251,113,133,0.22);
+
+    --green:        #4ade80;
+    --green-bg:     rgba(74,222,128,0.08);
+    --green-border: rgba(74,222,128,0.22);
+
+    --m1: #2dd4bf;
+    --m2: #60a5fa;
+    --m3: #a78bfa;
+    --m4: #fb7185;
+    --m5: #fbbf24;
+
+    --font-display: 'DM Serif Display', serif;
+    --font-body:    'Outfit', sans-serif;
+    --font-mono:    'DM Mono', monospace;
+    --radius:    10px;
+    --radius-lg: 16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(11,14,20,0.93);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    overflow: visible;
+  }
+  .nav-brand { font-family: var(--font-mono); font-size: 13px; color: var(--teal); letter-spacing: 0.06em; text-transform: uppercase; }
+  .nav-links { display: flex; gap: 3px; list-style: none; height: 100%; align-items: center; }
+  .nav-links > li { height: 100%; display: flex; align-items: center; }
+  .nav-links a {
+    font-size: 12px; font-weight: 500; color: var(--text3);
+    text-decoration: none; padding: 6px 11px; border-radius: 6px;
+    letter-spacing: 0.04em; white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--surface); }
+  .nav-links a.active { color: var(--teal); }
+
+  /* milestone nav pills */
+  .nav-milestone {
+    display: flex; gap: 4px; align-items: center;
+    padding: 0 8px; border-left: 1px solid var(--border);
+    margin-left: 8px; height: 100%;
+  }
+  .m-pill {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+    padding: 3px 9px; border-radius: 20px; text-decoration: none;
+    border: 1px solid transparent; transition: all 0.15s; white-space: nowrap;
+    color: var(--text3);
+  }
+  .m-pill:hover { color: var(--text); background: var(--surface); }
+  .m-pill.m1 { border-color: var(--m1); color: var(--m1); }
+  .m-pill.m2 { border-color: var(--m2); color: var(--m2); }
+  .m-pill.m3 { border-color: var(--m3); color: var(--m3); }
+  .m-pill.m4 { border-color: var(--m4); color: var(--m4); }
+  .m-pill.m5 { border-color: var(--m5); color: var(--m5); }
+
+  /* ── LAYOUT ── */
+  .page { padding-top: 56px; }
+  section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+  .container { max-width: 920px; margin: 0 auto; padding: 0 40px; }
+  .container-wide { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  /* ── TYPOGRAPHY ── */
+  h1 { font-family: var(--font-display); font-size: clamp(40px,5vw,60px); line-height: 1.1; letter-spacing: -0.01em; }
+  h1 em { font-style: italic; color: var(--teal); }
+  h2 { font-family: var(--font-display); font-size: clamp(26px,3vw,36px); line-height: 1.2; letter-spacing: -0.01em; }
+  h3 { font-size: 18px; font-weight: 600; }
+  .eyebrow { font-family: var(--font-mono); font-size: 11px; color: var(--teal); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--teal); opacity: 0.5; }
+  .section-lead { font-size: 17px; color: var(--text2); line-height: 1.75; max-width: 680px; margin-bottom: 48px; }
+
+  /* ── HERO ── */
+  #hero { padding: 100px 0 80px; position: relative; overflow: hidden; }
+  #hero::before {
+    content: ''; position: absolute; top: -150px; left: 50%; transform: translateX(-50%);
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse, rgba(45,212,191,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-lead { font-size: 18px; color: var(--text2); line-height: 1.75; max-width: 600px; margin: 24px 0 48px; }
+
+  /* ── STRATEGY CALLOUT ── */
+  .callout {
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    margin: 28px 0;
+    display: flex; gap: 18px; align-items: flex-start;
+    border: 1px solid;
+  }
+  .callout-icon { font-size: 15px; margin-top: 2px; flex-shrink: 0; }
+  .callout h4 { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+  .callout p { font-size: 14px; color: var(--text2); line-height: 1.65; }
+  .callout.key  { background: var(--teal-bg);   border-color: var(--teal-border);   }
+  .callout.key  .callout-icon, .callout.key  h4 { color: var(--teal); }
+  .callout.warn { background: var(--amber-bg);  border-color: var(--amber-border);  }
+  .callout.warn .callout-icon, .callout.warn h4 { color: var(--amber); }
+  .callout.note { background: var(--purple-bg); border-color: var(--purple-border); }
+  .callout.note .callout-icon, .callout.note h4 { color: var(--purple); }
+
+  /* ── TIMELINE OVERVIEW ── */
+  .timeline-overview {
+    position: relative;
+    margin: 48px 0;
+    padding-left: 0;
+  }
+  /* horizontal connector line */
+  .timeline-track {
+    display: flex; align-items: flex-start; gap: 0;
+    position: relative; margin-bottom: 32px;
+  }
+  .timeline-track::before {
+    content: ''; position: absolute;
+    top: 22px; left: 22px; right: 22px; height: 2px;
+    background: linear-gradient(to right,
+      var(--m1) 0%,  var(--m1) 20%,
+      var(--m2) 20%, var(--m2) 40%,
+      var(--m3) 40%, var(--m3) 60%,
+      var(--m4) 60%, var(--m4) 80%,
+      var(--m5) 80%, var(--m5) 100%);
+    opacity: 0.3;
+    z-index: 0;
+  }
+  .timeline-node {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    position: relative; z-index: 1; cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .timeline-node:hover { transform: translateY(-3px); }
+  .timeline-dot {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 2px solid; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+    background: var(--bg); margin-bottom: 12px;
+    transition: background 0.15s;
+  }
+  .timeline-node:hover .timeline-dot { }
+  .timeline-dot.d1 { border-color: var(--m1); color: var(--m1); }
+  .timeline-dot.d2 { border-color: var(--m2); color: var(--m2); }
+  .timeline-dot.d3 { border-color: var(--m3); color: var(--m3); }
+  .timeline-dot.d4 { border-color: var(--m4); color: var(--m4); }
+  .timeline-dot.d5 { border-color: var(--m5); color: var(--m5); }
+  .timeline-label { font-size: 12px; font-weight: 600; text-align: center; margin-bottom: 3px; }
+  .timeline-label.l1 { color: var(--m1); }
+  .timeline-label.l2 { color: var(--m2); }
+  .timeline-label.l3 { color: var(--m3); }
+  .timeline-label.l4 { color: var(--m4); }
+  .timeline-label.l5 { color: var(--m5); }
+  .timeline-weeks { font-family: var(--font-mono); font-size: 10px; color: var(--text3); text-align: center; }
+  .timeline-tagline { font-size: 11px; color: var(--text3); text-align: center; max-width: 100px; margin-top: 4px; line-height: 1.4; }
+
+  /* ── MILESTONE SECTION ── */
+  .milestone-section {
+    padding: 72px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .milestone-section:last-child { border-bottom: none; }
+  .milestone-header { margin-bottom: 40px; }
+  .milestone-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 20px; border: 1px solid;
+    margin-bottom: 16px;
+  }
+  .milestone-tag .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .mt1 { border-color: var(--m1); color: var(--m1); }
+  .mt1 .dot { background: var(--m1); }
+  .mt2 { border-color: var(--m2); color: var(--m2); }
+  .mt2 .dot { background: var(--m2); }
+  .mt3 { border-color: var(--m3); color: var(--m3); }
+  .mt3 .dot { background: var(--m3); }
+  .mt4 { border-color: var(--m4); color: var(--m4); }
+  .mt4 .dot { background: var(--m4); }
+  .mt5 { border-color: var(--m5); color: var(--m5); }
+  .mt5 .dot { background: var(--m5); }
+
+  .milestone-title { font-family: var(--font-display); font-size: 34px; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 10px; }
+  .milestone-subtitle { font-size: 16px; color: var(--text2); max-width: 600px; }
+  .milestone-duration {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--text3); margin-top: 12px;
+    background: var(--surface); padding: 4px 10px; border-radius: 5px;
+    border: 1px solid var(--border);
+  }
+
+  /* ── SPEC GRID ── */
+  .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0; }
+  .spec-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .spec-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px;
+    transition: border-color 0.2s;
+  }
+  .spec-card:hover { border-color: var(--border2); }
+  .spec-card-label {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 10px; color: var(--text3);
+  }
+  .spec-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .spec-card p  { font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .spec-card ul { list-style: none; margin-top: 10px; }
+  .spec-card ul li { font-size: 13px; color: var(--text2); padding: 3px 0; padding-left: 14px; position: relative; }
+  .spec-card ul li::before { content: '→'; position: absolute; left: 0; color: var(--text3); font-size: 11px; }
+
+  /* ── SUCCESS METRICS ── */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 28px 0; }
+  .metric-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; text-align: center;
+    transition: border-color 0.2s;
+  }
+  .metric-card:hover { border-color: var(--border2); }
+  .metric-value {
+    font-family: var(--font-mono); font-size: 26px; font-weight: 500;
+    margin-bottom: 4px; line-height: 1;
+  }
+  .metric-label { font-size: 12px; color: var(--text3); line-height: 1.4; }
+  .metric-condition { font-size: 11px; color: var(--text3); margin-top: 6px; font-style: italic; }
+
+  /* ── SYSTEM STATE SNAPSHOT ── */
+  .system-snapshot {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 32px;
+    margin: 28px 0; position: relative; overflow: hidden;
+  }
+  .system-snapshot::before {
+    content: 'SYSTEM STATE AT THIS MILESTONE';
+    position: absolute; top: 14px; right: 18px;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.1em; color: var(--text3);
+  }
+  .snapshot-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+  .snapshot-layers { display: flex; flex-direction: column; gap: 8px; }
+  .snap-layer {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: 8px;
+    font-size: 13px;
+  }
+  .snap-layer-label {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
+    min-width: 80px; text-transform: uppercase;
+  }
+  .snap-layer-content { color: var(--text2); flex: 1; line-height: 1.5; }
+  .snap-layer.active   { background: rgba(45,212,191,0.06);  border: 1px solid var(--teal-border); }
+  .snap-layer.partial  { background: rgba(251,191,36,0.06);  border: 1px solid var(--amber-border); }
+  .snap-layer.inactive { background: rgba(255,255,255,0.02); border: 1px solid var(--border); opacity: 0.5; }
+  .snap-layer.active   .snap-layer-label { color: var(--teal); }
+  .snap-layer.partial  .snap-layer-label { color: var(--amber); }
+  .snap-layer.inactive .snap-layer-label { color: var(--text3); }
+  .snap-status {
+    font-family: var(--font-mono); font-size: 10px;
+    padding: 2px 8px; border-radius: 4px; flex-shrink: 0;
+  }
+  .status-live    { background: var(--teal-bg);   color: var(--teal);  border: 1px solid var(--teal-border); }
+  .status-partial { background: var(--amber-bg);  color: var(--amber); border: 1px solid var(--amber-border); }
+  .status-planned { background: var(--surface2);  color: var(--text3); border: 1px solid var(--border); }
+
+  /* ── COMPONENT CHECKLIST ── */
+  .checklist { display: flex; flex-direction: column; gap: 4px; margin: 16px 0; }
+  .check-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 12px; border-radius: 6px; font-size: 13px;
+    transition: background 0.12s;
+  }
+  .check-row:hover { background: var(--surface); }
+  .check-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .check-row.built   .check-dot { background: var(--green); }
+  .check-row.partial .check-dot { background: var(--amber); }
+  .check-row.planned .check-dot { background: var(--text3); }
+  .check-row.built   { color: var(--text); }
+  .check-row.partial { color: var(--text2); }
+  .check-row.planned { color: var(--text3); }
+  .check-tag {
+    font-family: var(--font-mono); font-size: 10px;
+    padding: 1px 6px; border-radius: 3px; margin-left: auto;
+  }
+  .check-row.built   .check-tag { background: var(--green-bg); color: var(--green); }
+  .check-row.partial .check-tag { background: var(--amber-bg); color: var(--amber); }
+  .check-row.planned .check-tag { background: var(--surface);  color: var(--text3); }
+
+  /* ── GATE DEFINITION ── */
+  .gate-box {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: var(--radius-lg); padding: 28px;
+    margin: 24px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .gate-box h4 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .gate-box p  { font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .gate-criteria { font-family: var(--font-mono); font-size: 12px; color: var(--text2); }
+  .gate-criteria li { padding: 5px 0; border-bottom: 1px solid var(--border); list-style: none; }
+  .gate-criteria li:last-child { border-bottom: none; }
+  .gate-criteria li::before { content: '✓ '; color: var(--teal); }
+
+  /* ── RISK TABLE ── */
+  .risk-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 20px 0; }
+  .risk-table th { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); padding: 8px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+  .risk-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+  .risk-table tr:last-child td { border-bottom: none; }
+  .risk-table tr:hover td { background: var(--surface); }
+  .risk-table td:first-child { color: var(--text); font-weight: 500; }
+  .risk-high   { color: var(--coral)  !important; }
+  .risk-medium { color: var(--amber)  !important; }
+  .risk-low    { color: var(--teal)   !important; }
+
+  /* ── SECTION DIVIDER LABEL ── */
+  .section-label {
+    font-family: var(--font-mono); font-size: 11px; color: var(--text3);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* ── FOOTER ── */
+  footer { padding: 60px 40px; text-align: center; border-top: 1px solid var(--border); }
+  footer p { font-size: 12px; color: var(--text3); font-family: var(--font-mono); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .container, .container-wide { padding: 0 20px; }
+    .spec-grid, .spec-grid-3, .metrics-grid { grid-template-columns: 1fr; }
+    .gate-box { grid-template-columns: 1fr; }
+    .timeline-tagline { display: none; }
+    .nav-milestone { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand">Roadmap</span>
+  <ul class="nav-links">
+    <li><a href="#strategy" data-s="strategy">Strategy</a></li>
+    <li><a href="#timeline" data-s="timeline">Timeline</a></li>
+  </ul>
+  <div class="nav-milestone">
+    <a href="#m1" class="m-pill m1">M1</a>
+    <a href="#m2" class="m-pill m2">M2</a>
+    <a href="#m3" class="m-pill m3">M3</a>
+    <a href="#m4" class="m-pill m4">M4</a>
+    <a href="#m5" class="m-pill m5">M5</a>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ═══════════════════════════════ HERO -->
+<section id="hero">
+  <div class="container">
+    <p class="eyebrow">Development roadmap · MVP to full system</p>
+    <h1>Build by <em>value</em>,<br>not by layer</h1>
+    <p class="hero-lead">Five milestones. Each one delivers a working, testable system — not a half-built layer. The strategy is incremental value delivery: every milestone produces something that can be validated end-to-end before the next one begins.</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 20px;text-align:center">
+        <div style="font-family:var(--font-mono);font-size:24px;font-weight:500;color:var(--text)">5</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">Milestones</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 20px;text-align:center">
+        <div style="font-family:var(--font-mono);font-size:24px;font-weight:500;color:var(--text)">~20</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">Weeks total</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 20px;text-align:center">
+        <div style="font-family:var(--font-mono);font-size:24px;font-weight:500;color:var(--text)">M1</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">First value in 4 weeks</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 20px;text-align:center">
+        <div style="font-family:var(--font-mono);font-size:24px;font-weight:500;color:var(--text)">M3</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">Fully automated at week 12</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ STRATEGY -->
+<section id="strategy">
+  <div class="container">
+    <p class="section-label">Build strategy</p>
+    <h2>Why this order</h2>
+    <p class="section-lead">The wrong approach is to build by layer — infrastructure first, then agents, then UI. That produces an impressive-looking system that cannot be validated until everything is done. The right approach is to build by value: the narrowest possible end-to-end slice first, then widen.</p>
+
+    <div class="callout key">
+      <span class="callout-icon">→</span>
+      <div>
+        <h4>The core principle</h4>
+        <p>Every milestone ends with a system you can run, observe, and test. If a milestone fails to produce a working system, it is not complete. Partial layers do not count as milestones — working slices do.</p>
+      </div>
+    </div>
+
+    <div class="spec-grid" style="margin-top:32px">
+      <div class="spec-card">
+        <div class="spec-card-label">What we're optimising for</div>
+        <h4>Early validation over early completeness</h4>
+        <p>A system that runs one agent end-to-end in week 4 teaches you more than a system that has five half-built agents in week 8. Each milestone produces evidence that the architecture works — before the next one is built on top of it.</p>
+      </div>
+      <div class="spec-card">
+        <div class="spec-card-label">Risk management</div>
+        <h4>Each milestone is a natural stopping point</h4>
+        <p>If the project pauses or changes direction after any milestone, the system at that point is usable. Nothing is half-built. M1 alone is a useful working tool. M2 alone is a usable business system. Each milestone stands on its own.</p>
+      </div>
+      <div class="spec-card">
+        <div class="spec-card-label">Agent contract first</div>
+        <h4>The contract is built once in M1 and never changes</h4>
+        <p>Every agent added in M2, M3, and M4 slots into the contract established in M1. This means adding agents never requires changes to the orchestration engine. The developer can build agents in parallel once the contract is locked.</p>
+      </div>
+      <div class="spec-card">
+        <div class="spec-card-label">Human loop from day one</div>
+        <h4>Approval gates are live from M1 — never retrofitted</h4>
+        <p>Building the HITL gate in M1 means every agent that follows is born with human oversight. Retrofitting approval gates into an already-running system is significantly harder and riskier than building them in from the start.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ TIMELINE OVERVIEW -->
+<section id="timeline">
+  <div class="container">
+    <p class="section-label">Timeline overview</p>
+    <h2>Five milestones</h2>
+    <p class="section-lead">Each node represents a fully working system. Click any milestone to jump to its full specification.</p>
+
+    <div class="timeline-overview">
+      <div class="timeline-track">
+        <div class="timeline-node" onclick="document.getElementById('m1').scrollIntoView({behavior:'smooth'})">
+          <div class="timeline-dot d1">M1</div>
+          <div class="timeline-label l1">MVP</div>
+          <div class="timeline-weeks">Weeks 1–4</div>
+          <div class="timeline-tagline">Database pipeline, end-to-end</div>
+        </div>
+        <div class="timeline-node" onclick="document.getElementById('m2').scrollIntoView({behavior:'smooth'})">
+          <div class="timeline-dot d2">M2</div>
+          <div class="timeline-label l2">Client pipeline</div>
+          <div class="timeline-weeks">Weeks 5–9</div>
+          <div class="timeline-tagline">Full client engagement works</div>
+        </div>
+        <div class="timeline-node" onclick="document.getElementById('m3').scrollIntoView({behavior:'smooth'})">
+          <div class="timeline-dot d3">M3</div>
+          <div class="timeline-label l3">Automation</div>
+          <div class="timeline-weeks">Weeks 10–13</div>
+          <div class="timeline-tagline">System runs itself</div>
+        </div>
+        <div class="timeline-node" onclick="document.getElementById('m4').scrollIntoView({behavior:'smooth'})">
+          <div class="timeline-dot d4">M4</div>
+          <div class="timeline-label l4">Full outputs</div>
+          <div class="timeline-weeks">Weeks 14–17</div>
+          <div class="timeline-tagline">Three documents generated per client</div>
+        </div>
+        <div class="timeline-node" onclick="document.getElementById('m5').scrollIntoView({behavior:'smooth'})">
+          <div class="timeline-dot d5">M5</div>
+          <div class="timeline-label l5">Production</div>
+          <div class="timeline-weeks">Weeks 18–20</div>
+          <div class="timeline-tagline">Full system, monitored, hardened</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ M1 -->
+<div class="milestone-section" id="m1">
+  <div class="container">
+    <div class="milestone-header">
+      <div class="milestone-tag mt1"><span class="dot"></span>Milestone 1</div>
+      <h2 class="milestone-title">MVP — the database pipeline,<br>end to end</h2>
+      <p class="milestone-subtitle">The first working system. One agent, one validator, one approval gate. Proves the architecture before anything is built on top of it.</p>
+      <div class="milestone-duration">⏱ Weeks 1–4 · ~4 weeks · 1 developer</div>
+    </div>
+
+    <div class="callout note">
+      <span class="callout-icon">→</span>
+      <div>
+        <h4>What this milestone is really for</h4>
+        <p>M1 is not primarily about populating a database. It is about proving that the agent contract works, the state machine transitions correctly, the HITL gate notifies and accepts approvals, and the data layer reads and writes reliably. Everything built in M2–M5 depends on these foundations being correct.</p>
+      </div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">What gets built</p>
+    <div class="checklist">
+      <div class="check-row built"><span class="check-dot"></span>Postgres schema — jobs, agents registry, audit_log tables<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Agent contract — standardised input/output payload, callback endpoint<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>State machine — all 9 job states and valid transitions<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Agent router — dispatch, timeout, retry (3 attempts with backoff)<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>DB Curator agent microservice — all 3 discovery modes<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>DB Validator agent microservice — 3-dimension scoring<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Google Sheets integration — tools_and_services, tools_draft read/write<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>HITL gate — approval pending state, 72h timeout, email notification<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Basic admin review UI — view draft batch, approve/reject per item<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Manual run trigger — start a Curator run from the UI<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Manual tool search — paste tool names, trigger targeted Curator run<span class="check-tag">built</span></div>
+      <div class="check-row planned"><span class="check-dot"></span>Scheduled cron trigger — not needed until M3<span class="check-tag">planned</span></div>
+      <div class="check-row planned"><span class="check-dot"></span>Redis queue — not needed until M3<span class="check-tag">planned</span></div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">Success criteria — milestone is complete when all of these pass</p>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m1)">1</div>
+        <div class="metric-label">Full run completes end-to-end</div>
+        <div class="metric-condition">Curator → Validator → HITL → commit — without manual intervention beyond the approval step</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m1)">≥5</div>
+        <div class="metric-label">Approved records in tools_and_services</div>
+        <div class="metric-condition">After first run reviewed and approved by human</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m1)">100%</div>
+        <div class="metric-label">State transitions correct</div>
+        <div class="metric-condition">All 9 states reachable. Reject path sets job to failed. Approve path sets job to completed. Audit log has a row for every transition.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m1)">&lt;5s</div>
+        <div class="metric-label">Admin UI review panel loads</div>
+        <div class="metric-condition">With 40 draft records visible including quality scores</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m1)">3×</div>
+        <div class="metric-label">Retry logic tested</div>
+        <div class="metric-condition">Simulated agent timeout: system retries 3× with backoff, then marks job failed and sends admin alert</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m1)">72h</div>
+        <div class="metric-label">HITL timeout fires correctly</div>
+        <div class="metric-condition">Job with no approval decision after 72h is marked expired. Admin receives alert. Next run is unblocked.</div>
+      </div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">System state at milestone 1</p>
+    <div class="system-snapshot">
+      <div class="snapshot-layers">
+        <div class="snap-layer active"><span class="snap-layer-label">L1 Presentation</span><span class="snap-layer-content">Basic admin review UI. View draft batch, approve/reject. Manual run trigger. No client interface yet.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L2 Orchestration</span><span class="snap-layer-content">State machine, agent router, HITL gate, callback handler, audit log. No scheduler yet — runs triggered manually.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L3 Agents</span><span class="snap-layer-content">DB Curator and DB Validator live. Four agents not yet built.</span><span class="snap-status status-partial">partial</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L4 Data</span><span class="snap-layer-content">Postgres (jobs, agents, audit_log). Google Sheets (tools_and_services, tools_draft, agent_config). No Redis yet.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer partial"><span class="snap-layer-label">L5 External</span><span class="snap-layer-content">Anthropic API, Brave Search, Google Workspace APIs, Resend (email). All connected.</span><span class="snap-status status-live">live</span></div>
+      </div>
+    </div>
+
+    <div class="gate-box" style="margin-top:28px">
+      <div>
+        <h4 style="color:var(--m1)">Gate to M2 — do not start M2 until these pass</h4>
+        <ul class="gate-criteria">
+          <li>At least 3 full Curator runs completed and reviewed without errors</li>
+          <li>tools_and_services has ≥ 20 verified records across ≥ 4 categories</li>
+          <li>HITL gate has been tested with both approve and reject paths</li>
+          <li>Retry logic has been tested with a simulated failure</li>
+          <li>Audit log correctly records every state change and approval decision</li>
+          <li>Agent swap tested: endpoint URL changed in registry, next run uses new endpoint</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Primary risk at this milestone</h4>
+        <p style="font-size:13px;color:var(--text2);margin-top:8px">The agent contract is the highest-risk component in M1. If the input/output schema is underspecified, every subsequent agent will need changes when it hits an edge the contract did not anticipate. Spend extra time on the contract definition and test it with synthetic payloads before connecting a real agent.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ M2 -->
+<div class="milestone-section" id="m2">
+  <div class="container">
+    <div class="milestone-header">
+      <div class="milestone-tag mt2"><span class="dot"></span>Milestone 2</div>
+      <h2 class="milestone-title">Client pipeline — a full<br>engagement works end to end</h2>
+      <p class="milestone-subtitle">The Consultant interviews a client, produces a Problem Memo, and the Analyst matches it to the database. The full value chain is live for the first time — though outputs are still basic and triggering is still manual.</p>
+      <div class="milestone-duration">⏱ Weeks 5–9 · ~5 weeks · 1–2 developers</div>
+    </div>
+
+    <div class="callout note">
+      <span class="callout-icon">→</span>
+      <div>
+        <h4>Why M2 before M3</h4>
+        <p>Automation (M3) should be applied to a working, validated pipeline — not to a pipeline that has never been tested end-to-end. M2 runs everything manually so you can observe every step, catch problems, and validate the matching logic before the scheduler makes it autonomous. The four agents built in M2 all slot directly into the contract established in M1.</p>
+      </div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">What gets built</p>
+    <div class="checklist">
+      <div class="check-row built"><span class="check-dot"></span>Consultant agent microservice — multi-turn conversation, session persistence<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Intake Validator agent microservice — completeness, clarity, consistency checks<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Analyst agent microservice — objective-based matching, combination logic, 40% threshold<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Match Validator agent microservice — per-recommendation scoring<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Client intake interface — conversational UI backed by Consultant agent<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Session persistence — client can pause and resume intake conversation<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>problem_memos Postgres table — all required fields including objectives and assumptions<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>solution_presentations Postgres table — recommendations with objective coverage scores<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Custom development proposal path — triggered when no solution meets 40% threshold<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Admin review panel extended — view memo + presentation together, per-recommendation flags<span class="check-tag">built</span></div>
+      <div class="check-row planned"><span class="check-dot"></span>Project Proposal generator — full document with all required fields — M4<span class="check-tag">planned</span></div>
+      <div class="check-row planned"><span class="check-dot"></span>Pitch Deck generator — M4<span class="check-tag">planned</span></div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">Success criteria</p>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m2)">3</div>
+        <div class="metric-label">Full client engagements completed</div>
+        <div class="metric-condition">Intake → memo → validation → analysis → match validator → HITL review — all manual, no errors</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m2)">≥40%</div>
+        <div class="metric-label">Objectives coverage on first real memo</div>
+        <div class="metric-condition">At least one solution recommendation meets ≥40% of the client's stated objectives</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m2)">1</div>
+        <div class="metric-label">Custom proposal generated</div>
+        <div class="metric-condition">Test case where no tool meets 40% threshold produces a coherent custom development proposal document</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m2)">100%</div>
+        <div class="metric-label">Session resumption works</div>
+        <div class="metric-condition">Client closes browser mid-intake, returns 24h later, conversation continues exactly where it left off</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m2)">0</div>
+        <div class="metric-label">Memos sent to client</div>
+        <div class="metric-condition">No output document is accessible to the client — all saved to Drive only, admin notified by email</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m2)">≥3.0</div>
+        <div class="metric-label">Average match quality score</div>
+        <div class="metric-condition">Match Validator average quality_score across test engagements</div>
+      </div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">System state at milestone 2</p>
+    <div class="system-snapshot">
+      <div class="snapshot-layers">
+        <div class="snap-layer active"><span class="snap-layer-label">L1 Presentation</span><span class="snap-layer-content">Admin dashboard: full review of all 3 pipelines. Client intake interface: full conversation UI. Basic results view for admin.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L2 Orchestration</span><span class="snap-layer-content">State machine handles all 3 pipelines. Agent router dispatches all 6 agents. HITL gate active for all approval points. No scheduler yet — all runs manual.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L3 Agents</span><span class="snap-layer-content">All 6 agents live: DB Curator, Consultant, Analyst, DB Validator, Intake Validator, Match Validator.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L4 Data</span><span class="snap-layer-content">Postgres: jobs, agents, audit_log, problem_memos, solution_presentations. Google Sheets: all sheets. Drive: client folders created per engagement. No Redis yet.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L5 External</span><span class="snap-layer-content">All external services live.</span><span class="snap-status status-live">live</span></div>
+      </div>
+    </div>
+
+    <div class="gate-box" style="margin-top:28px">
+      <div>
+        <h4 style="color:var(--m2)">Gate to M3</h4>
+        <ul class="gate-criteria">
+          <li>All 6 agents have been run at least once without errors</li>
+          <li>Analyst has produced at least one multi-tool combination recommendation</li>
+          <li>Custom development proposal path has been triggered and reviewed</li>
+          <li>All 3 pipelines have passed through the HITL gate with both approve and reject decisions</li>
+          <li>Drive client folder structure is correct: ~/clients/{name}_{id}/ created per engagement</li>
+          <li>Admin email notification fires correctly for every new client folder and new output</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Primary risk at this milestone</h4>
+        <p style="font-size:13px;color:var(--text2);margin-top:8px">The Analyst's objective-coverage scoring is the most subjective component in the system. The scoring rubric may produce inconsistent results across different memos until the prompt is tuned. Plan for 2–3 iteration cycles on the Analyst and Match Validator prompts before treating M2 as complete.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ M3 -->
+<div class="milestone-section" id="m3">
+  <div class="container">
+    <div class="milestone-header">
+      <div class="milestone-tag mt3"><span class="dot"></span>Milestone 3</div>
+      <h2 class="milestone-title">Automation — the system<br>runs itself</h2>
+      <p class="milestone-subtitle">The scheduler, job queue, and notification system are live. The Curator runs weekly without any manual trigger. Client pipelines fire automatically on session events. You only appear at the approval gate.</p>
+      <div class="milestone-duration">⏱ Weeks 10–13 · ~4 weeks · 1 developer</div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">What gets built</p>
+    <div class="checklist">
+      <div class="check-row built"><span class="check-dot"></span>Redis + BullMQ job queue — priority queues per agent type, retry, deduplication<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Cron scheduler — reads cron expressions from agent_config, registers on startup<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Event-driven triggers — memo_created, intake_validation_passed, solution_created events<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Full notification system — 7 event types, email via Resend, correct timing and content<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Review deadline tracking — 48h reminder, 72h expiry, admin alerts<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Dead letter queue — failed jobs after max retries, admin alert with full error log<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Agent health monitoring — /health endpoint polled every 5 minutes, alert on failure<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Run history dashboard — all completed jobs filterable by type, date, status<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Config editor in dashboard — edit agent_config parameters without touching the Sheet directly<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Apps Script post-commit validation — installed, tested, alert email confirmed<span class="check-tag">built</span></div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">Success criteria</p>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m3)">2</div>
+        <div class="metric-label">Unattended weekly Curator runs</div>
+        <div class="metric-condition">Two consecutive Monday runs fire from the scheduler, complete, and surface a review notification — with zero manual intervention</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m3)">7/7</div>
+        <div class="metric-label">Notification types fire correctly</div>
+        <div class="metric-condition">All 7 notification event types triggered in a test run and correct email received</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m3)">0</div>
+        <div class="metric-label">Dropped jobs under load</div>
+        <div class="metric-condition">5 concurrent client intake sessions running simultaneously — all complete, none dropped or corrupted</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m3)">&lt;2 min</div>
+        <div class="metric-label">Agent restart recovery time</div>
+        <div class="metric-condition">Agent process killed mid-run. Queue re-queues job. Job completes on retry within 2 minutes of agent restart.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m3)">100%</div>
+        <div class="metric-label">Config changes take effect on next run</div>
+        <div class="metric-condition">Edit any agent_config parameter via the dashboard. Next scheduled run uses the new value without a redeploy.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m3)">1 week</div>
+        <div class="metric-label">Unattended operation with 0 crashes</div>
+        <div class="metric-condition">System left running for one full week with normal usage. No crashes, no missed scheduled runs, no unresolved alerts.</div>
+      </div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">System state at milestone 3</p>
+    <div class="system-snapshot">
+      <div class="snapshot-layers">
+        <div class="snap-layer active"><span class="snap-layer-label">L1 Presentation</span><span class="snap-layer-content">Full admin dashboard: queue view, review panel, run history, agent registry, config editor. Client intake UI. Full notification emails.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L2 Orchestration</span><span class="snap-layer-content">Fully automated. Cron scheduler, Redis queue, event-driven triggers, health monitoring, dead letter queue, review deadline tracking. No manual intervention needed.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L3 Agents</span><span class="snap-layer-content">All 6 agents live and running automatically. Curator runs every Monday. Client pipeline triggers on session events.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L4 Data</span><span class="snap-layer-content">Full stack: Postgres, Google Sheets, Drive, Redis. Apps Script post-commit validation live.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L5 External</span><span class="snap-layer-content">All external services live and monitored.</span><span class="snap-status status-live">live</span></div>
+      </div>
+    </div>
+
+    <div class="gate-box" style="margin-top:28px">
+      <div>
+        <h4 style="color:var(--m3)">Gate to M4</h4>
+        <ul class="gate-criteria">
+          <li>Two consecutive unattended weekly Curator runs completed correctly</li>
+          <li>System has run for 1 full week without a crash or missed scheduled run</li>
+          <li>Dead letter queue has been tested: failed job is visible and admin is alerted</li>
+          <li>Config change via dashboard takes effect on the next run (tested)</li>
+          <li>All 6 agent /health endpoints return correctly and are monitored</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Primary risk at this milestone</h4>
+        <p style="font-size:13px;color:var(--text2);margin-top:8px">The event-driven trigger chain (memo_created → Intake Validator → intake_validation_passed → Analyst → solution_created → Match Validator) is the most complex sequencing in the system. Race conditions and duplicate events are the most likely failure modes. Test this chain under concurrent load before declaring M3 complete.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ M4 -->
+<div class="milestone-section" id="m4">
+  <div class="container">
+    <div class="milestone-header">
+      <div class="milestone-tag mt4"><span class="dot"></span>Milestone 4</div>
+      <h2 class="milestone-title">Full outputs — three documents<br>generated per client</h2>
+      <p class="milestone-subtitle">The three final outputs are generated, formatted, and saved to Drive automatically. The Problem Memo, Project Proposal, and Pitch Deck are complete, structured documents — not raw data dumps.</p>
+      <div class="milestone-duration">⏱ Weeks 14–17 · ~4 weeks · 1–2 developers</div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">What gets built</p>
+    <div class="checklist">
+      <div class="check-row built"><span class="check-dot"></span>Problem Memo generator — formatted PDF from the problem_memos table, all required fields<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Project Proposal generator — structured PDF with all 14 required fields, objectives coverage table<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Pitch Deck generator — slide-structured PDF based on the Project Proposal<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Custom Development Proposal — alternative output when no tool meets 40% threshold<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Drive filing system — ~/clients/{name}_{id}/ folder created per client, documents auto-filed<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Document register — all outputs recorded in Google Sheets document_register with metadata<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Output notification — admin email when all 3 documents are saved to Drive<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Proposal defensibility check — every proposal field traced back to a memo field or flagged<span class="check-tag">built</span></div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">Success criteria</p>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m4)">3</div>
+        <div class="metric-label">Documents auto-generated per client</div>
+        <div class="metric-condition">Problem Memo PDF, Project Proposal PDF, and Pitch Deck PDF all present in the correct Drive folder after engagement approval</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m4)">100%</div>
+        <div class="metric-label">Proposal fields traceable to memo</div>
+        <div class="metric-condition">Every field in the Project Proposal either maps to a memo field or is explicitly flagged as a proposal-level addition</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m4)">0</div>
+        <div class="metric-label">Outputs accessible to client</div>
+        <div class="metric-condition">No document URL is surfaced to the client interface. Admin-only access confirmed.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m4)">1</div>
+        <div class="metric-label">Custom Development Proposal generated</div>
+        <div class="metric-condition">Test case where no tool meets 40% threshold: proposal correctly states why, references search outcome, outlines custom scope</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m4)">100%</div>
+        <div class="metric-label">Document register entries created</div>
+        <div class="metric-condition">Every generated document has a corresponding row in document_register with correct doc_type, status, and Drive file ID</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m4)">&lt;30s</div>
+        <div class="metric-label">Document generation time</div>
+        <div class="metric-condition">All three documents generated and saved to Drive within 30 seconds of approval decision</div>
+      </div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">System state at milestone 4</p>
+    <div class="system-snapshot">
+      <div class="snapshot-layers">
+        <div class="snap-layer active"><span class="snap-layer-label">L1 Presentation</span><span class="snap-layer-content">Complete admin dashboard. Client intake UI. Document generation status visible in run history. Admin email includes Drive links to generated documents.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L2 Orchestration</span><span class="snap-layer-content">Fully automated. Document generation triggers on approval commit. Filing system agent runs post-commit.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L3 Agents</span><span class="snap-layer-content">All 6 agents. Document generators (not AI agents — templated document builders) added for the 3 output types.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L4 Data</span><span class="snap-layer-content">Full data stack. Drive client folder hierarchy established. Document register populated for every output.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L5 External</span><span class="snap-layer-content">All external services live and monitored. Google Drive file creation and folder management active.</span><span class="snap-status status-live">live</span></div>
+      </div>
+    </div>
+
+    <div class="gate-box" style="margin-top:28px">
+      <div>
+        <h4 style="color:var(--m4)">Gate to M5</h4>
+        <ul class="gate-criteria">
+          <li>5 complete client engagements run end-to-end with all 3 documents generated</li>
+          <li>Custom Development Proposal path tested and output reviewed</li>
+          <li>Drive folder structure correct for all 5 test clients</li>
+          <li>Document register has correct entries for all generated documents</li>
+          <li>Zero documents accessible to the client interface (security review)</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Primary risk at this milestone</h4>
+        <p style="font-size:13px;color:var(--text2);margin-top:8px">Document quality is subjective. The Project Proposal in particular needs to be reviewed against real Problem Memos to verify it is genuinely defensible — not just structurally complete. Build in a review cycle with real content before declaring M4 done. The Pitch Deck especially should be reviewed for clarity and professional presentation quality.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ M5 -->
+<div class="milestone-section" id="m5">
+  <div class="container">
+    <div class="milestone-header">
+      <div class="milestone-tag mt5"><span class="dot"></span>Milestone 5</div>
+      <h2 class="milestone-title">Production — hardened,<br>monitored, and complete</h2>
+      <p class="milestone-subtitle">The system is production-hardened with performance monitoring, cost tracking, security review, and the remaining features. This is the full system as specified in the architecture document.</p>
+      <div class="milestone-duration">⏱ Weeks 18–20 · ~3 weeks · 1 developer</div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">What gets built</p>
+    <div class="checklist">
+      <div class="check-row built"><span class="check-dot"></span>Performance monitoring — run duration tracking, cost per run, slow run alerts<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>API cost tracking — per-agent, per-run cost logged to Postgres<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Admin dashboard polish — all panels complete, consistent design, responsive layout<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Security review — service account permissions audited, API keys rotated, HITL gate hardened<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Supabase migration path validated — schema export tested, migration script written and dry-run<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Weekly summary email — all agents summary: runs, items, quality scores, cost<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>Rate limit handling — graceful degradation when external APIs hit limits<span class="check-tag">built</span></div>
+      <div class="check-row built"><span class="check-dot"></span>End-to-end documentation — developer handover docs, runbook, architecture diagram updated<span class="check-tag">built</span></div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">Success criteria — production readiness</p>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m5)">99%</div>
+        <div class="metric-label">Scheduled run success rate</div>
+        <div class="metric-condition">Over a 4-week observation period — at least 99% of scheduled Curator runs complete without entering the failed state</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m5)">&lt;£120</div>
+        <div class="metric-label">Monthly running cost</div>
+        <div class="metric-condition">All infrastructure + API costs tracked and within the projected budget for expected volume</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m5)">4 weeks</div>
+        <div class="metric-label">Unattended operation</div>
+        <div class="metric-condition">System runs for 4 full weeks with no developer intervention required. All issues surfaced by alerts and resolved by the admin.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m5)">1 row</div>
+        <div class="metric-label">Agent swap verified in production</div>
+        <div class="metric-condition">One agent swapped to a different model in the agents registry table. Next run uses new model. Zero other changes required.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m5)">≥50</div>
+        <div class="metric-label">Verified records in database</div>
+        <div class="metric-condition">tools_and_services has ≥50 records with verified=TRUE across all configured categories</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" style="color:var(--m5)">0</div>
+        <div class="metric-label">Security issues outstanding</div>
+        <div class="metric-condition">Security review completed. No open issues. All secrets in environment variables. HITL gate cannot be bypassed.</div>
+      </div>
+    </div>
+
+    <p class="section-label" style="margin-top:36px">System state at milestone 5 — full system</p>
+    <div class="system-snapshot">
+      <div class="snapshot-layers">
+        <div class="snap-layer active"><span class="snap-layer-label">L1 Presentation</span><span class="snap-layer-content">Production-quality admin dashboard with all 7 panels. Client intake UI. Full notification system. Weekly summary email. Audit log with export.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L2 Orchestration</span><span class="snap-layer-content">Full automation: cron scheduler, Redis queue, event triggers, HITL gate, health monitoring, dead letter queue, cost tracking, performance metrics.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L3 Agents</span><span class="snap-layer-content">All 6 agents with full prompts, tuned over real runs. Agent registry with swap capability verified in production. All error codes handled.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L4 Data</span><span class="snap-layer-content">Full data stack. Supabase migration path validated. Drive filing system complete. Document register fully populated. Apps Script monitoring active.</span><span class="snap-status status-live">live</span></div>
+        <div class="snap-layer active"><span class="snap-layer-label">L5 External</span><span class="snap-layer-content">All external services live, monitored, with rate limit handling and graceful degradation. Cost per service tracked per run.</span><span class="snap-status status-live">live</span></div>
+      </div>
+    </div>
+
+    <div class="callout key" style="margin-top:28px">
+      <span class="callout-icon">→</span>
+      <div>
+        <h4>After M5 — what comes next</h4>
+        <p>M5 completes the system as specified in the architecture document. Future work falls into three categories: (1) additional business branches — Accounting and Legal agents; (2) database growth — expanding the tools_and_services database to cover more categories and geographies; (3) client pipeline improvements — prompt tuning on the Consultant and Analyst based on real engagement data.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<footer>
+  <p>AI Business System · Development Roadmap · MVP to Full System · March 2026</p>
+</footer>
+
+<script>
+  // Active nav on scroll
+  const allSections = document.querySelectorAll('[id]');
+  const allLinks = document.querySelectorAll('a[href^="#"]');
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        allLinks.forEach(l => {
+          l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  allSections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

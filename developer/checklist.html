@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Business System — Build Checklist</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0b0e14;--bg2:#111520;--bg3:#161c2a;--surface:#1a2234;--surface2:#1e2840;
+    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+    --text:#e8eaf0;--text2:#8d95a8;--text3:#555e73;
+    --teal:#2dd4bf;--teal-bg:rgba(45,212,191,0.08);--teal-border:rgba(45,212,191,0.22);
+    --purple:#a78bfa;--purple-bg:rgba(167,139,250,0.08);--purple-border:rgba(167,139,250,0.22);
+    --blue:#60a5fa;--blue-bg:rgba(96,165,250,0.08);--blue-border:rgba(96,165,250,0.22);
+    --amber:#fbbf24;--amber-bg:rgba(251,191,36,0.08);--amber-border:rgba(251,191,36,0.22);
+    --coral:#fb7185;--coral-bg:rgba(251,113,133,0.08);--coral-border:rgba(251,113,133,0.22);
+    --green:#4ade80;--green-bg:rgba(74,222,128,0.1);
+    --m1:#2dd4bf;--m2:#60a5fa;--m3:#a78bfa;--m4:#fb7185;--m5:#fbbf24;
+    --font-display:'DM Serif Display',serif;--font-body:'Outfit',sans-serif;--font-mono:'DM Mono',monospace;
+    --radius:10px;--radius-lg:16px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,14,20,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;overflow:visible;}
+  .nav-brand{font-family:var(--font-mono);font-size:12px;color:var(--teal);letter-spacing:0.07em;text-transform:uppercase;}
+  .nav-pills{display:flex;gap:4px;align-items:center;height:100%;list-style:none;}
+  .nav-pills>li{height:100%;display:flex;align-items:center;}
+  .nav-pills a{font-size:12px;font-weight:500;color:var(--text3);text-decoration:none;padding:5px 10px;border-radius:6px;letter-spacing:0.04em;white-space:nowrap;transition:color 0.15s,background 0.15s;}
+  .nav-pills a:hover{color:var(--text);background:var(--surface);}
+  .nav-pills a.active{color:var(--teal);}
+  .m-pill{font-family:var(--font-mono);font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;text-decoration:none;border:1px solid;transition:all 0.15s;}
+  .sep{width:1px;height:22px;background:var(--border);margin:0 6px;}
+  .nav-progress{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--text3);}
+  .nav-progress-bar{width:100px;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+  .nav-progress-fill{height:100%;background:var(--teal);border-radius:2px;transition:width 0.4s ease;}
+
+  .page{padding-top:56px;}
+  .container{max-width:860px;margin:0 auto;padding:0 32px;}
+  #hero{padding:64px 0 48px;border-bottom:1px solid var(--border);}
+  .eyebrow{font-family:var(--font-mono);font-size:11px;color:var(--teal);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .eyebrow::before{content:'';width:24px;height:1px;background:var(--teal);opacity:0.5;}
+  h1{font-family:var(--font-display);font-size:clamp(32px,4vw,48px);line-height:1.15;letter-spacing:-0.01em;margin-bottom:14px;}
+  h1 em{font-style:italic;color:var(--teal);}
+  .hero-sub{font-size:16px;color:var(--text2);max-width:560px;line-height:1.7;}
+  .global-progress{display:flex;gap:16px;flex-wrap:wrap;margin-top:36px;align-items:flex-end;}
+  .gp-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;text-align:center;min-width:100px;}
+  .gp-val{font-family:var(--font-mono);font-size:22px;font-weight:500;line-height:1;}
+  .gp-label{font-size:11px;color:var(--text3);margin-top:4px;}
+  .reset-btn{font-family:var(--font-mono);font-size:11px;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 14px;cursor:pointer;transition:color 0.15s,border-color 0.15s;margin-left:auto;}
+  .reset-btn:hover{color:var(--coral);border-color:var(--coral-border);}
+
+  .milestone-block{border-bottom:1px solid var(--border);}
+  .milestone-block:last-child{border-bottom:none;}
+  .milestone-header{padding:32px 0 0;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;cursor:pointer;user-select:none;}
+  .milestone-header:hover{opacity:0.92;}
+  .milestone-left{flex:1;}
+  .m-tag{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;border:1px solid;margin-bottom:12px;}
+  .m-tag .dot{width:5px;height:5px;border-radius:50%;}
+  .mt1{border-color:var(--m1);color:var(--m1);}.mt1 .dot{background:var(--m1);}
+  .mt2{border-color:var(--m2);color:var(--m2);}.mt2 .dot{background:var(--m2);}
+  .mt3{border-color:var(--m3);color:var(--m3);}.mt3 .dot{background:var(--m3);}
+  .mt4{border-color:var(--m4);color:var(--m4);}.mt4 .dot{background:var(--m4);}
+  .mt5{border-color:var(--m5);color:var(--m5);}.mt5 .dot{background:var(--m5);}
+  .milestone-title{font-family:var(--font-display);font-size:26px;letter-spacing:-0.01em;margin-bottom:6px;}
+  .milestone-meta{font-size:13px;color:var(--text3);font-family:var(--font-mono);}
+  .milestone-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;padding-top:4px;flex-shrink:0;}
+  .milestone-progress-label{font-family:var(--font-mono);font-size:11px;color:var(--text3);}
+  .milestone-progress-bar{width:120px;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+  .milestone-progress-fill{height:100%;border-radius:3px;transition:width 0.35s ease;}
+  .chevron{font-size:14px;color:var(--text3);transition:transform 0.25s;margin-top:6px;}
+  .chevron.open{transform:rotate(0deg);}
+  .chevron.closed{transform:rotate(-90deg);}
+  .milestone-body{overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;}
+  .milestone-body.open{max-height:9999px;opacity:1;}
+  .milestone-body.collapsed{max-height:0;opacity:0;}
+  .milestone-body-inner{padding:24px 0 40px;display:flex;flex-direction:column;gap:28px;}
+
+  .check-section{}
+  .check-section-title{font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);padding-bottom:10px;margin-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .section-count{font-size:10px;}
+  .check-group{display:flex;flex-direction:column;gap:3px;}
+  .check-item{display:flex;align-items:flex-start;gap:12px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:background 0.12s;user-select:none;}
+  .check-item:hover{background:var(--surface);}
+  .check-item.done{opacity:0.55;}
+  .cb{width:18px;height:18px;border-radius:5px;flex-shrink:0;border:1.5px solid var(--border2);background:var(--bg3);display:flex;align-items:center;justify-content:center;margin-top:1px;transition:background 0.15s,border-color 0.15s;position:relative;}
+  .cb.checked{border-color:var(--green);background:rgba(74,222,128,0.18);}
+  .cb.checked::after{content:'';position:absolute;width:5px;height:9px;border:2px solid var(--green);border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px);}
+  .check-text{flex:1;}
+  .check-label{font-size:14px;color:var(--text);line-height:1.5;}
+  .check-item.done .check-label{text-decoration:line-through;color:var(--text3);}
+  .check-desc{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.5;}
+  .check-badge{font-family:var(--font-mono);font-size:10px;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;border:1px solid;}
+  .badge-build{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border);}
+  .badge-test{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border);}
+  .badge-gate{background:var(--coral-bg);color:var(--coral);border-color:var(--coral-border);}
+  .badge-metric{background:var(--purple-bg);color:var(--purple);border-color:var(--purple-border);}
+  .gate-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;margin-top:4px;}
+  .gate-section-title{font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+  footer{padding:48px 32px;text-align:center;border-top:1px solid var(--border);}
+  footer p{font-size:11px;color:var(--text3);font-family:var(--font-mono);}
+  @media(max-width:600px){
+    nav{padding:0 16px;}.container{padding:0 16px;}
+    .milestone-right{display:none;}.global-progress{gap:10px;}
+    .nav-progress{display:none;}
+  }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-brand">Build Checklist</span>
+  <ul class="nav-pills">
+    <li><a href="#m1" class="m-pill" style="border-color:var(--m1);color:var(--m1)">M1</a></li>
+    <li><a href="#m2" class="m-pill" style="border-color:var(--m2);color:var(--m2)">M2</a></li>
+    <li><a href="#m3" class="m-pill" style="border-color:var(--m3);color:var(--m3)">M3</a></li>
+    <li><a href="#m4" class="m-pill" style="border-color:var(--m4);color:var(--m4)">M4</a></li>
+    <li><a href="#m5" class="m-pill" style="border-color:var(--m5);color:var(--m5)">M5</a></li>
+    <li><div class="sep"></div></li>
+    <li><div class="nav-progress"><span id="nav-pct">0%</span><div class="nav-progress-bar"><div class="nav-progress-fill" id="nav-fill" style="width:0%"></div></div><span id="nav-counts">0/0</span></div></li>
+  </ul>
+</nav>
+<div class="page">
+<section id="hero">
+  <div class="container">
+    <p class="eyebrow">PROSPECT</p>
+    <h1>Build <em>checklist</em></h1>
+    <p class="hero-sub">All tasks, tests, and gate criteria across all five milestones. Tick items as you complete them — progress is saved automatically and persists when you close and reopen this file.</p>
+    <div class="global-progress">
+      <div class="gp-stat"><div class="gp-val" id="gp-total">0/0</div><div class="gp-label">Total tasks</div></div>
+      <div class="gp-stat"><div class="gp-val" id="gp-build" style="color:var(--blue)">0</div><div class="gp-label">Built</div></div>
+      <div class="gp-stat"><div class="gp-val" id="gp-test" style="color:var(--amber)">0</div><div class="gp-label">Tested</div></div>
+      <div class="gp-stat"><div class="gp-val" id="gp-gate" style="color:var(--coral)">0</div><div class="gp-label">Gates passed</div></div>
+      <div class="gp-stat"><div class="gp-val" id="gp-metric" style="color:var(--purple)">0</div><div class="gp-label">Metrics met</div></div>
+      <button class="reset-btn" onclick="resetAll()">Reset all</button>
+    </div>
+  </div>
+</section>
+<div class="container" id="milestones">
+<div class="milestone-block" id="m1">
+  <div class="milestone-header" onclick="toggleMilestone('m1')">
+    <div class="milestone-left">
+      <div class="m-tag mt1"><span class="dot"></span>Milestone 1</div>
+      <div class="milestone-title">MVP — Database pipeline, end to end</div>
+      <div class="milestone-meta">Weeks 1–4 · 1 developer</div>
+    </div>
+    <div class="milestone-right">
+      <div class="milestone-progress-label" id="m1-label">0 / 0</div>
+      <div class="milestone-progress-bar"><div class="milestone-progress-fill" id="m1-bar" style="width:0%;background:var(--m1)"></div></div>
+      <div class="chevron open" id="m1-chev">&#9662;</div>
+    </div>
+  </div>
+  <div class="milestone-body open" id="m1-body">
+    <div class="milestone-body-inner">
+      <div class="check-section">
+        <div class="check-section-title">Infrastructure & data layer <span class="section-count" id="m1-s1-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m1-1-1"><div class="cb"></div><div class="check-text"><div class="check-label">Postgres schema — jobs table</div><div class="check-desc">All 12 columns including config_snapshot, worker_result, validator_result, review_deadline</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-1-2"><div class="cb"></div><div class="check-text"><div class="check-label">Postgres schema — agents registry table</div><div class="check-desc">endpoint_url, model_id, provider, secret_hash, timeout_seconds, is_active, health_url</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-1-3"><div class="cb"></div><div class="check-text"><div class="check-label">Postgres schema — audit_log table</div><div class="check-desc">Insert-only. actor_id, actor_type, event_type, job_id, payload (jsonb)</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-1-4"><div class="cb"></div><div class="check-text"><div class="check-label">Google Sheets — tools_and_services sheet created</div><div class="check-desc">All 20 column headers (17 base + confidence_score, source_count, source_urls)</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-1-5"><div class="cb"></div><div class="check-text"><div class="check-label">Google Sheets — tools_draft sheet created</div><div class="check-desc">27 columns: 18 base + discovery_source, curator_notes + 7 quality validator columns + validator_flag</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-1-6"><div class="cb"></div><div class="check-text"><div class="check-label">Google Sheets — agent_config sheet created</div><div class="check-desc">All 16 parameters with default values populated</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-1-7"><div class="cb"></div><div class="check-text"><div class="check-label">Google Sheets API wrapper — read/write with retry</div><div class="check-desc">Exponential backoff, 300 req/min rate limit respected</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-1-8"><div class="cb"></div><div class="check-text"><div class="check-label">Service account authenticated and sharing confirmed</div><div class="check-desc">business_database spreadsheet and business-system Drive folder both shared with Editor access</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-1-9"><div class="cb"></div><div class="check-text"><div class="check-label">All environment variables set in deployment</div><div class="check-desc">ANTHROPIC_API_KEY, BRAVE_SEARCH_API_KEY, GOOGLE_SERVICE_ACCOUNT_PATH, DATABASE_URL, BASE_URL, AGENT_SECRET_SALT, RESEND_API_KEY</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">Orchestration engine <span class="section-count" id="m1-s2-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m1-2-1"><div class="cb"></div><div class="check-text"><div class="check-label">Agent contract — input payload schema defined and validated</div><div class="check-desc">job_id, agent_type, config, context, callback_url, timeout_seconds</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-2-2"><div class="cb"></div><div class="check-text"><div class="check-label">Agent contract — output payload schema defined and validated</div><div class="check-desc">job_id (echo), status, artifacts[], errors[], run_log, duration_seconds</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-2-3"><div class="cb"></div><div class="check-text"><div class="check-label">State machine — all 9 states and valid transitions implemented</div><div class="check-desc">queued, running, validating, pending_review, committing, completed, failed, expired, cancelled</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-2-4"><div class="cb"></div><div class="check-text"><div class="check-label">Agent router — dispatch with auth header and timeout</div><div class="check-desc">Reads endpoint from agents registry at dispatch time. X-Agent-Secret header.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-2-5"><div class="cb"></div><div class="check-text"><div class="check-label">Agent router — callback handler at POST /api/callbacks/:jobId</div><div class="check-desc">Validates output schema before accepting. Transitions state on valid result.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-2-6"><div class="cb"></div><div class="check-text"><div class="check-label">Retry logic — 3 attempts with exponential backoff (30s, 2m, 10m)</div><div class="check-desc">Network errors and 5xx retry. 4xx and schema violations do not retry.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-2-7"><div class="cb"></div><div class="check-text"><div class="check-label">HITL gate — review_deadline set and tracked</div><div class="check-desc">72h default. 48h reminder email. Expiry marks job expired and sends alert.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-2-8"><div class="cb"></div><div class="check-text"><div class="check-label">HITL gate — approval submission writes to audit_log with actor_id</div><div class="check-desc">Every approve/reject decision is immutably recorded</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-2-9"><div class="cb"></div><div class="check-text"><div class="check-label">Email notification — review_ready event fires to admin</div><div class="check-desc">Via Resend. Includes item count, flagged count, link to review UI.</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">Agents <span class="section-count" id="m1-s3-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m1-3-1"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — /run endpoint implemented</div><div class="check-desc">Accepts job payload, runs async, POSTs result to callback_url</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-2"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — duplicate-run guard (tools_draft empty check)</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-3"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — config loading from payload</div><div class="check-desc">categories, max_new_drafts_per_run, stale_threshold_days, confidence_score_minimum</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-4"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — Mode 1: autonomous web search across all categories</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-5"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — Mode 2: G2, Capterra, Product Hunt monitoring</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-6"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — Mode 3: stale record refresh</div><div class="check-desc">Records older than stale_threshold_days re-fetched, unchanged records updated directly</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-7"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — confidence score calculation (8 signals, 0.0–1.0)</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-8"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — 12-check structural quality gate</div><div class="check-desc">All required fields, URL reachable, pricing_from is number, enum values valid</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-9"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — weekly report written to Drive</div><div class="check-desc">DB-CURATOR-REPORT-[date].doc in /Operational/Database Exports/</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-10"><div class="cb"></div><div class="check-text"><div class="check-label">DB Curator — /health endpoint returns agent_type and version</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-11"><div class="cb"></div><div class="check-text"><div class="check-label">DB Validator — /run and /health endpoints</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-12"><div class="cb"></div><div class="check-text"><div class="check-label">DB Validator — 3-dimension scoring with independent web search</div><div class="check-desc">problem_tags accuracy, embedding_text accuracy, independent confidence (1–5 each)</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-13"><div class="cb"></div><div class="check-text"><div class="check-label">DB Validator — writes quality scores to tools_draft (never overwrites data fields)</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-3-14"><div class="cb"></div><div class="check-text"><div class="check-label">DB Validator — validator_flag set when quality_score below threshold</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">Admin UI <span class="section-count" id="m1-s4-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m1-4-1"><div class="cb"></div><div class="check-text"><div class="check-label">Review panel — shows draft batch with all fields</div><div class="check-desc">Including confidence_score, source_count, quality_score, validator_flag, quality_notes</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-4-2"><div class="cb"></div><div class="check-text"><div class="check-label">Review panel — approve / reject per item</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-4-3"><div class="cb"></div><div class="check-text"><div class="check-label">Manual run trigger — start a Curator run from the UI</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-4-4"><div class="cb"></div><div class="check-text"><div class="check-label">Manual tool search — paste tool names, trigger targeted Curator run</div><div class="check-desc">One name per line or comma-separated. Rejected if tools_draft is non-empty.</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="gate-section">
+        <div class="gate-section-title" style="color:var(--amber)">Tests <span class="section-count" id="m1-s5-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m1-5-1"><div class="cb"></div><div class="check-text"><div class="check-label">Full run completes end-to-end without manual intervention</div><div class="check-desc">Curator to Validator to HITL notification to approve to commit. Zero errors.</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-2"><div class="cb"></div><div class="check-text"><div class="check-label">Reject path tested: rejected items not committed, audit log records reason</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-3"><div class="cb"></div><div class="check-text"><div class="check-label">Retry logic: simulated agent timeout causes 3 retries then failed state + admin alert</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-4"><div class="cb"></div><div class="check-text"><div class="check-label">Duplicate-run guard: second run halts when tools_draft is non-empty</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-5"><div class="cb"></div><div class="check-text"><div class="check-label">HITL timeout: job with no approval after 72h is marked expired, next run unblocked</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-6"><div class="cb"></div><div class="check-text"><div class="check-label">Agent swap: endpoint URL changed in registry, next run uses new endpoint</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-7"><div class="cb"></div><div class="check-text"><div class="check-label">Audit log: every state change has a corresponding immutable row</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-8"><div class="cb"></div><div class="check-text"><div class="check-label">Manual tool search: 3 named tools submitted, all appear in tools_draft after run</div></div><span class="check-badge badge-test">test</span></div>
+        </div>
+      </div>
+      <div class="gate-section">
+        <div class="gate-section-title" style="color:var(--coral)">Gate to M2 — all must pass <span class="section-count" id="m1-s6-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m1-6-1"><div class="cb"></div><div class="check-text"><div class="check-label">3 or more full Curator runs completed and reviewed without errors</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m1-6-2"><div class="cb"></div><div class="check-text"><div class="check-label">tools_and_services has 20 or more verified records across 4 or more categories</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m1-6-3"><div class="cb"></div><div class="check-text"><div class="check-label">HITL gate tested with both approve and reject paths</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m1-6-4"><div class="cb"></div><div class="check-text"><div class="check-label">Retry logic tested with simulated failure</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m1-6-5"><div class="cb"></div><div class="check-text"><div class="check-label">Audit log correctly records every state change and approval decision</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m1-6-6"><div class="cb"></div><div class="check-text"><div class="check-label">Agent swap tested: one registry row changed, next run uses new endpoint</div></div><span class="check-badge badge-gate">gate</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="milestone-block" id="m2">
+  <div class="milestone-header" onclick="toggleMilestone('m2')">
+    <div class="milestone-left">
+      <div class="m-tag mt2"><span class="dot"></span>Milestone 2</div>
+      <div class="milestone-title">Client pipeline — full engagement end to end</div>
+      <div class="milestone-meta">Weeks 5–9 · 1–2 developers</div>
+    </div>
+    <div class="milestone-right">
+      <div class="milestone-progress-label" id="m2-label">0 / 0</div>
+      <div class="milestone-progress-bar"><div class="milestone-progress-fill" id="m2-bar" style="width:0%;background:var(--m2)"></div></div>
+      <div class="chevron open" id="m2-chev">&#9662;</div>
+    </div>
+  </div>
+  <div class="milestone-body open" id="m2-body">
+    <div class="milestone-body-inner">
+      <div class="check-section">
+        <div class="check-section-title">Data layer additions <span class="section-count" id="m2-s1-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m2-1-1"><div class="cb"></div><div class="check-text"><div class="check-label">Postgres — problem_memos table</div><div class="check-desc">All 14 fields: mission, vision, objectives[], value_added, bottlenecks[], budget (nullable), assumptions[], tech_stack[], current_workflow, decision_maker, urgency, client_id, validation_status, validation_score</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-1-2"><div class="cb"></div><div class="check-text"><div class="check-label">Postgres — client_sessions table</div><div class="check-desc">session_id, client_name, client_company, conversation_history (jsonb), status, created_at, last_active_at</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-1-3"><div class="cb"></div><div class="check-text"><div class="check-label">Postgres — solution_presentations table</div><div class="check-desc">memo_id FK, client_id FK, status, recommendations (jsonb with objectives_coverage_pct), solution_type, match_validation_status</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-1-4"><div class="cb"></div><div class="check-text"><div class="check-label">Google Drive — client folder created per engagement</div><div class="check-desc">~/clients/{client_name}_{client_id}/ created on session start</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">Agents <span class="section-count" id="m2-s2-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m2-2-1"><div class="cb"></div><div class="check-text"><div class="check-label">Consultant — multi-turn conversation with session persistence</div><div class="check-desc">Each turn: receives full conversation_history, generates response, extracts field values, checks completeness</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-2"><div class="cb"></div><div class="check-text"><div class="check-label">Consultant — all 14 required memo fields collected</div><div class="check-desc">Including objectives (critical), assumptions (critical), tech_stack, budget (never pushed)</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-3"><div class="cb"></div><div class="check-text"><div class="check-label">Consultant — confirmation phase before memo is finalised</div><div class="check-desc">Summary presented to client. Memo only written after explicit client confirmation.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-4"><div class="cb"></div><div class="check-text"><div class="check-label">Intake Validator — completeness, clarity, and consistency checks</div><div class="check-desc">9 checks across 3 categories. Sets validation_status: passed / incomplete / flagged.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-5"><div class="cb"></div><div class="check-text"><div class="check-label">Intake Validator — re-engages Consultant if validation fails</div><div class="check-desc">Analyst not triggered until validation_status = passed</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-6"><div class="cb"></div><div class="check-text"><div class="check-label">Analyst — objective-based matching: each tool scored by percentage of objectives met</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-7"><div class="cb"></div><div class="check-text"><div class="check-label">Analyst — combination pass: tool pairs and triplets tested for compatibility + coverage</div><div class="check-desc">Integration compatibility checked before combining. Union of covered objectives scored.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-8"><div class="cb"></div><div class="check-text"><div class="check-label">Analyst — 40% threshold gate: routes to custom proposal if no solution qualifies</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-9"><div class="cb"></div><div class="check-text"><div class="check-label">Analyst — custom development proposal generated and saved to Drive</div><div class="check-desc">States why no existing tool meets threshold. Outlines preliminary custom scope.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-10"><div class="cb"></div><div class="check-text"><div class="check-label">Match Validator — per-recommendation scoring (5 checks each)</div><div class="check-desc">Problem relevance, rationale accuracy, constraint compliance, score integrity, ranking order</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-11"><div class="cb"></div><div class="check-text"><div class="check-label">Match Validator — removes constraint-violating recommendations</div><div class="check-desc">Budget, company size, tech_stack incompatibility</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-2-12"><div class="cb"></div><div class="check-text"><div class="check-label">Match Validator — re-triggers Analyst if all recommendations removed</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">Client UI and admin extensions <span class="section-count" id="m2-s3-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m2-3-1"><div class="cb"></div><div class="check-text"><div class="check-label">Client intake UI — conversational interface with progress indicator</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-3-2"><div class="cb"></div><div class="check-text"><div class="check-label">Client UI — session resumption: client can leave and return within 7 days</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-3-3"><div class="cb"></div><div class="check-text"><div class="check-label">Client UI — confirmation screen before memo finalised</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-3-4"><div class="cb"></div><div class="check-text"><div class="check-label">Client UI — waiting screen after memo finalised</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-3-5"><div class="cb"></div><div class="check-text"><div class="check-label">Admin review panel — memo + presentation shown together</div><div class="check-desc">Includes per_recommendation_flags, match_validation_score, objectives_coverage_pct</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m2-3-6"><div class="cb"></div><div class="check-text"><div class="check-label">Admin email — fires when new client folder created and when outputs saved</div><div class="check-desc">Never includes client-accessible links. Drive-only access.</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="gate-section">
+        <div class="gate-section-title" style="color:var(--amber)">Tests <span class="section-count" id="m2-s4-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m2-4-1"><div class="cb"></div><div class="check-text"><div class="check-label">3 full client engagements run end-to-end without errors</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m2-4-2"><div class="cb"></div><div class="check-text"><div class="check-label">Session resumption: client leaves mid-intake, returns 24h later, conversation continues</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m2-4-3"><div class="cb"></div><div class="check-text"><div class="check-label">Intake validation failure: incomplete memo re-engages Consultant, Analyst not triggered</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m2-4-4"><div class="cb"></div><div class="check-text"><div class="check-label">Analyst produces at least one multi-tool combination recommendation</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m2-4-5"><div class="cb"></div><div class="check-text"><div class="check-label">Custom proposal path: test case where no tool meets 40% threshold produces coherent proposal</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m2-4-6"><div class="cb"></div><div class="check-text"><div class="check-label">Zero outputs accessible to client interface (security confirmed)</div></div><span class="check-badge badge-test">test</span></div>
+        </div>
+      </div>
+      <div class="gate-section">
+        <div class="gate-section-title" style="color:var(--coral)">Gate to M3 <span class="section-count" id="m2-s5-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m2-5-1"><div class="cb"></div><div class="check-text"><div class="check-label">All 6 agents run at least once without errors</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m2-5-2"><div class="cb"></div><div class="check-text"><div class="check-label">Analyst has produced 1 or more multi-tool combination recommendations</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m2-5-3"><div class="cb"></div><div class="check-text"><div class="check-label">Custom development proposal path triggered and output reviewed</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m2-5-4"><div class="cb"></div><div class="check-text"><div class="check-label">All 3 pipelines have passed through the HITL gate with approve and reject decisions</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m2-5-5"><div class="cb"></div><div class="check-text"><div class="check-label">Drive client folder structure correct: ~/clients/{name}_{id}/ created per engagement</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m2-5-6"><div class="cb"></div><div class="check-text"><div class="check-label">Admin email fires correctly for every new client folder and new output</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m2-5-7"><div class="cb"></div><div class="check-text"><div class="check-label">Average Match Validator quality_score >= 3.0 across test engagements</div></div><span class="check-badge badge-metric">metric</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="milestone-block" id="m3">
+  <div class="milestone-header" onclick="toggleMilestone('m3')">
+    <div class="milestone-left">
+      <div class="m-tag mt3"><span class="dot"></span>Milestone 3</div>
+      <div class="milestone-title">Automation — the system runs itself</div>
+      <div class="milestone-meta">Weeks 10–13 · 1 developer</div>
+    </div>
+    <div class="milestone-right">
+      <div class="milestone-progress-label" id="m3-label">0 / 0</div>
+      <div class="milestone-progress-bar"><div class="milestone-progress-fill" id="m3-bar" style="width:0%;background:var(--m3)"></div></div>
+      <div class="chevron open" id="m3-chev">&#9662;</div>
+    </div>
+  </div>
+  <div class="milestone-body open" id="m3-body">
+    <div class="milestone-body-inner">
+      <div class="check-section">
+        <div class="check-section-title">Scheduler and queue <span class="section-count" id="m3-s1-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m3-1-1"><div class="cb"></div><div class="check-text"><div class="check-label">Redis + BullMQ — one priority queue per agent type</div><div class="check-desc">6 queues: db_curator (normal), consultant/analyst/validators (high)</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-1-2"><div class="cb"></div><div class="check-text"><div class="check-label">BullMQ — deduplication keys per queue</div><div class="check-desc">Prevents two identical jobs from running simultaneously</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-1-3"><div class="cb"></div><div class="check-text"><div class="check-label">BullMQ — dead letter queue for exhausted retries</div><div class="check-desc">Failed jobs visible in admin dashboard, admin alerted</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-1-4"><div class="cb"></div><div class="check-text"><div class="check-label">Cron scheduler — reads cron expressions from agent_config on startup</div><div class="check-desc">Default: Curator every Monday 08:00. Timezone from agent_config.run_timezone.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-1-5"><div class="cb"></div><div class="check-text"><div class="check-label">Cron scheduler — skips run if same agent already has active job</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-1-6"><div class="cb"></div><div class="check-text"><div class="check-label">Event-driven triggers — memo_created, intake_validation_passed, solution_created</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">Notifications and monitoring <span class="section-count" id="m3-s2-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m3-2-1"><div class="cb"></div><div class="check-text"><div class="check-label">All 7 notification event types implemented</div><div class="check-desc">run_completed_pending_review, review_48h_reminder, review_expired, db_validation_alert, agent_error, client_solution_ready (admin only), weekly_summary</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-2-2"><div class="cb"></div><div class="check-text"><div class="check-label">Agent health monitoring — /health polled every 5 minutes</div><div class="check-desc">Admin alerted if any agent returns non-200 or times out</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-2-3"><div class="cb"></div><div class="check-text"><div class="check-label">Apps Script post-commit validation — installed and triggered on edit</div><div class="check-desc">Duplicate IDs, duplicate domains, over-stale records, missing embedding_text, category gaps, missing source_urls</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-2-4"><div class="cb"></div><div class="check-text"><div class="check-label">Apps Script — weekly time-driven trigger (Monday 9am)</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-2-5"><div class="cb"></div><div class="check-text"><div class="check-label">Run history dashboard — all jobs filterable by type, date, status</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m3-2-6"><div class="cb"></div><div class="check-text"><div class="check-label">Config editor in dashboard — edit agent_config without touching Sheets directly</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="gate-section">
+        <div class="gate-section-title" style="color:var(--amber)">Tests <span class="section-count" id="m3-s3-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m3-3-1"><div class="cb"></div><div class="check-text"><div class="check-label">2 consecutive unattended Monday Curator runs complete with no manual trigger</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m3-3-2"><div class="cb"></div><div class="check-text"><div class="check-label">All 7 notification types fire correctly — correct email received for each</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m3-3-3"><div class="cb"></div><div class="check-text"><div class="check-label">5 concurrent client intake sessions — all complete, none dropped or corrupted</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m3-3-4"><div class="cb"></div><div class="check-text"><div class="check-label">Agent killed mid-run: queue re-queues, job completes on retry within 2 minutes</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m3-3-5"><div class="cb"></div><div class="check-text"><div class="check-label">Config change via dashboard: next scheduled run uses new value (no redeploy)</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m3-3-6"><div class="cb"></div><div class="check-text"><div class="check-label">Event chain under concurrency: memo_created triggers Intake Validator and Analyst in correct order</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m3-3-7"><div class="cb"></div><div class="check-text"><div class="check-label">Apps Script validation: introduce duplicate ID in tools_and_services — alert email received</div></div><span class="check-badge badge-test">test</span></div>
+        </div>
+      </div>
+      <div class="gate-section">
+        <div class="gate-section-title" style="color:var(--coral)">Gate to M4 <span class="section-count" id="m3-s4-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m3-4-1"><div class="cb"></div><div class="check-text"><div class="check-label">2 consecutive unattended weekly Curator runs completed correctly</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m3-4-2"><div class="cb"></div><div class="check-text"><div class="check-label">System runs for 1 full week without crash or missed scheduled run</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m3-4-3"><div class="cb"></div><div class="check-text"><div class="check-label">Dead letter queue tested: failed job visible and admin alerted</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m3-4-4"><div class="cb"></div><div class="check-text"><div class="check-label">Config change via dashboard takes effect on next run (tested)</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m3-4-5"><div class="cb"></div><div class="check-text"><div class="check-label">All 6 agent /health endpoints return correctly and are being polled</div></div><span class="check-badge badge-gate">gate</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="milestone-block" id="m4">
+  <div class="milestone-header" onclick="toggleMilestone('m4')">
+    <div class="milestone-left">
+      <div class="m-tag mt4"><span class="dot"></span>Milestone 4</div>
+      <div class="milestone-title">Full outputs — three documents per client</div>
+      <div class="milestone-meta">Weeks 14–17 · 1–2 developers</div>
+    </div>
+    <div class="milestone-right">
+      <div class="milestone-progress-label" id="m4-label">0 / 0</div>
+      <div class="milestone-progress-bar"><div class="milestone-progress-fill" id="m4-bar" style="width:0%;background:var(--m4)"></div></div>
+      <div class="chevron open" id="m4-chev">&#9662;</div>
+    </div>
+  </div>
+  <div class="milestone-body open" id="m4-body">
+    <div class="milestone-body-inner">
+      <div class="check-section">
+        <div class="check-section-title">Document generators <span class="section-count" id="m4-s1-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m4-1-1"><div class="cb"></div><div class="check-text"><div class="check-label">Problem Memo PDF generator — all 14 required fields formatted</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m4-1-2"><div class="cb"></div><div class="check-text"><div class="check-label">Project Proposal PDF generator — all 14 required fields</div><div class="check-desc">executive_summary, solution_components, objectives_met table, objectives_coverage_pct, assumptions, features, constraints, risks, cost_estimate, timeline, resources_required, integration_plan, next_steps</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m4-1-3"><div class="cb"></div><div class="check-text"><div class="check-label">Proposal defensibility check — every proposal field traced to a memo field or flagged</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m4-1-4"><div class="cb"></div><div class="check-text"><div class="check-label">Pitch Deck PDF generator — slide-structured, based on Project Proposal content</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m4-1-5"><div class="cb"></div><div class="check-text"><div class="check-label">Custom Development Proposal generator — triggered when objectives_coverage_pct below 40%</div><div class="check-desc">States why no existing solution qualifies. Cites search outcome. Outlines preliminary custom project scope.</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">Drive filing and register <span class="section-count" id="m4-s2-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m4-2-1"><div class="cb"></div><div class="check-text"><div class="check-label">Filing system — all 3 outputs saved to ~/clients/{name}_{id}/ with correct naming</div><div class="check-desc">problem_memo_{date}.pdf, project_proposal_{date}.pdf, pitch_deck_{date}.pdf</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m4-2-2"><div class="cb"></div><div class="check-text"><div class="check-label">Document register — every output gets a row in Google Sheets document_register</div><div class="check-desc">doc_type, drive_file_id, drive_url, status, created_by, parties, branch</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m4-2-3"><div class="cb"></div><div class="check-text"><div class="check-label">Admin email — fires with Drive folder link when all 3 documents saved</div><div class="check-desc">Never exposes client-accessible URLs. Admin access only.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m4-2-4"><div class="cb"></div><div class="check-text"><div class="check-label">_Inbox folder handling — unclassified files routed and flagged</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="gate-section">
+        <div class="gate-section-title" style="color:var(--amber)">Tests <span class="section-count" id="m4-s3-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m4-3-1"><div class="cb"></div><div class="check-text"><div class="check-label">5 complete client engagements: all 3 documents generated per client</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m4-3-2"><div class="cb"></div><div class="check-text"><div class="check-label">Custom Development Proposal: produced and found coherent for a no-match case</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m4-3-3"><div class="cb"></div><div class="check-text"><div class="check-label">Drive folder structure correct for all 5 test clients (manually verified)</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m4-3-4"><div class="cb"></div><div class="check-text"><div class="check-label">Document register: correct entry for every generated document</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m4-3-5"><div class="cb"></div><div class="check-text"><div class="check-label">Zero document URLs accessible via the client interface</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m4-3-6"><div class="cb"></div><div class="check-text"><div class="check-label">All 3 documents generated and saved within 30 seconds of approval decision</div></div><span class="check-badge badge-metric">metric</span></div>
+        </div>
+      </div>
+      <div class="gate-section">
+        <div class="gate-section-title" style="color:var(--coral)">Gate to M5 <span class="section-count" id="m4-s4-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m4-4-1"><div class="cb"></div><div class="check-text"><div class="check-label">5 complete client engagements with all 3 documents generated</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m4-4-2"><div class="cb"></div><div class="check-text"><div class="check-label">Custom Development Proposal path tested and output reviewed</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m4-4-3"><div class="cb"></div><div class="check-text"><div class="check-label">Drive folder structure correct for all test clients</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m4-4-4"><div class="cb"></div><div class="check-text"><div class="check-label">Document register has correct entries for all generated documents</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m4-4-5"><div class="cb"></div><div class="check-text"><div class="check-label">Zero documents accessible to client interface (security review)</div></div><span class="check-badge badge-gate">gate</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="milestone-block" id="m5">
+  <div class="milestone-header" onclick="toggleMilestone('m5')">
+    <div class="milestone-left">
+      <div class="m-tag mt5"><span class="dot"></span>Milestone 5</div>
+      <div class="milestone-title">Production — hardened and complete</div>
+      <div class="milestone-meta">Weeks 18–20 · 1 developer</div>
+    </div>
+    <div class="milestone-right">
+      <div class="milestone-progress-label" id="m5-label">0 / 0</div>
+      <div class="milestone-progress-bar"><div class="milestone-progress-fill" id="m5-bar" style="width:0%;background:var(--m5)"></div></div>
+      <div class="chevron open" id="m5-chev">&#9662;</div>
+    </div>
+  </div>
+  <div class="milestone-body open" id="m5-body">
+    <div class="milestone-body-inner">
+      <div class="check-section">
+        <div class="check-section-title">Hardening and monitoring <span class="section-count" id="m5-s1-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m5-1-1"><div class="cb"></div><div class="check-text"><div class="check-label">Performance monitoring — run duration tracked per agent, slow run alerts</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-1-2"><div class="cb"></div><div class="check-text"><div class="check-label">API cost tracking — per-agent, per-run cost logged to Postgres</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-1-3"><div class="cb"></div><div class="check-text"><div class="check-label">Rate limit handling — graceful degradation when external APIs hit limits</div><div class="check-desc">Brave Search, Anthropic API, Google Workspace APIs all handle 429 responses correctly</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-1-4"><div class="cb"></div><div class="check-text"><div class="check-label">Weekly summary email — runs, items, approval rates, avg quality score, total cost</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-1-5"><div class="cb"></div><div class="check-text"><div class="check-label">Admin dashboard polish — all 7 panels complete, consistent design, responsive</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-1-6"><div class="cb"></div><div class="check-text"><div class="check-label">Supabase migration script written and dry-run validated</div><div class="check-desc">Schema export from Google Sheets + Postgres. Migration path confirmed.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-1-7"><div class="cb"></div><div class="check-text"><div class="check-label">Developer handover documentation — runbook, architecture summary, known issues</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">Security review <span class="section-count" id="m5-s2-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m5-2-1"><div class="cb"></div><div class="check-text"><div class="check-label">Service account permissions audited — minimum required scopes only</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-2-2"><div class="cb"></div><div class="check-text"><div class="check-label">All API keys rotated and confirmed stored only in environment variables</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-2-3"><div class="cb"></div><div class="check-text"><div class="check-label">HITL gate hardened — no code path allows bypassing approval</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-2-4"><div class="cb"></div><div class="check-text"><div class="check-label">Agent endpoints secured — X-Agent-Secret header validated on every request</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m5-2-5"><div class="cb"></div><div class="check-text"><div class="check-label">Client session data access confirmed: clients can only see their own sessions</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="gate-section">
+        <div class="gate-section-title" style="color:var(--amber)">Tests and success metrics <span class="section-count" id="m5-s3-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m5-3-1"><div class="cb"></div><div class="check-text"><div class="check-label">99% or higher scheduled run success rate over 4-week observation period</div></div><span class="check-badge badge-metric">metric</span></div>
+      <div class="check-item" data-id="m5-3-2"><div class="cb"></div><div class="check-text"><div class="check-label">Monthly running cost tracked and confirmed under 120 GBP at expected volume</div></div><span class="check-badge badge-metric">metric</span></div>
+      <div class="check-item" data-id="m5-3-3"><div class="cb"></div><div class="check-text"><div class="check-label">4-week unattended operation with no developer intervention required</div></div><span class="check-badge badge-metric">metric</span></div>
+      <div class="check-item" data-id="m5-3-4"><div class="cb"></div><div class="check-text"><div class="check-label">Agent swap verified in production — one registry row changed, run succeeds, zero other changes</div></div><span class="check-badge badge-metric">metric</span></div>
+      <div class="check-item" data-id="m5-3-5"><div class="cb"></div><div class="check-text"><div class="check-label">tools_and_services has 50 or more records with verified=TRUE across all categories</div></div><span class="check-badge badge-metric">metric</span></div>
+      <div class="check-item" data-id="m5-3-6"><div class="cb"></div><div class="check-text"><div class="check-label">Security review complete — zero open issues</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m5-3-7"><div class="cb"></div><div class="check-text"><div class="check-label">Rate limit handling tested — Brave Search 429 response handled gracefully</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m5-3-8"><div class="cb"></div><div class="check-text"><div class="check-label">Developer handover: another developer can set up the system from docs alone (verified)</div></div><span class="check-badge badge-gate">gate</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- container -->
+</div><!-- page -->
+<footer><p>AI Business System &middot; Build Checklist &middot; Progress saved automatically in browser localStorage</p></footer>
+<script>
+const STORE='ai-sys-checklist-v1';
+const COL_STORE='ai-sys-collapse-v1';
+function loadState(){try{return JSON.parse(localStorage.getItem(STORE))||{};}catch(e){return {};}}
+function saveState(s){try{localStorage.setItem(STORE,JSON.stringify(s));}catch(e){}}
+function loadCollapse(){try{return JSON.parse(localStorage.getItem(COL_STORE))||{};}catch(e){return {};}}
+function saveCollapse(s){try{localStorage.setItem(COL_STORE,JSON.stringify(s));}catch(e){}}
+let state=loadState();
+let collapseState=loadCollapse();
+
+function toggleItem(id){
+  state[id]=!state[id];
+  saveState(state);
+  applyItem(id);
+  updateAllCounts();
+}
+function applyItem(id){
+  const el=document.querySelector('[data-id="'+id+'"]');
+  if(!el)return;
+  const done=!!state[id];
+  el.querySelector('.cb').classList.toggle('checked',done);
+  el.classList.toggle('done',done);
+}
+function wireItems(){
+  document.querySelectorAll('.check-item[data-id]').forEach(el=>{
+    applyItem(el.dataset.id);
+    el.addEventListener('click',()=>toggleItem(el.dataset.id));
+  });
+}
+function toggleMilestone(mId){
+  const body=document.getElementById(mId+'-body');
+  const chev=document.getElementById(mId+'-chev');
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  body.classList.toggle('collapsed',isOpen);
+  chev.classList.toggle('open',!isOpen);
+  chev.classList.toggle('closed',isOpen);
+  collapseState[mId]=isOpen;
+  saveCollapse(collapseState);
+}
+function applyCollapseState(){
+  Object.entries(collapseState).forEach(([mId,wasOpen])=>{
+    if(!wasOpen)return;
+    const body=document.getElementById(mId+'-body');
+    const chev=document.getElementById(mId+'-chev');
+    if(body){body.classList.remove('open');body.classList.add('collapsed');}
+    if(chev){chev.classList.remove('open');chev.classList.add('closed');}
+  });
+}
+function updateMilestone(mId){
+  const items=[...document.querySelectorAll('#'+mId+' .check-item[data-id]')];
+  const done=items.filter(i=>!!state[i.dataset.id]).length;
+  const total=items.length;
+  const pct=total?Math.round(done/total*100):0;
+  const label=document.getElementById(mId+'-label');
+  const bar=document.getElementById(mId+'-bar');
+  if(label)label.textContent=done+' / '+total;
+  if(bar)bar.style.width=pct+'%';
+}
+function updateSectionCounts(){
+  document.querySelectorAll('[id$="-count"]').forEach(el=>{
+    const sid=el.id.replace('-count','');
+    const parts=sid.split('-');
+    if(parts.length<3)return;
+    const mId=parts[0]+'-'+parts[1];
+    const sIdx=parseInt(parts[2].replace('s',''));
+    const sections=[...document.querySelectorAll('#'+mId+' .check-section, #'+mId+' .gate-section')];
+    const sec=sections[sIdx-1];
+    if(!sec)return;
+    const items=[...sec.querySelectorAll('.check-item[data-id]')];
+    const done=items.filter(i=>!!state[i.dataset.id]).length;
+    el.textContent=done+'/'+items.length;
+  });
+}
+function updateGlobalStats(){
+  const all=[...document.querySelectorAll('.check-item[data-id]')];
+  const total=all.length;
+  const done=all.filter(i=>!!state[i.dataset.id]).length;
+  const pct=total?Math.round(done/total*100):0;
+  const byType=(cls)=>all.filter(i=>i.querySelector('.badge-'+cls));
+  const doneByType=(cls)=>byType(cls).filter(i=>!!state[i.dataset.id]).length;
+  document.getElementById('gp-total').textContent=done+'/'+total;
+  document.getElementById('gp-build').textContent=doneByType('build')+'/'+byType('build').length;
+  document.getElementById('gp-test').textContent=doneByType('test')+'/'+byType('test').length;
+  document.getElementById('gp-gate').textContent=doneByType('gate')+'/'+byType('gate').length;
+  document.getElementById('gp-metric').textContent=doneByType('metric')+'/'+byType('metric').length;
+  document.getElementById('nav-pct').textContent=pct+'%';
+  document.getElementById('nav-fill').style.width=pct+'%';
+  document.getElementById('nav-counts').textContent=done+'/'+total;
+}
+function updateAllCounts(){
+  ['m1','m2','m3','m4','m5'].forEach(updateMilestone);
+  updateSectionCounts();
+  updateGlobalStats();
+}
+function resetAll(){
+  if(!confirm('Reset all checklist progress? This cannot be undone.'))return;
+  state={};saveState(state);
+  document.querySelectorAll('.check-item[data-id]').forEach(el=>applyItem(el.dataset.id));
+  updateAllCounts();
+}
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      document.querySelectorAll('.nav-pills a').forEach(a=>{
+        a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id);
+      });
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('[id]').forEach(s=>obs.observe(s));
+wireItems();
+applyCollapseState();
+updateAllCounts();
+</script>
+</body>
+</html>
