@@ -1,0 +1,9 @@
+# Wiki (Obsidian vault — local only)
+wiki/
+
+# MCP config (contains API key)
+.mcp.json
+
+# Windows
+Thumbs.db
+desktop.ini

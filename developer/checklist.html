@@ -146,7 +146,7 @@
     <div class="milestone-left">
       <div class="m-tag mt1"><span class="dot"></span>Milestone 1</div>
       <div class="milestone-title">MVP — Database pipeline, end to end</div>
-      <div class="milestone-meta">Weeks 1–4 · 1 developer</div>
+      <div class="milestone-meta">Weeks 1–5 · 1 developer</div>
     </div>
     <div class="milestone-right">
       <div class="milestone-progress-label" id="m1-label">0 / 0</div>
@@ -168,6 +168,16 @@
       <div class="check-item" data-id="m1-1-7"><div class="cb"></div><div class="check-text"><div class="check-label">Google Sheets API wrapper — read/write with retry</div><div class="check-desc">Exponential backoff, 300 req/min rate limit respected</div></div><span class="check-badge badge-build">build</span></div>
       <div class="check-item" data-id="m1-1-8"><div class="cb"></div><div class="check-text"><div class="check-label">Service account authenticated and sharing confirmed</div><div class="check-desc">business_database spreadsheet and business-system Drive folder both shared with Editor access</div></div><span class="check-badge badge-build">build</span></div>
       <div class="check-item" data-id="m1-1-9"><div class="cb"></div><div class="check-text"><div class="check-label">All environment variables set in deployment</div><div class="check-desc">ANTHROPIC_API_KEY, BRAVE_SEARCH_API_KEY, GOOGLE_SERVICE_ACCOUNT_PATH, DATABASE_URL, BASE_URL, AGENT_SECRET_SALT, RESEND_API_KEY</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">API messaging layer <span class="section-count" id="m1-s7-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m1-7-1"><div class="cb"></div><div class="check-text"><div class="check-label">LLM provider interface — abstract base defining send_message(), response parsing, and tool result handling</div><div class="check-desc">No direct SDK calls outside this layer. All agents call through the interface.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-7-2"><div class="cb"></div><div class="check-text"><div class="check-label">Claude provider implementation — Anthropic SDK behind the interface</div><div class="check-desc">Handles API authentication via ANTHROPIC_API_KEY env var</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-7-3"><div class="cb"></div><div class="check-text"><div class="check-label">Message builder — constructs typed system/user/assistant/tool_result conversation arrays</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-7-4"><div class="cb"></div><div class="check-text"><div class="check-label">Response parser — extracts text content, tool use blocks, stop reason, and token usage from API response</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-7-5"><div class="cb"></div><div class="check-text"><div class="check-label">Model parameters config-driven — model_id, temperature, max_tokens read from agent registry at dispatch time</div><div class="check-desc">No code change needed to update model configuration</div></div><span class="check-badge badge-build">build</span></div>
         </div>
       </div>
       <div class="check-section">
@@ -210,6 +220,27 @@
       <div class="check-item" data-id="m1-4-2"><div class="cb"></div><div class="check-text"><div class="check-label">Review panel — approve / reject per item</div></div><span class="check-badge badge-build">build</span></div>
       <div class="check-item" data-id="m1-4-3"><div class="cb"></div><div class="check-text"><div class="check-label">Manual run trigger — start a Curator run from the UI</div></div><span class="check-badge badge-build">build</span></div>
       <div class="check-item" data-id="m1-4-4"><div class="cb"></div><div class="check-text"><div class="check-label">Manual tool search — paste tool names, trigger targeted Curator run</div><div class="check-desc">One name per line or comma-separated. Rejected if tools_draft is non-empty.</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-4-5"><div class="cb"></div><div class="check-text"><div class="check-label">Live run output — agent responses stream to the admin UI in real time</div><div class="check-desc">Progress visible without waiting for full completion</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">Run logging & trace visualisation <span class="section-count" id="m1-s8-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m1-8-1"><div class="cb"></div><div class="check-text"><div class="check-label">Run log schema — structured record per LLM call: messages sent, response, tool calls, tool results, timestamps, token counts</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-8-2"><div class="cb"></div><div class="check-text"><div class="check-label">Run log storage — written to DB per job, queryable by job_id, linked to llm_usage rows</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-8-3"><div class="cb"></div><div class="check-text"><div class="check-label">Admin UI — run trace viewer showing full chronological sequence of LLM calls and tool uses for any job</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-8-4"><div class="cb"></div><div class="check-text"><div class="check-label">Tool use detail in trace — each tool call shows tool name, input parameters, raw output, and latency</div></div><span class="check-badge badge-build">build</span></div>
+        </div>
+      </div>
+      <div class="check-section">
+        <div class="check-section-title">API cost tracking & performance monitoring <span class="section-count" id="m1-s9-count"></span></div>
+        <div class="check-group">
+      <div class="check-item" data-id="m1-9-1"><div class="cb"></div><div class="check-text"><div class="check-label">Postgres — llm_usage table</div><div class="check-desc">job_id, agent_type, model_id, provider, input_tokens, output_tokens, cost_usd, latency_ms, timestamp</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-9-2"><div class="cb"></div><div class="check-text"><div class="check-label">Pricing config — per-model rate table for calculating cost_usd from token counts</div><div class="check-desc">Stored in code or config; updated when model pricing changes</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-9-3"><div class="cb"></div><div class="check-text"><div class="check-label">Usage writer — inserts to llm_usage after every LLM call, called by the provider layer</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-9-4"><div class="cb"></div><div class="check-text"><div class="check-label">Per-job cost aggregation — query/view summing cost and tokens across all calls for a job</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-9-5"><div class="cb"></div><div class="check-text"><div class="check-label">Admin UI — cost & performance dashboard</div><div class="check-desc">Cost per run, cost per agent type, average latency, total spend</div></div><span class="check-badge badge-build">build</span></div>
+      <div class="check-item" data-id="m1-9-6"><div class="cb"></div><div class="check-text"><div class="check-label">Cost alert — email via Resend if a single run exceeds configurable max_cost_per_run threshold</div></div><span class="check-badge badge-build">build</span></div>
         </div>
       </div>
       <div class="gate-section">
@@ -223,6 +254,10 @@
       <div class="check-item" data-id="m1-5-6"><div class="cb"></div><div class="check-text"><div class="check-label">Agent swap: endpoint URL changed in registry, next run uses new endpoint</div></div><span class="check-badge badge-test">test</span></div>
       <div class="check-item" data-id="m1-5-7"><div class="cb"></div><div class="check-text"><div class="check-label">Audit log: every state change has a corresponding immutable row</div></div><span class="check-badge badge-test">test</span></div>
       <div class="check-item" data-id="m1-5-8"><div class="cb"></div><div class="check-text"><div class="check-label">Manual tool search: 3 named tools submitted, all appear in tools_draft after run</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-9"><div class="cb"></div><div class="check-text"><div class="check-label">Model parameter change: update model_id and temperature in agent registry, next run uses updated values</div><div class="check-desc">Confirmed via run trace log</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-10"><div class="cb"></div><div class="check-text"><div class="check-label">Cost tracking: completed run produces correct llm_usage rows; token counts reconcile against Anthropic dashboard</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-11"><div class="cb"></div><div class="check-text"><div class="check-label">Cost alert: configure low threshold, trigger a run, verify alert email fires</div></div><span class="check-badge badge-test">test</span></div>
+      <div class="check-item" data-id="m1-5-12"><div class="cb"></div><div class="check-text"><div class="check-label">Run trace: completed trace shows every tool call in sequence with inputs, outputs, and latency</div></div><span class="check-badge badge-test">test</span></div>
         </div>
       </div>
       <div class="gate-section">
@@ -234,6 +269,8 @@
       <div class="check-item" data-id="m1-6-4"><div class="cb"></div><div class="check-text"><div class="check-label">Retry logic tested with simulated failure</div></div><span class="check-badge badge-gate">gate</span></div>
       <div class="check-item" data-id="m1-6-5"><div class="cb"></div><div class="check-text"><div class="check-label">Audit log correctly records every state change and approval decision</div></div><span class="check-badge badge-gate">gate</span></div>
       <div class="check-item" data-id="m1-6-6"><div class="cb"></div><div class="check-text"><div class="check-label">Agent swap tested: one registry row changed, next run uses new endpoint</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m1-6-7"><div class="cb"></div><div class="check-text"><div class="check-label">Model parameters verified config-driven: 3+ runs completed with at least 2 different configurations</div><div class="check-desc">e.g. different model version or temperature setting</div></div><span class="check-badge badge-gate">gate</span></div>
+      <div class="check-item" data-id="m1-6-8"><div class="cb"></div><div class="check-text"><div class="check-label">Cost accuracy verified: token counts and cost totals reconcile against Anthropic dashboard for 3+ runs</div></div><span class="check-badge badge-gate">gate</span></div>
         </div>
       </div>
     </div>
@@ -244,7 +281,7 @@
     <div class="milestone-left">
       <div class="m-tag mt2"><span class="dot"></span>Milestone 2</div>
       <div class="milestone-title">Client pipeline — full engagement end to end</div>
-      <div class="milestone-meta">Weeks 5–9 · 1–2 developers</div>
+      <div class="milestone-meta">Weeks 6–10 · 1–2 developers</div>
     </div>
     <div class="milestone-right">
       <div class="milestone-progress-label" id="m2-label">0 / 0</div>
@@ -322,7 +359,7 @@
     <div class="milestone-left">
       <div class="m-tag mt3"><span class="dot"></span>Milestone 3</div>
       <div class="milestone-title">Automation — the system runs itself</div>
-      <div class="milestone-meta">Weeks 10–13 · 1 developer</div>
+      <div class="milestone-meta">Weeks 11–14 · 1 developer</div>
     </div>
     <div class="milestone-right">
       <div class="milestone-progress-label" id="m3-label">0 / 0</div>
@@ -384,7 +421,7 @@
     <div class="milestone-left">
       <div class="m-tag mt4"><span class="dot"></span>Milestone 4</div>
       <div class="milestone-title">Full outputs — three documents per client</div>
-      <div class="milestone-meta">Weeks 14–17 · 1–2 developers</div>
+      <div class="milestone-meta">Weeks 15–18 · 1–2 developers</div>
     </div>
     <div class="milestone-right">
       <div class="milestone-progress-label" id="m4-label">0 / 0</div>
@@ -442,7 +479,7 @@
     <div class="milestone-left">
       <div class="m-tag mt5"><span class="dot"></span>Milestone 5</div>
       <div class="milestone-title">Production — hardened and complete</div>
-      <div class="milestone-meta">Weeks 18–20 · 1 developer</div>
+      <div class="milestone-meta">Weeks 19–21 · 1 developer</div>
     </div>
     <div class="milestone-right">
       <div class="milestone-progress-label" id="m5-label">0 / 0</div>
