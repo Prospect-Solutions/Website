@@ -129,14 +129,13 @@
   <div class="container">
     <p class="eyebrow">PROSPECT</p>
     <h1>Build <em>checklist</em></h1>
-    <p class="hero-sub">All tasks, tests, and gate criteria across all five milestones. Tick items as you complete them — progress is saved automatically and persists when you close and reopen this file.</p>
+    <p class="hero-sub">All tasks, tests, and gate criteria across all five milestones. Progress is read from <code>checklist-state.json</code> in this directory and updated by committing to the repo.</p>
     <div class="global-progress">
       <div class="gp-stat"><div class="gp-val" id="gp-total">0/0</div><div class="gp-label">Total tasks</div></div>
       <div class="gp-stat"><div class="gp-val" id="gp-build" style="color:var(--blue)">0</div><div class="gp-label">Built</div></div>
       <div class="gp-stat"><div class="gp-val" id="gp-test" style="color:var(--amber)">0</div><div class="gp-label">Tested</div></div>
       <div class="gp-stat"><div class="gp-val" id="gp-gate" style="color:var(--coral)">0</div><div class="gp-label">Gates passed</div></div>
       <div class="gp-stat"><div class="gp-val" id="gp-metric" style="color:var(--purple)">0</div><div class="gp-label">Metrics met</div></div>
-      <button class="reset-btn" onclick="resetAll()">Reset all</button>
     </div>
   </div>
 </section>
@@ -529,22 +528,21 @@
 </div>
 </div><!-- container -->
 </div><!-- page -->
-<footer><p>AI Business System &middot; Build Checklist &middot; Progress saved automatically in browser localStorage</p></footer>
+<footer><p>AI Business System &middot; Build Checklist &middot; Progress synced from <code>checklist-state.json</code> in the repo</p></footer>
 <script>
-const STORE='ai-sys-checklist-v1';
+const STATE_URL='checklist-state.json';
 const COL_STORE='ai-sys-collapse-v1';
-function loadState(){try{return JSON.parse(localStorage.getItem(STORE))||{};}catch(e){return {};}}
-function saveState(s){try{localStorage.setItem(STORE,JSON.stringify(s));}catch(e){}}
 function loadCollapse(){try{return JSON.parse(localStorage.getItem(COL_STORE))||{};}catch(e){return {};}}
 function saveCollapse(s){try{localStorage.setItem(COL_STORE,JSON.stringify(s));}catch(e){}}
-let state=loadState();
+let state={};
 let collapseState=loadCollapse();
 
-function toggleItem(id){
-  state[id]=!state[id];
-  saveState(state);
-  applyItem(id);
-  updateAllCounts();
+async function loadState(){
+  try{
+    const res=await fetch(STATE_URL+'?t='+Date.now(),{cache:'no-store'});
+    if(!res.ok)return {};
+    return await res.json();
+  }catch(e){return {};}
 }
 function applyItem(id){
   const el=document.querySelector('[data-id="'+id+'"]');
@@ -553,11 +551,8 @@ function applyItem(id){
   el.querySelector('.cb').classList.toggle('checked',done);
   el.classList.toggle('done',done);
 }
-function wireItems(){
-  document.querySelectorAll('.check-item[data-id]').forEach(el=>{
-    applyItem(el.dataset.id);
-    el.addEventListener('click',()=>toggleItem(el.dataset.id));
-  });
+function applyAllItems(){
+  document.querySelectorAll('.check-item[data-id]').forEach(el=>applyItem(el.dataset.id));
 }
 function toggleMilestone(mId){
   const body=document.getElementById(mId+'-body');
@@ -625,12 +620,6 @@ function updateAllCounts(){
   updateSectionCounts();
   updateGlobalStats();
 }
-function resetAll(){
-  if(!confirm('Reset all checklist progress? This cannot be undone.'))return;
-  state={};saveState(state);
-  document.querySelectorAll('.check-item[data-id]').forEach(el=>applyItem(el.dataset.id));
-  updateAllCounts();
-}
 const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
@@ -641,9 +630,8 @@ const obs=new IntersectionObserver(entries=>{
   });
 },{rootMargin:'-20% 0px -70% 0px'});
 document.querySelectorAll('[id]').forEach(s=>obs.observe(s));
-wireItems();
 applyCollapseState();
-updateAllCounts();
+loadState().then(s=>{state=s;applyAllItems();updateAllCounts();});
 </script>
 </body>
 </html>
